@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Hacker Lab</title>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Rubik:wght@400;500;600;700;800;900&family=Silkscreen:wght@400;700&family=Share+Tech+Mono&family=Noto+Kufi+Arabic:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+/* ═══ THEME: Islamic Green (default dark) ═══ */
+:root,[data-theme="islamic"]{
+  --bg:#060d08;--bg2:#0c1a10;--bg3:#112118;--bg4:#163020;
+  --ac:#39ff85;--ac2:#00e5ff;--acd:rgba(57,255,133,.12);--acg:rgba(57,255,133,.35);
+  --amber:#ffb300;--red:#ff4757;
+  --txt:#e8f0ec;--txt2:#8fa89a;--txt3:#5a7568;--bdr:#1e2e26;
+  --shadow:rgba(0,0,0,.4);--thname:'Islamic Green'}
+
+/* ═══ THEME: Golden Age ═══ */
+[data-theme="golden"]{
+  --bg:#0f0c06;--bg2:#1a1508;--bg3:#231d0e;--bg4:#2e2614;
+  --ac:#f0c040;--ac2:#e8a010;--acd:rgba(240,192,64,.12);--acg:rgba(240,192,64,.3);
+  --amber:#f0c040;--red:#e85050;
+  --txt:#f0e8d8;--txt2:#a89878;--txt3:#786848;--bdr:#302818;
+  --shadow:rgba(0,0,0,.5);--thname:'Golden Age'}
+
+/* ═══ THEME: Andalous ═══ */
+[data-theme="andalous"]{
+  --bg:#120808;--bg2:#1e0e0e;--bg3:#2a1616;--bg4:#361e1e;
+  --ac:#e86040;--ac2:#f09060;--acd:rgba(232,96,64,.12);--acg:rgba(232,96,64,.3);
+  --amber:#f0a030;--red:#e84040;
+  --txt:#f0e0d8;--txt2:#a88878;--txt3:#886858;--bdr:#3a2020;
+  --shadow:rgba(0,0,0,.5);--thname:'Andalous'}
+
+/* ═══ THEME: Light Clean ═══ */
+[data-theme="light"]{
+  --bg:#f4f6f5;--bg2:#eaefec;--bg3:#fff;--bg4:#f0f4f2;
+  --ac:#0a8a3e;--ac2:#0077a8;--acd:rgba(10,138,62,.08);--acg:rgba(10,138,62,.18);
+  --amber:#b87900;--red:#d4384a;
+  --txt:#1a2b20;--txt2:#5a7066;--txt3:#8fa89a;--bdr:#c8d8ce;
+  --shadow:rgba(0,0,0,.06);--thname:'Light Clean'}
+
+/* ═══ THEME: Light Ocean ═══ */
+[data-theme="ocean"]{
+  --bg:#f0f5f8;--bg2:#e4eef4;--bg3:#fff;--bg4:#eaf2f8;
+  --ac:#0077a8;--ac2:#005580;--acd:rgba(0,119,168,.08);--acg:rgba(0,119,168,.18);
+  --amber:#b87900;--red:#d4384a;
+  --txt:#1a2530;--txt2:#4a6070;--txt3:#8a9aa8;--bdr:#c0d0dc;
+  --shadow:rgba(0,0,0,.06);--thname:'Light Ocean'}
+
+/* ═══ THEME: Light Sand ═══ */
+[data-theme="sand"]{
+  --bg:#f8f5f0;--bg2:#f0ebe2;--bg3:#fff;--bg4:#f5f0e8;
+  --ac:#b87900;--ac2:#8a5a00;--acd:rgba(184,121,0,.08);--acg:rgba(184,121,0,.18);
+  --amber:#b87900;--red:#c4384a;
+  --txt:#2c2418;--txt2:#6a5a48;--txt3:#a09080;--bdr:#d8d0c0;
+  --shadow:rgba(0,0,0,.05);--thname:'Light Sand'}
+
+/* ═══ BASE ═══ */
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Rubik',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;overflow-x:hidden;transition:background .4s,color .4s}
+[dir="rtl"] body{font-family:'Noto Kufi Arabic','Rubik',sans-serif}
+[dir="rtl"] .silkscreen{font-family:'Noto Kufi Arabic',sans-serif!important}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(57,255,133,.006) 3px,rgba(57,255,133,.006) 4px);opacity:.5}
+.app{position:relative;z-index:1;min-height:100vh}
+.mod{display:none;min-height:100vh;animation:fi .35s ease}.mod.on{display:block}
+@keyframes fi{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes flt{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+
+/* Header */
+.hdr{text-align:center;padding:14px 12px 4px}
+.bism{font-family:'Amiri',serif;font-size:1.7rem;font-weight:700;color:var(--ac);text-shadow:0 0 25px var(--acd);animation:bg 3s ease-in-out infinite alternate}
+@keyframes bg{from{text-shadow:0 0 15px var(--acd)}to{text-shadow:0 0 35px var(--acg)}}
+
+/* Controls */
+.topc{position:fixed;top:8px;right:10px;display:flex;gap:4px;z-index:100;flex-wrap:wrap}
+[dir="rtl"] .topc{right:auto;left:10px}
+.hbtn{position:fixed;top:8px;left:10px;z-index:100;display:none}
+[dir="rtl"] .hbtn{left:auto;right:10px}
+.hbtn.show{display:flex}
+.cb{width:32px;height:32px;border-radius:7px;border:1px solid var(--bdr);background:var(--bg3);color:var(--txt2);font-size:.85rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .3s;-webkit-tap-highlight-color:transparent}
+.cb:hover{border-color:var(--ac);color:var(--ac);box-shadow:0 0 8px var(--acd)}
+.cb.lang{font-size:.65rem;font-weight:700;width:auto;padding:0 8px;font-family:'Share Tech Mono',monospace}
+
+/* Theme picker */
+.theme-picker{position:fixed;top:48px;right:10px;background:var(--bg3);border:1px solid var(--bdr);border-radius:10px;padding:8px;z-index:200;display:none;flex-direction:column;gap:4px;min-width:130px}
+[dir="rtl"] .theme-picker{right:auto;left:10px}
+.theme-picker.show{display:flex}
+.tp-opt{padding:6px 10px;border-radius:6px;border:1px solid var(--bdr);background:var(--bg2);color:var(--txt2);font-size:.72rem;cursor:pointer;transition:all .2s;text-align:left;display:flex;align-items:center;gap:6px}
+[dir="rtl"] .tp-opt{text-align:right}
+.tp-opt:hover,.tp-opt.on{border-color:var(--ac);color:var(--ac)}
+.tp-dot{width:12px;height:12px;border-radius:50%;border:2px solid var(--bdr);flex-shrink:0}
+
+/* Buttons */
+.btn{padding:12px 28px;border-radius:11px;border:2px solid var(--ac);background:transparent;color:var(--ac);font-family:'Silkscreen',monospace;font-size:.82rem;cursor:pointer;text-transform:uppercase;letter-spacing:1.5px;transition:all .3s;position:relative;overflow:hidden;-webkit-tap-highlight-color:transparent}
+[dir="rtl"] .btn{font-family:'Noto Kufi Arabic',sans-serif;letter-spacing:0}
+.btn::before{content:'';position:absolute;inset:0;background:var(--ac);opacity:0;transition:opacity .3s}
+.btn:hover{color:var(--bg);box-shadow:0 0 22px var(--acg);transform:translateY(-2px)}
+.btn:hover::before{opacity:1}.btn span{position:relative;z-index:1}.btn:active{transform:translateY(0)}
+.btn-s{border-color:var(--bdr);color:var(--txt2)}.btn-s::before{background:var(--ac2)}.btn-s:hover{border-color:var(--ac2);box-shadow:0 0 18px rgba(0,0,0,.2)}
+.br{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+
+/* Toast */
+.toast{position:fixed;top:55px;left:50%;transform:translateX(-50%) translateY(-12px);padding:8px 20px;border-radius:10px;font-family:'Share Tech Mono',monospace;font-size:.78rem;font-weight:700;z-index:300;opacity:0;pointer-events:none;transition:all .3s}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.ok{background:var(--ac);color:var(--bg)}.toast.er{background:var(--red);color:#fff}
+
+/* Footer */
+.ftr{text-align:center;padding:14px;font-size:.72rem;color:var(--txt3)}.ftr a{color:var(--ac);text-decoration:none}
+
+/* ═══ HUB ═══ */
+.hub{display:flex;flex-direction:column;align-items:center;padding:14px}
+.hub-t{font-family:'Silkscreen',monospace;font-size:1.9rem;text-align:center;margin:8px 0 4px}
+[dir="rtl"] .hub-t{font-family:'Noto Kufi Arabic',sans-serif;font-size:1.6rem}
+.hub-sub{color:var(--txt2);text-align:center;margin-bottom:22px;max-width:460px;font-size:.9rem;line-height:1.6}
+.hub-sec{width:100%;max-width:680px;margin:12px 0 6px}
+.hub-sec h2{font-family:'Silkscreen',monospace;font-size:.68rem;color:var(--txt3);text-transform:uppercase;letter-spacing:3px;padding-bottom:5px;border-bottom:1px solid var(--bdr)}
+[dir="rtl"] .hub-sec h2{font-family:'Noto Kufi Arabic',sans-serif;letter-spacing:0}
+.hg{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;width:100%;max-width:680px;margin-bottom:10px}
+.hc{background:var(--bg3);border:1px solid var(--bdr);border-radius:12px;padding:14px;cursor:pointer;transition:all .3s;text-align:center;position:relative;overflow:hidden}
+.hc::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;opacity:0;transition:opacity .3s}
+.hc:hover{border-color:var(--ac);transform:translateY(-3px);box-shadow:0 6px 20px var(--shadow)}
+.hc:hover::before{opacity:1}
+.hc .hi{font-size:1.8rem;margin-bottom:5px;display:block;animation:flt 3s ease-in-out infinite}
+.hc .ht{font-family:'Silkscreen',monospace;font-size:.68rem;color:var(--txt);margin-bottom:2px}
+[dir="rtl"] .hc .ht{font-family:'Noto Kufi Arabic',sans-serif;font-size:.75rem}
+.hc .hd{font-size:.68rem;color:var(--txt3);line-height:1.3}
+.hc .hb{font-family:'Share Tech Mono',monospace;font-size:.52rem;padding:2px 5px;border-radius:3px;margin-top:5px;display:inline-block;border:1px solid}
+.hc.w1::before{background:linear-gradient(90deg,var(--ac),var(--ac2))}
+.hc.w2::before{background:linear-gradient(90deg,var(--ac2),var(--amber))}
+.hc.w3::before{background:linear-gradient(90deg,var(--amber),var(--red))}
+.hc.w4::before{background:linear-gradient(90deg,#a78bfa,#f472b6)}
+.hc.tool::before,.hc.bonus::before{background:var(--ac)}
+
+/* ═══ INNER SCREENS ═══ */
+.inner{max-width:680px;margin:0 auto;padding:0 14px}
+.scr{display:none;flex-direction:column;align-items:center;justify-content:center;padding:18px;min-height:calc(100vh - 90px);animation:fi .35s ease}
+.scr.on{display:flex}
+.card{max-width:480px;width:100%;text-align:center}
+.card h2{font-size:1.25rem;font-weight:700;margin-bottom:8px}
+.card p{font-size:.92rem;color:var(--txt2);line-height:1.7;margin-bottom:12px}
+.icon{font-size:3.2rem;margin-bottom:10px;display:block;animation:flt 3s ease-in-out infinite}
+.tag{font-family:'Share Tech Mono',monospace;font-size:.6rem;color:var(--amber);text-transform:uppercase;letter-spacing:3px;margin-bottom:12px}
+
+/* W1 drag&drop */
+.items-pool{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;margin-bottom:18px;min-height:55px;padding:12px;background:var(--bg2);border:2px dashed var(--bdr);border-radius:12px}
+.drag-item{display:flex;flex-direction:column;align-items:center;gap:2px;padding:7px 10px;background:var(--bg3);border:2px solid var(--bdr);border-radius:9px;cursor:grab;user-select:none;transition:all .3s;touch-action:none}
+.drag-item:hover{border-color:var(--ac);transform:translateY(-2px)}
+.drag-item .ie{font-size:1.6rem}.drag-item .il{font-size:.55rem;font-family:'Silkscreen',monospace;color:var(--txt3)}
+[dir="rtl"] .drag-item .il{font-family:'Noto Kufi Arabic',sans-serif;font-size:.6rem}
+.drop-zones{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;width:100%;max-width:620px}
+.drop-zone{min-height:110px;border:2px dashed var(--bdr);border-radius:12px;padding:8px;text-align:center;transition:all .3s;display:flex;flex-direction:column;align-items:center;gap:5px}
+.drop-zone.drag-over{border-color:var(--ac);background:var(--acd);box-shadow:0 0 20px var(--acd)}
+.drop-zone.correct{border-color:var(--ac);animation:cpulse .5s ease}
+.drop-zone.wrong{border-color:var(--red);animation:wshake .4s ease}
+@keyframes cpulse{0%{box-shadow:0 0 0 0 var(--acg)}50%{box-shadow:0 0 20px 6px var(--acd)}100%{box-shadow:0 0 0 0 transparent}}
+@keyframes wshake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+.zi{font-size:1.4rem}.zl{font-family:'Silkscreen',monospace;font-size:.55rem;color:var(--ac)}
+[dir="rtl"] .zl{font-family:'Noto Kufi Arabic',sans-serif;font-size:.6rem}
+.zone-items{display:flex;flex-wrap:wrap;gap:3px;justify-content:center}
+.zone-items .drag-item{padding:3px 6px;cursor:default}.zone-items .drag-item .ie{font-size:1.1rem}
+.score-bar{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:14px;font-family:'Silkscreen',monospace;font-size:.7rem}
+[dir="rtl"] .score-bar{font-family:'Noto Kufi Arabic',sans-serif}
+.si{padding:5px 12px;background:var(--bg3);border:1px solid var(--bdr);border-radius:7px;color:var(--txt2)}
+.si .sv{color:var(--ac);font-weight:700}
+.mh{text-align:center;margin-bottom:14px}
+.mt{font-family:'Silkscreen',monospace;font-size:1rem;color:var(--ac);text-transform:uppercase;letter-spacing:2px;margin-bottom:2px}
+[dir="rtl"] .mt{font-family:'Noto Kufi Arabic',sans-serif;letter-spacing:0}
+.ms{font-size:.82rem;color:var(--txt2)}
+
+/* Badge */
+.bwrap{max-width:400px;width:100%;text-align:center}
+.bicon{font-size:4rem;margin-bottom:10px;filter:drop-shadow(0 0 12px var(--acg));animation:flt 3s ease-in-out infinite}
+.btitle{font-family:'Silkscreen',monospace;font-size:1.1rem;color:var(--ac);text-transform:uppercase;letter-spacing:2px;margin-bottom:4px}
+[dir="rtl"] .btitle{font-family:'Noto Kufi Arabic',sans-serif;letter-spacing:0}
+.bname{font-size:1.3rem;font-weight:800;margin-bottom:16px}
+.bstats{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:16px}
+.bst{background:var(--bg3);border:1px solid var(--bdr);border-radius:9px;padding:10px 4px}
+.bst .v{font-family:'Share Tech Mono',monospace;font-size:1.2rem;color:var(--ac);font-weight:700}
+.bst .l{font-size:.55rem;color:var(--txt3);text-transform:uppercase;margin-top:2px}
+.sbox{background:var(--bg3);border:1px solid var(--bdr);border-radius:10px;padding:14px;margin-bottom:16px;text-align:left}
+[dir="rtl"] .sbox{text-align:right}
+.sbox p{font-size:.85rem;color:var(--txt2);margin-bottom:5px;line-height:1.5}
+.sbox .hl{color:var(--ac);font-weight:700}
+
+/* Overlay */
+.overlay{display:none;position:fixed;inset:0;background:rgba(6,13,8,.92);z-index:300;align-items:center;justify-content:center}
+.overlay.on{display:flex}
+.ov-card{background:var(--bg3);border:2px solid var(--ac);border-radius:18px;padding:32px;text-align:center;max-width:380px;width:90%;box-shadow:0 0 40px var(--acd);animation:popIn .5s cubic-bezier(.34,1.56,.64,1)}
+@keyframes popIn{from{transform:scale(.8);opacity:0}to{transform:scale(1);opacity:1}}
+
+/* Responsive */
+@media(max-width:600px){.bism{font-size:1.3rem}.hub-t{font-size:1.4rem}.hg{grid-template-columns:1fr 1fr}.drop-zones{grid-template-columns:1fr}.bstats{grid-template-columns:1fr 1fr}.btn{padding:10px 22px;font-size:.75rem}}
+@media(max-width:380px){.hg{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="toast" id="toast"></div>
+<div class="topc">
+  <button class="cb" id="thB" onclick="toggleThemePicker()" title="Theme">🎨</button>
+  <button class="cb" id="muB" onclick="tMu()">🔊</button>
+  <button class="cb lang" id="lnB" onclick="cycleLang()">EN</button>
+</div>
+<div class="theme-picker" id="themePicker">
+  <div class="tp-opt on" data-th="islamic" onclick="setTheme('islamic')"><div class="tp-dot" style="background:#39ff85"></div>Islamic Green</div>
+  <div class="tp-opt" data-th="golden" onclick="setTheme('golden')"><div class="tp-dot" style="background:#f0c040"></div>Golden Age</div>
+  <div class="tp-opt" data-th="andalous" onclick="setTheme('andalous')"><div class="tp-dot" style="background:#e86040"></div>Andalous</div>
+  <div class="tp-opt" data-th="light" onclick="setTheme('light')"><div class="tp-dot" style="background:#0a8a3e;border-color:#ccc"></div>Light Clean</div>
+  <div class="tp-opt" data-th="ocean" onclick="setTheme('ocean')"><div class="tp-dot" style="background:#0077a8;border-color:#ccc"></div>Light Ocean</div>
+  <div class="tp-opt" data-th="sand" onclick="setTheme('sand')"><div class="tp-dot" style="background:#b87900;border-color:#ccc"></div>Light Sand</div>
+</div>
+<button class="cb hbtn" id="homeB" onclick="goHub()">🏠</button>
+
+<div class="app">
+<div class="hdr"><div class="bism">بسم الله الرحمن الرحيم</div></div>
+
+<!-- ═══ HUB ═══ -->
+<div class="mod on" id="m-hub">
+<div class="hub">
+<div style="font-size:2.8rem;animation:flt 3s ease-in-out infinite">🧪</div>
+<h1 class="hub-t silkscreen" id="hubTitle">AI Hacker Lab</h1>
+<p class="hub-sub" id="hubSub">Interactive workshops teaching AI &amp; Machine Learning to all ages. By Muslims, for everyone.</p>
+
+<div class="hub-sec"><h2 class="silkscreen" id="secWorkshops">Workshops</h2></div>
+<div class="hg">
+<div class="hc w1" onclick="goMod('m-w1')"><span class="hi">🤖</span><div class="ht silkscreen" data-i18n="w1t">Junior Hacker</div><div class="hd" data-i18n="w1d">Sort inventions like AI</div><span class="hb" style="color:var(--ac);border-color:var(--ac)" data-i18n="age69">Ages 6-9</span></div>
+<div class="hc w2" onclick="openFile('workshops/workshop-2.html')"><span class="hi">🕵️</span><div class="ht silkscreen" data-i18n="w2t">Code Breaker</div><div class="hd" data-i18n="w2d">Draw &amp; train AI</div><span class="hb" style="color:var(--ac2);border-color:var(--ac2)" data-i18n="age1013">Ages 10-13</span></div>
+<div class="hc w3" onclick="openFile('workshops/workshop-3.html')"><span class="hi">⚡</span><div class="ht silkscreen" data-i18n="w3t">AI Engineer</div><div class="hd" data-i18n="w3d">Build neural networks</div><span class="hb" style="color:var(--amber);border-color:var(--amber)" data-i18n="age14">Ages 14+</span></div>
+<div class="hc w4" onclick="openFile('workshops/workshop-4.html')"><span class="hi">🎓</span><div class="ht silkscreen" data-i18n="w4t">AI Decoded</div><div class="hd" data-i18n="w4d">For parents &amp; teachers</div><span class="hb" style="color:#a78bfa;border-color:#a78bfa" data-i18n="adults">Adults</span></div>
+</div>
+
+<div class="hub-sec"><h2 class="silkscreen" id="secTools">Tools &amp; Bonus</h2></div>
+<div class="hg">
+<div class="hc tool" onclick="openFile('tools/tools-of-the-trade.html')"><span class="hi">🔧</span><div class="ht silkscreen" data-i18n="toolsT">Tools</div><div class="hd" data-i18n="toolsD">TensorFlow &amp; alternatives</div></div>
+<div class="hc tool" onclick="openFile('tools/hardware-lab.html')"><span class="hi">🔌</span><div class="ht silkscreen" data-i18n="hwT">Hardware</div><div class="hd" data-i18n="hwD">micro:bit &amp; ESP32</div></div>
+<div class="hc bonus" onclick="openFile('tools/certificates.html')"><span class="hi">🏅</span><div class="ht silkscreen" data-i18n="certT">Certificates</div><div class="hd" data-i18n="certD">Print certificates</div></div>
+<div class="hc bonus" onclick="openFile('tools/dashboard.html')"><span class="hi">📊</span><div class="ht silkscreen" data-i18n="dashT">Dashboard</div><div class="hd" data-i18n="dashD">Track badges</div></div>
+<div class="hc bonus" onclick="openFile('tools/journal.html')"><span class="hi">📓</span><div class="ht silkscreen" data-i18n="journalT">Journal</div><div class="hd" data-i18n="journalD">Learning reflections</div></div>
+<div class="hc bonus" onclick="openFile('tools/time-capsule.html')"><span class="hi">🔮</span><div class="ht silkscreen" data-i18n="capT">Time Capsule</div><div class="hd" data-i18n="capD">Predict AI's future</div></div>
+</div>
+<div class="ftr">Powered by <a href="https://workshop-diy.org" target="_blank">workshop-diy.org</a></div>
+</div>
+</div>
+
+<!-- ═══ W1: JUNIOR HACKER (full embedded) ═══ -->
+<div class="mod" id="m-w1">
+<div class="inner">
+<div class="scr on" id="w1-wel">
+<div style="width:72px;height:72px;border-radius:18px;background:var(--bg3);border:2px solid var(--bdr);display:flex;align-items:center;justify-content:center;font-size:2.5rem;margin-bottom:14px;box-shadow:0 4px 20px var(--shadow);animation:flt 3s ease-in-out infinite">🤖</div>
+<h1 style="font-family:'Silkscreen',monospace;font-size:1.6rem;margin-bottom:3px" class="silkscreen" data-i18n="w1title">Junior Hacker</h1>
+<p style="color:var(--txt2);margin-bottom:20px;max-width:360px;text-align:center;font-size:.9rem" data-i18n="w1sub">Sort inventions and machines — just like AI does!</p>
+<div style="display:flex;flex-direction:column;align-items:center;gap:4px;margin-bottom:18px;max-width:260px;width:100%">
+<label style="font-family:'Silkscreen',monospace;font-size:.6rem;color:var(--ac);letter-spacing:2px" class="silkscreen" data-i18n="yourName">Your Name</label>
+<input type="text" id="w1Name" placeholder="Yusuf" maxlength="20" autocomplete="off" style="width:100%;padding:11px 14px;border-radius:10px;border:2px solid var(--bdr);background:var(--bg2);color:var(--txt);font-family:'Rubik',sans-serif;font-size:1rem;text-align:center;outline:none">
+</div>
+<button class="btn" onclick="w1Start()"><span data-i18n="startMission">Start Mission</span></button>
+</div>
+
+<div class="scr" id="w1-i1"><div class="card"><div class="tag" data-i18n="step1">Step 1 of 3</div><div class="icon">🔬</div>
+<h2 data-i18n="whatScientist">What is a Scientist?</h2>
+<p data-i18n="scientistDesc">Scientists look at things carefully and sort them into groups.</p>
+<button class="btn" onclick="w1Go('w1-i2')"><span data-i18n="next">Next</span></button></div></div>
+
+<div class="scr" id="w1-i2"><div class="card"><div class="tag" data-i18n="step2">Step 2 of 3</div><div class="icon">🧠</div>
+<h2 data-i18n="whatAI">What is AI?</h2>
+<p data-i18n="aiDesc">AI is a computer that learns to sort things — just like you!</p>
+<div class="br"><button class="btn btn-s" onclick="w1Go('w1-i1')"><span data-i18n="back">Back</span></button><button class="btn" onclick="w1Go('w1-i3')"><span data-i18n="next">Next</span></button></div></div></div>
+
+<div class="scr" id="w1-i3"><div class="card"><div class="tag" data-i18n="step3">Step 3 of 3</div><div class="icon">🎯</div>
+<h2 data-i18n="yourMission">Your Mission</h2>
+<p data-i18n="missionDesc">Sort inventions into groups! 3 missions, each harder than the last.</p>
+<div class="br"><button class="btn btn-s" onclick="w1Go('w1-i2')"><span data-i18n="back">Back</span></button><button class="btn" onclick="w1SM(1)"><span data-i18n="startM1">Start Mission 1</span></button></div></div></div>
+
+<div class="scr" id="w1-m1">
+<div class="mh"><div class="mt silkscreen" data-i18n="m1title">Mission 1: Sort by Type</div><div class="ms" data-i18n="m1sub">Drag each invention to the correct group</div></div>
+<div class="score-bar"><div class="si"><span data-i18n="score">Score</span>: <span class="sv" id="w1s1">0</span>/9</div><div class="si">⭐</div></div>
+<div style="width:100%;max-width:620px"><div class="items-pool" id="w1p1"></div>
+<div class="drop-zones" id="w1z1">
+<div class="drop-zone" data-cat="robots"><div class="zi">🤖</div><div class="zl silkscreen" data-i18n="robots">Robots</div><div class="zone-items"></div></div>
+<div class="drop-zone" data-cat="vehicles"><div class="zi">🚗</div><div class="zl silkscreen" data-i18n="vehicles">Vehicles</div><div class="zone-items"></div></div>
+<div class="drop-zone" data-cat="gadgets"><div class="zi">📱</div><div class="zl silkscreen" data-i18n="gadgets">Gadgets</div><div class="zone-items"></div></div>
+</div></div></div>
+
+<div class="scr" id="w1-m2">
+<div class="mh"><div class="mt silkscreen" data-i18n="m2title">Mission 2: Sort by Power</div><div class="ms" data-i18n="m2sub">How does each invention get energy?</div></div>
+<div class="score-bar"><div class="si"><span data-i18n="score">Score</span>: <span class="sv" id="w1s2">0</span>/12</div><div class="si">⭐⭐</div></div>
+<div style="width:100%;max-width:620px"><div class="items-pool" id="w1p2"></div>
+<div class="drop-zones" id="w1z2">
+<div class="drop-zone" data-cat="electric"><div class="zi">⚡</div><div class="zl silkscreen" data-i18n="electric">Electric</div><div class="zone-items"></div></div>
+<div class="drop-zone" data-cat="fuel"><div class="zi">🔥</div><div class="zl silkscreen" data-i18n="fuel">Fuel</div><div class="zone-items"></div></div>
+<div class="drop-zone" data-cat="human"><div class="zi">💪</div><div class="zl silkscreen" data-i18n="human">Human</div><div class="zone-items"></div></div>
+</div></div></div>
+
+<div class="scr" id="w1-m3">
+<div class="mh"><div class="mt silkscreen" data-i18n="m3title">Mission 3: Sort by Era</div><div class="ms" data-i18n="m3sub">When was it created?</div></div>
+<div class="score-bar"><div class="si"><span data-i18n="score">Score</span>: <span class="sv" id="w1s3">0</span>/12</div><div class="si">⭐⭐⭐</div></div>
+<div style="width:100%;max-width:620px"><div class="items-pool" id="w1p3"></div>
+<div class="drop-zones" id="w1z3">
+<div class="drop-zone" data-cat="ancient"><div class="zi">🏛️</div><div class="zl silkscreen" data-i18n="ancient">Ancient</div><div class="zone-items"></div></div>
+<div class="drop-zone" data-cat="modern"><div class="zi">🏙️</div><div class="zl silkscreen" data-i18n="modern">Modern</div><div class="zone-items"></div></div>
+<div class="drop-zone" data-cat="future"><div class="zi">🚀</div><div class="zl silkscreen" data-i18n="future">Future</div><div class="zone-items"></div></div>
+</div></div></div>
+
+<div class="scr" id="w1-badge"><div class="bwrap">
+<div class="bicon">🏅</div><div class="btitle silkscreen" data-i18n="missionComplete">Mission Complete!</div>
+<div class="bname" id="w1bn"></div>
+<div class="bstats"><div class="bst"><div class="v" id="w1bs">0</div><div class="l" data-i18n="sorted">Sorted</div></div>
+<div class="bst"><div class="v" id="w1bc">0</div><div class="l" data-i18n="correct">Correct</div></div>
+<div class="bst"><div class="v" id="w1ba">0%</div><div class="l" data-i18n="accuracy">Accuracy</div></div></div>
+<div class="sbox"><p><span class="hl" data-i18n="features">TYPE, POWER, TIME</span> — <span data-i18n="featuresDesc">these are called FEATURES. AI uses features to classify millions of things!</span></p></div>
+<div class="br"><button class="btn" onclick="w1Reset()"><span data-i18n="playAgain">Play Again</span></button><button class="btn btn-s" onclick="goHub()"><span data-i18n="hub">Hub</span></button></div>
+</div></div>
+</div></div>
+
+<!-- W2 link -->
+<div class="icon">🕵️</div><h2 class="silkscreen" data-i18n="w2t">Code Breaker</h2>
+<p style="color:var(--txt2);max-width:380px;margin:0 auto 16px" data-i18n="w2full">Draw shapes and train an AI with TensorFlow.js. Open workshop-2.html for the full experience.</p>
+<div class="br"><button class="btn btn-s" onclick="goHub()"><span data-i18n="hub">← Hub</span></button></div>
+</div></div></div>
+
+<!-- W3 link -->
+<div class="icon">⚡</div><h2 class="silkscreen" data-i18n="w3t">AI Engineer</h2>
+<p style="color:var(--txt2);max-width:380px;margin:0 auto 16px" data-i18n="w3full">Build neural networks with TensorFlow.js. Open workshop-3.html for the full experience.</p>
+<div class="br"><button class="btn btn-s" onclick="goHub()"><span data-i18n="hub">← Hub</span></button></div>
+</div></div></div>
+
+<!-- W4 link -->
+<div class="icon">🎓</div><h2 data-i18n="w4t">AI Decoded</h2>
+<p style="color:var(--txt2);max-width:380px;margin:0 auto 16px" data-i18n="w4full">Interactive guide for parents and teachers. Open workshop-4.html for the full experience.</p>
+<div class="br"><button class="btn btn-s" onclick="goHub()"><span data-i18n="hub">← Hub</span></button></div>
+</div></div></div>
+
+<!-- Tools/HW/Cert/Dash/Journal/Capsule - same pattern, link to standalone -->
+
+<!-- Overlay -->
+<div class="overlay" id="w1ov"><div class="ov-card">
+<div style="font-size:2.8rem;animation:flt 2s ease-in-out infinite" id="w1ove">🎉</div>
+<div style="font-family:'Silkscreen',monospace;font-size:1.1rem;color:var(--ac);margin:6px 0" id="w1ovt" class="silkscreen"></div>
+<div style="color:var(--txt2);margin-bottom:14px" id="w1ovtx"></div>
+<button class="btn" id="w1ovb" onclick="w1Next()"><span data-i18n="nextMission">Next Mission</span></button>
+</div></div>
+</div>
+
+<script>
+/* ═══ i18n ═══ */
+const i18n={
+en:{w1t:'Junior Hacker',w1d:'Sort inventions like AI',w2t:'Code Breaker',w2d:'Draw & train AI',w3t:'AI Engineer',w3d:'Build neural networks',w4t:'AI Decoded',w4d:'For parents & teachers',
+age69:'Ages 6-9',age1013:'Ages 10-13',age14:'Ages 14+',adults:'Adults',
+toolsT:'Tools',toolsD:'TensorFlow & alternatives',hwT:'Hardware',hwD:'micro:bit & ESP32',certT:'Certificates',certD:'Print certificates',dashT:'Dashboard',dashD:'Track badges',journalT:'Journal',journalD:'Learning reflections',capT:'Time Capsule',capD:"Predict AI's future",
+w1title:'Junior Hacker',w1sub:'Sort inventions and machines — just like AI does!',yourName:'Your Name',startMission:'Start Mission',
+step1:'Step 1 of 3',step2:'Step 2 of 3',step3:'Step 3 of 3',
+whatScientist:'What is a Scientist?',scientistDesc:'Scientists look at things carefully and sort them into groups.',
+whatAI:'What is AI?',aiDesc:'AI is a computer that learns to sort things — just like you!',
+yourMission:'Your Mission',missionDesc:'Sort inventions into groups! 3 missions, each harder.',
+startM1:'Start Mission 1',next:'Next',back:'Back',score:'Score',
+m1title:'Mission 1: Sort by Type',m1sub:'Drag each invention to the correct group',
+m2title:'Mission 2: Sort by Power',m2sub:'How does each get energy?',
+m3title:'Mission 3: Sort by Era',m3sub:'When was it created?',
+robots:'Robots',vehicles:'Vehicles',gadgets:'Gadgets',electric:'Electric',fuel:'Fuel',human:'Human',ancient:'Ancient',modern:'Modern',future:'Future',
+missionComplete:'Mission Complete!',sorted:'Sorted',correct:'Correct',accuracy:'Accuracy',
+features:'TYPE, POWER, TIME',featuresDesc:'these are FEATURES. AI uses features to classify millions of things!',
+playAgain:'Play Again',hub:'Hub',nextMission:'Next Mission',
+w2full:'Draw shapes and train an AI with TensorFlow.js. Open workshop-2.html for the full experience.',
+w3full:'Build neural networks with TensorFlow.js. Open workshop-3.html for the full experience.',
+w4full:'Interactive guide for parents and teachers. Open workshop-4.html for the full experience.',
+toolsFull:'Open tools-of-the-trade.html for the full reference.',hwFull:'Open hardware-lab.html for projects.',
+certFull:'Open certificates.html to generate certificates.',dashFull:'Open dashboard.html to track progress.',
+journalFull:'Open journal.html to write reflections.',capFull:'Open time-capsule.html to seal predictions.',
+hubTitle:'AI Hacker Lab',hubSub:'Interactive workshops teaching AI & Machine Learning to all ages. By Muslims, for everyone.',secWorkshops:'Workshops',secTools:'Tools & Bonus'},
+
+ar:{w1t:'المخترق الصغير',w1d:'رتّب الاختراعات مثل الذكاء الاصطناعي',w2t:'كاسر الشفرة',w2d:'ارسم ودرّب الذكاء',w3t:'مهندس الذكاء',w3d:'ابنِ شبكات عصبية',w4t:'فهم الذكاء',w4d:'للآباء والمعلمين',
+age69:'٦-٩ سنوات',age1013:'١٠-١٣ سنة',age14:'١٤+ سنة',adults:'الكبار',
+toolsT:'الأدوات',toolsD:'تنسرفلو والبدائل',hwT:'المعدات',hwD:'مايكروبت و ESP32',certT:'الشهادات',certD:'اطبع الشهادات',dashT:'لوحة التحكم',dashD:'تتبع الإنجازات',journalT:'المذكرة',journalD:'تأملات التعلم',capT:'كبسولة الزمن',capD:'توقع مستقبل الذكاء',
+w1title:'المخترق الصغير',w1sub:'رتّب الاختراعات والآلات — تماماً كما يفعل الذكاء الاصطناعي!',yourName:'اسمك',startMission:'ابدأ المهمة',
+step1:'الخطوة ١ من ٣',step2:'الخطوة ٢ من ٣',step3:'الخطوة ٣ من ٣',
+whatScientist:'ما هو العالِم؟',scientistDesc:'العلماء ينظرون بعناية ويرتبون الأشياء في مجموعات.',
+whatAI:'ما هو الذكاء الاصطناعي؟',aiDesc:'الذكاء الاصطناعي حاسوب يتعلم ترتيب الأشياء — تماماً مثلك!',
+yourMission:'مهمتك',missionDesc:'رتّب الاختراعات! ٣ مهمات، كل واحدة أصعب.',
+startM1:'ابدأ المهمة ١',next:'التالي',back:'رجوع',score:'النقاط',
+m1title:'المهمة ١: رتّب حسب النوع',m1sub:'اسحب كل اختراع إلى المجموعة الصحيحة',
+m2title:'المهمة ٢: رتّب حسب الطاقة',m2sub:'كيف يحصل كل اختراع على طاقته؟',
+m3title:'المهمة ٣: رتّب حسب العصر',m3sub:'متى صُنع هذا الاختراع؟',
+robots:'روبوتات',vehicles:'مركبات',gadgets:'أجهزة',electric:'كهربائي',fuel:'وقود',human:'بشري',ancient:'قديم',modern:'حديث',future:'مستقبل',
+missionComplete:'أكملت المهمة!',sorted:'مرتّب',correct:'صحيح',accuracy:'الدقة',
+features:'النوع، الطاقة، الزمن',featuresDesc:'هذه تسمى خصائص. الذكاء الاصطناعي يستخدمها لتصنيف الملايين!',
+playAgain:'العب مجدداً',hub:'الرئيسية',nextMission:'المهمة التالية',
+w2full:'ارسم أشكالاً ودرّب الذكاء باستخدام TensorFlow.js. افتح workshop-2.html للتجربة الكاملة.',
+w3full:'ابنِ شبكات عصبية حقيقية. افتح workshop-3.html للتجربة الكاملة.',
+w4full:'دليل تفاعلي للآباء والمعلمين. افتح workshop-4.html.',
+toolsFull:'افتح tools-of-the-trade.html.',hwFull:'افتح hardware-lab.html.',certFull:'افتح certificates.html.',dashFull:'افتح dashboard.html.',journalFull:'افتح journal.html.',capFull:'افتح time-capsule.html.',
+hubTitle:'مختبر الذكاء الاصطناعي',hubSub:'ورش تفاعلية لتعليم الذكاء الاصطناعي لجميع الأعمار. من المسلمين، للجميع.',secWorkshops:'الورش',secTools:'الأدوات والمكافآت'},
+
+fr:{w1t:'Junior Hacker',w1d:"Trie les inventions comme l'IA",w2t:'Code Breaker',w2d:"Dessine et entraîne l'IA",w3t:'Ingénieur IA',w3d:'Construis des réseaux neuronaux',w4t:'IA Décodée',w4d:'Pour parents et enseignants',
+age69:'6-9 ans',age1013:'10-13 ans',age14:'14+ ans',adults:'Adultes',
+toolsT:'Outils',toolsD:'TensorFlow et alternatives',hwT:'Matériel',hwD:'micro:bit & ESP32',certT:'Certificats',certD:'Imprimer des certificats',dashT:'Tableau de bord',dashD:'Suivre les badges',journalT:'Journal',journalD:"Réflexions d'apprentissage",capT:'Capsule Temporelle',capD:"Prédire le futur de l'IA",
+w1title:'Junior Hacker',w1sub:"Trie les inventions et machines — comme le fait l'IA !",yourName:'Ton nom',startMission:'Commencer la mission',
+step1:'Étape 1 sur 3',step2:'Étape 2 sur 3',step3:'Étape 3 sur 3',
+whatScientist:"Qu'est-ce qu'un scientifique ?",scientistDesc:'Les scientifiques observent et classent les choses en groupes.',
+whatAI:"Qu'est-ce que l'IA ?",aiDesc:"L'IA est un ordinateur qui apprend à trier — comme toi !",
+yourMission:'Ta mission',missionDesc:'Trie les inventions ! 3 missions, de plus en plus difficiles.',
+startM1:'Commencer Mission 1',next:'Suivant',back:'Retour',score:'Score',
+m1title:'Mission 1 : Trier par type',m1sub:'Glisse chaque invention dans le bon groupe',
+m2title:"Mission 2 : Trier par énergie",m2sub:"Comment chaque invention obtient-elle son énergie ?",
+m3title:"Mission 3 : Trier par époque",m3sub:'Quand a-t-elle été créée ?',
+robots:'Robots',vehicles:'Véhicules',gadgets:'Gadgets',electric:'Électrique',fuel:'Carburant',human:'Humain',ancient:'Ancien',modern:'Moderne',future:'Futur',
+missionComplete:'Mission accomplie !',sorted:'Triés',correct:'Corrects',accuracy:'Précision',
+features:'TYPE, ÉNERGIE, ÉPOQUE',featuresDesc:"ce sont des CARACTÉRISTIQUES. L'IA les utilise pour classer des millions de choses !",
+playAgain:'Rejouer',hub:'Accueil',nextMission:'Mission suivante',
+w2full:"Dessine des formes et entraîne une IA avec TensorFlow.js. Ouvre workshop-2.html.",
+w3full:'Construis des réseaux neuronaux réels. Ouvre workshop-3.html.',
+w4full:'Guide interactif pour parents et enseignants. Ouvre workshop-4.html.',
+toolsFull:'Ouvre tools-of-the-trade.html.',hwFull:'Ouvre hardware-lab.html.',certFull:'Ouvre certificates.html.',dashFull:'Ouvre dashboard.html.',journalFull:'Ouvre journal.html.',capFull:'Ouvre time-capsule.html.',
+hubTitle:'Labo IA Hacker',hubSub:"Ateliers interactifs pour apprendre l'IA à tout âge. Par des musulmans, pour tout le monde.",secWorkshops:'Ateliers',secTools:'Outils & Bonus'}
+};
+
+let lang='en';
+function cycleLang(){const langs=['en','ar','fr'];const i=(langs.indexOf(lang)+1)%langs.length;lang=langs[i];
+document.getElementById('lnB').textContent=lang.toUpperCase();
+document.documentElement.lang=lang==='ar'?'ar':lang==='fr'?'fr':'en';
+document.documentElement.dir=lang==='ar'?'rtl':'ltr';
+applyI18n();try{localStorage.setItem('aih-lang',lang)}catch(e){}}
+
+function applyI18n(){const t=i18n[lang]||i18n.en;
+document.querySelectorAll('[data-i18n]').forEach(el=>{const k=el.dataset.i18n;if(t[k])el.textContent=t[k]});
+if(t.hubTitle)document.getElementById('hubTitle').textContent=t.hubTitle;
+if(t.hubSub)document.getElementById('hubSub').textContent=t.hubSub;
+if(t.secWorkshops)document.getElementById('secWorkshops').textContent=t.secWorkshops;
+if(t.secTools)document.getElementById('secTools').textContent=t.secTools}
+
+/* ═══ THEMES ═══ */
+let curTheme='islamic';
+function toggleThemePicker(){document.getElementById('themePicker').classList.toggle('show')}
+function setTheme(th){curTheme=th;document.documentElement.setAttribute('data-theme',th);
+document.querySelectorAll('.tp-opt').forEach(o=>o.classList.toggle('on',o.dataset.th===th));
+document.getElementById('themePicker').classList.remove('show');
+try{localStorage.setItem('aih-theme',th)}catch(e){}}
+document.addEventListener('click',e=>{if(!e.target.closest('.theme-picker')&&!e.target.closest('#thB'))document.getElementById('themePicker').classList.remove('show')});
+
+/* ═══ SOUND ═══ */
+let muted=false;function tMu(){muted=!muted;document.getElementById('muB').textContent=muted?'🔇':'🔊'}
+const AC=window.AudioContext||window.webkitAudioContext;let ac;
+function snd(t){if(muted)return;if(!ac)ac=new AC();const o=ac.createOscillator(),g=ac.createGain();o.connect(g);g.connect(ac.destination);g.gain.value=.12;
+if(t==='ok'){o.frequency.setValueAtTime(523,ac.currentTime);o.frequency.setValueAtTime(784,ac.currentTime+.1);g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+.35);o.start();o.stop(ac.currentTime+.35)}
+else if(t==='done'){o.frequency.setValueAtTime(523,ac.currentTime);o.frequency.setValueAtTime(659,ac.currentTime+.12);o.frequency.setValueAtTime(784,ac.currentTime+.24);o.frequency.setValueAtTime(1047,ac.currentTime+.36);g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+.6);o.start();o.stop(ac.currentTime+.6)}
+else if(t==='err'){o.frequency.setValueAtTime(300,ac.currentTime);o.frequency.setValueAtTime(200,ac.currentTime+.12);g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+.25);o.start();o.stop(ac.currentTime+.25)}}
+
+let tT;function sT(m,c){const t=document.getElementById('toast');t.textContent=m;t.className='toast show '+c;clearTimeout(tT);tT=setTimeout(()=>t.className='toast',1600)}
+
+/* ═══ NAV ═══ */
+function goMod(id){document.querySelectorAll('.mod').forEach(m=>m.classList.remove('on'));document.getElementById(id)?.classList.add('on');document.getElementById('homeB').classList.toggle('show',id!=='m-hub');window.scrollTo({top:0})}
+function goHub(){goMod('m-hub')}
+function openFile(path){window.location.href=path}
+
+/* ═══ W1 GAME ═══ */
+const w1S={name:'',cur:0,sc:{1:0,2:0,3:0},tot:{1:9,2:12,3:12},att:{1:0,2:0,3:0}};
+const w1M={1:{items:[{e:'🤖',l:'Robot',c:'robots'},{e:'🦾',l:'Arm',c:'robots'},{e:'🤖',l:'Bot',c:'robots'},{e:'🚗',l:'Car',c:'vehicles'},{e:'🚀',l:'Rocket',c:'vehicles'},{e:'🚁',l:'Heli',c:'vehicles'},{e:'📱',l:'Phone',c:'gadgets'},{e:'💻',l:'Laptop',c:'gadgets'},{e:'⌚',l:'Watch',c:'gadgets'}]},
+2:{items:[{e:'🔋',l:'E-Car',c:'electric'},{e:'💻',l:'Laptop',c:'electric'},{e:'⌚',l:'Watch',c:'electric'},{e:'🛸',l:'Drone',c:'electric'},{e:'🚀',l:'Rocket',c:'fuel'},{e:'✈️',l:'Plane',c:'fuel'},{e:'🏍️',l:'Moto',c:'fuel'},{e:'🚢',l:'Sub',c:'fuel'},{e:'🚲',l:'Bike',c:'human'},{e:'🛹',l:'Skate',c:'human'},{e:'⛵',l:'Sail',c:'human'},{e:'🔧',l:'Drill',c:'human'}]},
+3:{items:[{e:'☸️',l:'Wheel',c:'ancient'},{e:'🧭',l:'Compass',c:'ancient'},{e:'☀️',l:'Sundial',c:'ancient'},{e:'🏹',l:'Catapult',c:'ancient'},{e:'📱',l:'Phone',c:'modern'},{e:'🚗',l:'Car',c:'modern'},{e:'📺',l:'TV',c:'modern'},{e:'🍳',l:'Micro',c:'modern'},{e:'🚁',l:'FlyingCar',c:'future'},{e:'🤖',l:'Helper',c:'future'},{e:'🌉',l:'SpaceLift',c:'future'},{e:'⚡',l:'Teleport',c:'future'}]}};
+const enc=["Nice! 🔥","Great! 💪","Smart! 🧠","Correct! ⭐","Pro! 🎯"];
+const errs=["Try again! 🤔","Not quite! 💭","Wrong! 🔄"];
+
+function w1Go(id){document.querySelectorAll('#m-w1 .scr').forEach(s=>s.classList.remove('on'));document.getElementById(id)?.classList.add('on')}
+function w1Start(){w1S.name=document.getElementById('w1Name').value.trim()||'Hacker';w1Go('w1-i1')}
+function w1SM(n){w1S.cur=n;w1S.sc[n]=0;w1S.att[n]=0;document.getElementById('w1s'+n).textContent='0';w1Go('w1-m'+n);w1Load(n)}
+
+function w1Load(n){const pool=document.getElementById('w1p'+n);const zones=document.querySelectorAll('#w1z'+n+' .zone-items');
+zones.forEach(z=>z.innerHTML='');pool.innerHTML='';
+const items=[...w1M[n].items];for(let i=items.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[items[i],items[j]]=[items[j],items[i]]}
+items.forEach(item=>{const el=document.createElement('div');el.className='drag-item';el.draggable=true;el.dataset.cat=item.c;
+el.innerHTML=`<span class="ie">${item.e}</span><span class="il silkscreen">${item.l}</span>`;pool.appendChild(el);
+el.addEventListener('dragstart',e=>{window._d=el;el.style.opacity='.4'});
+el.addEventListener('dragend',()=>{el.style.opacity='';window._d=null});
+let clone;
+el.addEventListener('touchstart',e=>{window._d=el;const t=e.touches[0],r=el.getBoundingClientRect();window._tO={x:t.clientX-r.left,y:t.clientY-r.top};
+clone=el.cloneNode(true);clone.style.cssText='position:fixed;z-index:1000;pointer-events:none;opacity:.8;transform:scale(1.1)';
+clone.style.left=(t.clientX-window._tO.x)+'px';clone.style.top=(t.clientY-window._tO.y)+'px';document.body.appendChild(clone);el.style.opacity='.3'},{passive:true});
+el.addEventListener('touchmove',e=>{e.preventDefault();if(!clone)return;const t=e.touches[0];clone.style.left=(t.clientX-window._tO.x)+'px';clone.style.top=(t.clientY-window._tO.y)+'px';
+document.querySelectorAll('#w1z'+n+' .drop-zone').forEach(z=>{const r=z.getBoundingClientRect();z.classList.toggle('drag-over',t.clientX>=r.left&&t.clientX<=r.right&&t.clientY>=r.top&&t.clientY<=r.bottom)})},{passive:false});
+el.addEventListener('touchend',e=>{if(clone){document.body.removeChild(clone);clone=null}if(window._d)window._d.style.opacity='';
+const t=e.changedTouches[0];document.querySelectorAll('#w1z'+n+' .drop-zone').forEach(z=>{z.classList.remove('drag-over');const r=z.getBoundingClientRect();
+if(t.clientX>=r.left&&t.clientX<=r.right&&t.clientY>=r.top&&t.clientY<=r.bottom)w1Drop(z,n)})})});
+document.querySelectorAll('#w1z'+n+' .drop-zone').forEach(z=>{
+z.addEventListener('dragover',e=>{e.preventDefault();z.classList.add('drag-over')});
+z.addEventListener('dragleave',()=>z.classList.remove('drag-over'));
+z.addEventListener('drop',e=>{e.preventDefault();z.classList.remove('drag-over');w1Drop(z,n)})})}
+
+function w1Drop(zone,n){const el=window._d;if(!el)return;w1S.att[n]++;
+if(el.dataset.cat===zone.dataset.cat){w1S.sc[n]++;document.getElementById('w1s'+n).textContent=w1S.sc[n];snd('ok');sT(enc[Math.floor(Math.random()*enc.length)],'ok');
+zone.classList.add('correct');setTimeout(()=>zone.classList.remove('correct'),500);
+zone.querySelector('.zone-items').appendChild(el);el.removeAttribute('draggable');el.style.cursor='default';
+if(w1S.sc[n]>=w1S.tot[n])setTimeout(()=>w1Comp(n),600);
+}else{snd('err');sT(errs[Math.floor(Math.random()*errs.length)],'er');zone.classList.add('wrong');setTimeout(()=>zone.classList.remove('wrong'),400)}
+window._d=null}
+
+function w1Comp(n){snd('done');const ov=document.getElementById('w1ov');
+if(n<3){document.getElementById('w1ove').textContent='🎉';document.getElementById('w1ovt').textContent=(i18n[lang]||i18n.en).missionComplete||'Mission Complete!';
+document.getElementById('w1ovtx').textContent=w1S.name+'!';document.getElementById('w1ovb').onclick=w1Next}
+else{document.getElementById('w1ove').textContent='🏅';document.getElementById('w1ovt').textContent=(i18n[lang]||i18n.en).missionComplete||'All Done!';
+document.getElementById('w1ovtx').textContent=w1S.name+'!';document.getElementById('w1ovb').onclick=()=>{ov.classList.remove('on');w1Badge()}}
+ov.classList.add('on')}
+function w1Next(){document.getElementById('w1ov').classList.remove('on');const nx=w1S.cur+1;if(nx<=3)w1SM(nx);else w1Badge()}
+function w1Badge(){const t=w1S.sc[1]+w1S.sc[2]+w1S.sc[3],a=w1S.att[1]+w1S.att[2]+w1S.att[3];
+document.getElementById('w1bn').textContent=w1S.name;document.getElementById('w1bs').textContent=t;document.getElementById('w1bc').textContent=t;
+document.getElementById('w1ba').textContent=(a>0?Math.round(t/a*100):0)+'%';
+try{const b=JSON.parse(localStorage.getItem('ai-hacker-badges')||'[]');if(!b.includes('junior-machine-hacker')){b.push('junior-machine-hacker');localStorage.setItem('ai-hacker-badges',JSON.stringify(b))}}catch(e){}
+snd('done');w1Go('w1-badge')}
+function w1Reset(){w1S.sc={1:0,2:0,3:0};w1S.att={1:0,2:0,3:0};w1S.cur=0;w1Go('w1-wel')}
+
+/* ═══ INIT ═══ */
+(function(){
+try{const th=localStorage.getItem('aih-theme');if(th)setTheme(th)}catch(e){}
+try{const ln=localStorage.getItem('aih-lang');if(ln){lang=ln;document.getElementById('lnB').textContent=ln.toUpperCase();document.documentElement.lang=ln==='ar'?'ar':ln;document.documentElement.dir=ln==='ar'?'rtl':'ltr';applyI18n()}}catch(e){}
+document.getElementById('w1Name').addEventListener('keydown',e=>{if(e.key==='Enter')w1Start()});
+})();
+</script>
+</body>
+</html>

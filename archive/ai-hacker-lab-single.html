@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Hacker Lab — All-in-One</title>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Rubik:wght@400;500;600;700;800;900&family=Silkscreen:wght@400;700&family=Share+Tech+Mono&family=Fira+Code:wght@400;500&family=DM+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#060d08;--bg2:#0c1a10;--bg3:#112118;--bg4:#163020;
+--neon:#39ff85;--nd:rgba(57,255,133,.12);--ng:rgba(57,255,133,.35);
+--cyan:#00e5ff;--cd:rgba(0,229,255,.1);
+--amber:#ffb300;--ad:rgba(255,179,0,.08);
+--red:#ff4757;--rd:rgba(255,71,87,.1);
+--txt:#e8f0ec;--txt2:#8fa89a;--txt3:#5a7568;--bdr:#1e2e26;
+--shadow:rgba(0,0,0,.4);--tr:.3s cubic-bezier(.4,0,.2,1)}
+[data-theme="light"]{--bg:#f0f5f2;--bg2:#e4ece7;--bg3:#fff;--bg4:#f5faf7;
+--neon:#0a8a3e;--nd:rgba(10,138,62,.08);--ng:rgba(10,138,62,.2);
+--cyan:#0077a8;--cd:rgba(0,119,168,.08);--amber:#b87900;--ad:rgba(184,121,0,.06);
+--red:#d4384a;--rd:rgba(212,56,74,.08);
+--txt:#1a2b20;--txt2:#5a7066;--txt3:#8fa89a;--bdr:#c8d8ce;--shadow:rgba(0,0,0,.06)}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Rubik',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;overflow-x:hidden;transition:background var(--tr),color var(--tr)}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(57,255,133,.008) 3px,rgba(57,255,133,.008) 4px)}
+.app{position:relative;z-index:1;min-height:100vh}
+
+/* Module system */
+.mod{display:none;min-height:100vh;animation:fi .35s ease}
+.mod.on{display:block}
+@keyframes fi{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes flt{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+
+/* Header */
+.hdr{text-align:center;padding:16px 12px 4px}
+.bism{font-family:'Amiri',serif;font-size:1.7rem;font-weight:700;color:var(--neon);text-shadow:0 0 25px var(--nd);animation:bg 3s ease-in-out infinite alternate}
+@keyframes bg{from{text-shadow:0 0 15px var(--nd)}to{text-shadow:0 0 35px var(--ng)}}
+
+/* Controls */
+.topc{position:fixed;top:8px;right:10px;display:flex;gap:5px;z-index:100}
+.hbtn{position:fixed;top:8px;left:10px;z-index:100;display:none}
+.hbtn.show{display:flex}
+.cb{width:34px;height:34px;border-radius:8px;border:1px solid var(--bdr);background:var(--bg3);color:var(--txt2);font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all var(--tr);-webkit-tap-highlight-color:transparent}
+.cb:hover{border-color:var(--neon);color:var(--neon);box-shadow:0 0 10px var(--nd)}
+
+/* Buttons */
+.btn{padding:13px 32px;border-radius:12px;border:2px solid var(--neon);background:transparent;color:var(--neon);font-family:'Silkscreen',monospace;font-size:.85rem;cursor:pointer;text-transform:uppercase;letter-spacing:2px;transition:all var(--tr);position:relative;overflow:hidden;-webkit-tap-highlight-color:transparent}
+.btn::before{content:'';position:absolute;inset:0;background:var(--neon);opacity:0;transition:opacity var(--tr)}
+.btn:hover{color:var(--bg);box-shadow:0 0 25px var(--ng);transform:translateY(-2px)}
+.btn:hover::before{opacity:1}.btn span{position:relative;z-index:1}
+.btn:active{transform:translateY(0)}
+.btn-s{border-color:var(--bdr);color:var(--txt2)}.btn-s::before{background:var(--cyan)}.btn-s:hover{border-color:var(--cyan);box-shadow:0 0 20px var(--cd)}
+.btn:disabled{opacity:.4;cursor:not-allowed}.btn:disabled:hover{transform:none;box-shadow:none}.btn:disabled:hover::before{opacity:0}
+.br{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+
+/* Toast */
+.toast{position:fixed;top:60px;left:50%;transform:translateX(-50%) translateY(-15px);padding:10px 22px;border-radius:12px;font-family:'Share Tech Mono',monospace;font-size:.8rem;font-weight:700;z-index:200;opacity:0;pointer-events:none;transition:all .3s}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.ok{background:var(--neon);color:var(--bg);box-shadow:0 4px 16px var(--ng)}
+.toast.er{background:var(--red);color:#fff}
+
+/* Footer */
+.ftr{text-align:center;padding:16px;font-size:.75rem;color:var(--txt3)}.ftr a{color:var(--neon);text-decoration:none}
+
+/* ═══════════════════════════════════════
+   HUB
+   ═══════════════════════════════════════ */
+.hub{display:flex;flex-direction:column;align-items:center;padding:16px}
+.hub-t{font-family:'Silkscreen',monospace;font-size:2rem;text-align:center;margin:8px 0 4px}
+.hub-sub{color:var(--txt2);text-align:center;margin-bottom:24px;max-width:480px;font-size:.92rem;line-height:1.6}
+.hub-sec{width:100%;max-width:700px;margin:12px 0 6px}
+.hub-sec h2{font-family:'Silkscreen',monospace;font-size:.7rem;color:var(--txt3);text-transform:uppercase;letter-spacing:3px;padding-bottom:5px;border-bottom:1px solid var(--bdr)}
+.hg{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:10px;width:100%;max-width:700px;margin-bottom:12px}
+.hc{background:var(--bg3);border:1px solid var(--bdr);border-radius:12px;padding:16px;cursor:pointer;transition:all var(--tr);text-align:center;position:relative;overflow:hidden}
+.hc::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;opacity:0;transition:opacity var(--tr)}
+.hc:hover{border-color:var(--neon);transform:translateY(-3px);box-shadow:0 6px 24px var(--shadow)}
+.hc:hover::before{opacity:1}
+.hc .hi{font-size:2rem;margin-bottom:6px;display:block;animation:flt 3s ease-in-out infinite}
+.hc .ht{font-family:'Silkscreen',monospace;font-size:.72rem;color:var(--txt);margin-bottom:2px}
+.hc .hd{font-size:.72rem;color:var(--txt3);line-height:1.3}
+.hc .hb{font-family:'Share Tech Mono',monospace;font-size:.55rem;padding:2px 6px;border-radius:3px;margin-top:6px;display:inline-block;border:1px solid}
+.hc.w1::before{background:linear-gradient(90deg,var(--neon),var(--cyan))}
+.hc.w2::before{background:linear-gradient(90deg,var(--cyan),var(--amber))}
+.hc.w3::before{background:linear-gradient(90deg,var(--amber),var(--red))}
+.hc.w4::before{background:linear-gradient(90deg,#a78bfa,#f472b6)}
+.hc.tool::before,.hc.bonus::before{background:var(--neon)}
+
+/* ═══════════════════════════════════════
+   SHARED INNER STYLES
+   ═══════════════════════════════════════ */
+.inner{max-width:700px;margin:0 auto;padding:0 16px}
+.scr{display:none;flex-direction:column;align-items:center;justify-content:center;padding:20px;min-height:calc(100vh - 100px);animation:fi .35s ease}
+.scr.on{display:flex}
+.card{max-width:500px;width:100%;text-align:center}
+.card h2{font-size:1.3rem;font-weight:700;margin-bottom:8px}
+.card p{font-size:.95rem;color:var(--txt2);line-height:1.7;margin-bottom:14px}
+.icon{font-size:3.5rem;margin-bottom:12px;display:block;animation:flt 3s ease-in-out infinite}
+.tag{font-family:'Share Tech Mono',monospace;font-size:.62rem;color:var(--amber);text-transform:uppercase;letter-spacing:3px;margin-bottom:14px}
+
+/* W1: Drag & drop */
+.items-pool{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:20px;min-height:60px;padding:14px;background:var(--bg2);border:2px dashed var(--bdr);border-radius:14px}
+.drag-item{display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 12px;background:var(--bg3);border:2px solid var(--bdr);border-radius:10px;cursor:grab;user-select:none;transition:all var(--tr);touch-action:none}
+.drag-item:hover{border-color:var(--neon);transform:translateY(-2px);box-shadow:0 4px 12px var(--shadow)}
+.drag-item .ie{font-size:1.8rem}.drag-item .il{font-size:.6rem;font-family:'Silkscreen',monospace;color:var(--txt3)}
+.drop-zones{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:100%;max-width:650px}
+.drop-zone{min-height:120px;border:2px dashed var(--bdr);border-radius:14px;padding:10px;text-align:center;transition:all var(--tr);display:flex;flex-direction:column;align-items:center;gap:6px}
+.drop-zone.drag-over{border-color:var(--neon);background:var(--nd);box-shadow:0 0 25px var(--nd)}
+.drop-zone.correct{border-color:var(--neon);animation:cpulse .5s ease}
+.drop-zone.wrong{border-color:var(--red);animation:wshake .4s ease}
+@keyframes cpulse{0%{box-shadow:0 0 0 0 var(--ng)}50%{box-shadow:0 0 25px 8px var(--nd)}100%{box-shadow:0 0 0 0 transparent}}
+@keyframes wshake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.zi{font-size:1.6rem}.zl{font-family:'Silkscreen',monospace;font-size:.6rem;color:var(--neon);letter-spacing:1px}
+.zone-items{display:flex;flex-wrap:wrap;gap:4px;justify-content:center}
+.zone-items .drag-item{padding:4px 8px;cursor:default}.zone-items .drag-item .ie{font-size:1.2rem}
+.score-bar{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:16px;font-family:'Silkscreen',monospace;font-size:.75rem}
+.si{padding:6px 14px;background:var(--bg3);border:1px solid var(--bdr);border-radius:8px;color:var(--txt2)}
+.si .sv{color:var(--neon);font-weight:700}
+.mh{text-align:center;margin-bottom:16px}
+.mt{font-family:'Silkscreen',monospace;font-size:1.1rem;color:var(--neon);text-transform:uppercase;letter-spacing:2px;margin-bottom:3px}
+.ms{font-size:.85rem;color:var(--txt2)}
+
+/* W2: Canvas */
+.cvw{margin:0 auto 8px}.cv{border:2px solid var(--bdr);border-radius:12px;background:var(--bg2);cursor:crosshair;touch-action:none;display:block;box-shadow:0 4px 16px var(--shadow);transition:border-color var(--tr)}.cv:hover{border-color:var(--neon)}
+.cvt{display:flex;gap:6px;justify-content:center;margin:8px 0}
+.cvt button{padding:6px 14px;border-radius:7px;border:1px solid var(--bdr);background:var(--bg3);color:var(--txt2);font-family:'Share Tech Mono',monospace;font-size:.72rem;cursor:pointer;transition:all var(--tr)}
+.cvt button:hover{border-color:var(--neon);color:var(--neon)}
+.cvt .svb{border-color:var(--neon);color:var(--neon)}.cvt .svb:hover{background:var(--neon);color:var(--bg)}
+
+/* Cats */
+.cats{display:flex;gap:6px;justify-content:center;margin-bottom:10px;flex-wrap:wrap}
+.catb{padding:8px 14px;border-radius:8px;border:2px solid var(--bdr);background:var(--bg3);color:var(--txt2);font-family:'Share Tech Mono',monospace;font-size:.78rem;cursor:pointer;transition:all var(--tr)}
+.catb.act{border-color:var(--neon);color:var(--neon);background:var(--nd)}
+
+/* Progress */
+.pb{width:100%;max-width:380px;height:7px;background:var(--bg3);border-radius:4px;overflow:hidden;margin:4px auto}
+.pf{height:100%;background:linear-gradient(90deg,var(--neon),var(--cyan));border-radius:4px;transition:width .4s ease}
+.pt{font-family:'Share Tech Mono',monospace;font-size:.72rem;color:var(--txt3);text-align:center}
+
+/* Gallery */
+.gal{display:flex;flex-wrap:wrap;gap:4px;justify-content:center;margin:6px auto;max-width:440px}
+.gt{width:40px;height:40px;border:1px solid var(--bdr);border-radius:5px;overflow:hidden}
+.gt img{width:100%;height:100%;object-fit:contain}
+
+/* Train stats */
+.ts{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:8px 0;max-width:400px;width:100%}
+.tsc{background:var(--bg3);border:1px solid var(--bdr);border-radius:8px;padding:10px;text-align:center}
+.tsc .sv{font-family:'Share Tech Mono',monospace;font-size:1.2rem;color:var(--neon);font-weight:700}
+.tsc .sl{font-size:.6rem;color:var(--txt3);text-transform:uppercase;margin-top:2px}
+.chc{background:var(--bg3);border:1px solid var(--bdr);border-radius:10px;padding:8px;margin:8px 0;max-width:400px;width:100%}
+.chc canvas{width:100%;height:120px;display:block}
+
+/* Prediction */
+.pr{background:var(--bg3);border:1px solid var(--bdr);border-radius:12px;padding:16px;max-width:380px;width:100%;margin:10px 0;text-align:center}
+.prl{font-family:'Share Tech Mono',monospace;font-size:1.4rem;color:var(--neon);font-weight:700}
+.prc{font-size:.85rem;color:var(--txt2);margin-top:3px}
+.cbr{display:flex;align-items:center;gap:6px;margin:4px 0}
+.cbn{font-family:'Share Tech Mono',monospace;font-size:.68rem;color:var(--txt3);width:55px;text-align:right}
+.cbt{flex:1;height:8px;background:var(--bg2);border-radius:4px;overflow:hidden}
+.cbf{height:100%;border-radius:4px;transition:width .5s ease}
+.cbp{font-family:'Share Tech Mono',monospace;font-size:.65rem;color:var(--txt3);width:30px;text-align:right}
+
+/* Badge */
+.bwrap{max-width:420px;width:100%;text-align:center}
+.bicon{font-size:4.5rem;margin-bottom:12px;filter:drop-shadow(0 0 15px var(--ng));animation:flt 3s ease-in-out infinite}
+.btitle{font-family:'Silkscreen',monospace;font-size:1.2rem;color:var(--neon);text-transform:uppercase;letter-spacing:2px;margin-bottom:4px}
+.bname{font-size:1.4rem;font-weight:800;margin-bottom:18px}
+.bstats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:18px}
+.bst{background:var(--bg3);border:1px solid var(--bdr);border-radius:10px;padding:12px 4px}
+.bst .v{font-family:'Share Tech Mono',monospace;font-size:1.3rem;color:var(--neon);font-weight:700}
+.bst .l{font-size:.6rem;color:var(--txt3);text-transform:uppercase;margin-top:2px}
+.sbox{background:var(--bg3);border:1px solid var(--bdr);border-radius:12px;padding:16px;margin-bottom:18px;text-align:left}
+.sbox p{font-size:.88rem;color:var(--txt2);margin-bottom:6px;line-height:1.5}
+.sbox .hl{color:var(--neon);font-weight:700}
+
+/* Overlay */
+.overlay{display:none;position:fixed;inset:0;background:rgba(6,13,8,.92);z-index:300;align-items:center;justify-content:center}
+.overlay.on{display:flex}
+.ov-card{background:var(--bg3);border:2px solid var(--neon);border-radius:20px;padding:36px;text-align:center;max-width:400px;width:90%;box-shadow:0 0 50px var(--nd);animation:popIn .5s cubic-bezier(.34,1.56,.64,1)}
+@keyframes popIn{from{transform:scale(.8);opacity:0}to{transform:scale(1);opacity:1}}
+
+/* W4 parent styles */
+.w4-card{background:var(--bg3);border:1px solid var(--bdr);border-radius:12px;padding:18px;margin:10px 0}
+.w4-card h3{font-size:1rem;font-weight:600;margin-bottom:6px}
+.w4-card p{font-size:.88rem;color:var(--txt2);line-height:1.6;margin-bottom:8px}
+.chnav{display:flex;gap:3px;flex-wrap:wrap;justify-content:center;margin:10px 0;padding:8px;background:var(--bg2);border-radius:8px}
+.chb{padding:4px 8px;border-radius:5px;border:1px solid var(--bdr);background:var(--bg3);color:var(--txt3);font-family:'Share Tech Mono',monospace;font-size:.6rem;cursor:pointer;transition:all var(--tr)}
+.chb.on{border-color:var(--neon);color:var(--neon);background:var(--nd)}
+
+/* Responsive */
+@media(max-width:600px){.bism{font-size:1.3rem}.hub-t{font-size:1.5rem}.hg{grid-template-columns:1fr 1fr}.drop-zones{grid-template-columns:1fr}.ts,.bstats{grid-template-columns:1fr 1fr}.btn{padding:11px 24px;font-size:.78rem}}
+@media(max-width:400px){.hg{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="toast" id="toast"></div>
+<div class="topc">
+<button class="cb" id="thB" onclick="tTh()">🌙</button>
+<button class="cb" id="muB" onclick="tMu()">🔊</button>
+</div>
+<button class="cb hbtn" id="homeB" onclick="goHub()">🏠</button>
+
+<div class="app">
+<div class="hdr"><div class="bism">بسم الله الرحمن الرحيم</div></div>
+
+<!-- ══════════════ HUB ══════════════ -->
+<div class="mod on" id="m-hub">
+<div class="hub">
+<div style="font-size:3rem;animation:flt 3s ease-in-out infinite">🧪</div>
+<h1 class="hub-t">AI Hacker Lab</h1>
+<p class="hub-sub">Interactive workshops teaching AI &amp; Machine Learning to all ages. By Muslims, for everyone.</p>
+
+<div class="hub-sec"><h2>Workshops</h2></div>
+<div class="hg">
+<div class="hc w1" onclick="goMod('m-w1')"><span class="hi">🤖</span><div class="ht">Junior Hacker</div><div class="hd">Sort inventions like AI</div><span class="hb" style="color:var(--neon);border-color:var(--neon)">Ages 6-9</span></div>
+<div class="hc w2" onclick="goMod('m-w2')"><span class="hi">🕵️</span><div class="ht">Code Breaker</div><div class="hd">Draw &amp; train AI</div><span class="hb" style="color:var(--cyan);border-color:var(--cyan)">Ages 10-13</span></div>
+<div class="hc w3" onclick="goMod('m-w3')"><span class="hi">⚡</span><div class="ht">AI Engineer</div><div class="hd">Build neural networks</div><span class="hb" style="color:var(--amber);border-color:var(--amber)">Ages 14+</span></div>
+<div class="hc w4" onclick="goMod('m-w4')"><span class="hi">🎓</span><div class="ht">AI Decoded</div><div class="hd">For parents &amp; teachers</div><span class="hb" style="color:#a78bfa;border-color:#a78bfa">Adults</span></div>
+</div>
+
+<div class="hub-sec"><h2>Tools &amp; Bonus</h2></div>
+<div class="hg">
+<div class="hc tool" onclick="goMod('m-tools')"><span class="hi">🔧</span><div class="ht">Tools</div><div class="hd">TensorFlow &amp; alternatives</div></div>
+<div class="hc tool" onclick="goMod('m-hw')"><span class="hi">🔌</span><div class="ht">Hardware</div><div class="hd">micro:bit &amp; ESP32</div></div>
+<div class="hc bonus" onclick="goMod('m-cert')"><span class="hi">🏅</span><div class="ht">Certificates</div><div class="hd">Print certificates</div></div>
+<div class="hc bonus" onclick="goMod('m-dash')"><span class="hi">📊</span><div class="ht">Dashboard</div><div class="hd">Track badges</div></div>
+<div class="hc bonus" onclick="goMod('m-journal')"><span class="hi">📓</span><div class="ht">Journal</div><div class="hd">Learning reflections</div></div>
+<div class="hc bonus" onclick="goMod('m-capsule')"><span class="hi">🔮</span><div class="ht">Time Capsule</div><div class="hd">Predict AI's future</div></div>
+</div>
+<div class="ftr">Powered by <a href="https://workshop-diy.org" target="_blank">workshop-diy.org</a></div>
+</div>
+</div>
+
+<!-- ══════════════ WORKSHOP 1 ══════════════ -->
+<div class="mod" id="m-w1">
+<div class="inner">
+<div class="scr on" id="w1-welcome">
+<div style="width:80px;height:80px;border-radius:20px;background:var(--bg3);border:2px solid var(--bdr);display:flex;align-items:center;justify-content:center;font-size:2.8rem;margin-bottom:16px;box-shadow:0 6px 24px var(--shadow);animation:flt 3s ease-in-out infinite">🤖</div>
+<h1 style="font-family:'Silkscreen',monospace;font-size:1.8rem;margin-bottom:4px">Junior Hacker</h1>
+<p style="color:var(--txt2);margin-bottom:24px;max-width:380px;text-align:center">Sort inventions and machines — just like AI does!</p>
+<div style="display:flex;flex-direction:column;align-items:center;gap:5px;margin-bottom:22px;max-width:280px;width:100%">
+<label style="font-family:'Silkscreen',monospace;font-size:.65rem;color:var(--neon);letter-spacing:2px">Your Name</label>
+<input type="text" id="w1Name" placeholder="Yusuf" maxlength="20" autocomplete="off" style="width:100%;padding:12px 16px;border-radius:12px;border:2px solid var(--bdr);background:var(--bg2);color:var(--txt);font-family:'Rubik',sans-serif;font-size:1rem;text-align:center;outline:none;transition:all var(--tr)" onfocus="this.style.borderColor='var(--neon)'" onblur="this.style.borderColor='var(--bdr)'">
+</div>
+<button class="btn" onclick="w1Start()"><span>Start Mission</span></button>
+</div>
+
+<div class="scr" id="w1-intro1">
+<div class="card"><div class="tag">Step 1 of 3</div><div class="icon">🔬</div>
+<h2>What is a Scientist?</h2>
+<p>Scientists look at things carefully and sort them into groups. This is how we understand the world!</p>
+<div style="display:flex;justify-content:center;gap:12px;margin-bottom:24px;flex-wrap:wrap">
+<div style="background:var(--bg3);border:1px solid var(--bdr);border-radius:12px;padding:12px 16px;text-align:center"><div style="font-size:1.6rem">🤖 🦾</div><div style="font-family:'Silkscreen',monospace;font-size:.6rem;color:var(--neon)">Robots</div></div>
+<div style="background:var(--bg3);border:1px solid var(--bdr);border-radius:12px;padding:12px 16px;text-align:center"><div style="font-size:1.6rem">🚗 🚀</div><div style="font-family:'Silkscreen',monospace;font-size:.6rem;color:var(--neon)">Vehicles</div></div>
+<div style="background:var(--bg3);border:1px solid var(--bdr);border-radius:12px;padding:12px 16px;text-align:center"><div style="font-size:1.6rem">📱 💻</div><div style="font-family:'Silkscreen',monospace;font-size:.6rem;color:var(--neon)">Gadgets</div></div>
+</div>
+<button class="btn" onclick="w1Go('w1-intro2')"><span>Next</span></button></div>
+</div>
+
+<div class="scr" id="w1-intro2">
+<div class="card"><div class="tag">Step 2 of 3</div><div class="icon">🧠</div>
+<h2>What is AI?</h2>
+<p>AI is a computer that learns to sort things — just like you! It looks at examples and finds patterns.</p>
+<div class="br"><button class="btn btn-s" onclick="w1Go('w1-intro1')"><span>Back</span></button><button class="btn" onclick="w1Go('w1-intro3')"><span>Next</span></button></div></div>
+</div>
+
+<div class="scr" id="w1-intro3">
+<div class="card"><div class="tag">Step 3 of 3</div><div class="icon">🎯</div>
+<h2>Your Mission</h2>
+<p>Sort inventions into groups! 3 missions, each harder than the last. Ready?</p>
+<div class="br"><button class="btn btn-s" onclick="w1Go('w1-intro2')"><span>Back</span></button><button class="btn" onclick="w1StartMission(1)"><span>Start Mission 1</span></button></div></div>
+</div>
+
+<div class="scr" id="w1-m1">
+<div class="mh"><div class="mt">Mission 1: Sort by Type</div><div class="ms">Drag each invention to the correct group</div></div>
+<div class="score-bar"><div class="si">Score: <span class="sv" id="w1s1">0</span>/9</div><div class="si">⭐ Easy</div></div>
+<div style="width:100%;max-width:650px">
+<div class="items-pool" id="w1p1"></div>
+<div class="drop-zones" id="w1z1">
+<div class="drop-zone" data-cat="robots"><div class="zi">🤖</div><div class="zl">Robots</div><div class="zone-items"></div></div>
+<div class="drop-zone" data-cat="vehicles"><div class="zi">🚗</div><div class="zl">Vehicles</div><div class="zone-items"></div></div>
+<div class="drop-zone" data-cat="gadgets"><div class="zi">📱</div><div class="zl">Gadgets</div><div class="zone-items"></div></div>
+</div></div>
+</div>
+
+<div class="scr" id="w1-m2">
+<div class="mh"><div class="mt">Mission 2: Sort by Power</div><div class="ms">How does each invention get energy?</div></div>
+<div class="score-bar"><div class="si">Score: <span class="sv" id="w1s2">0</span>/12</div><div class="si">⭐⭐ Medium</div></div>
+<div style="width:100%;max-width:650px">
+<div class="items-pool" id="w1p2"></div>
+<div class="drop-zones" id="w1z2">
+<div class="drop-zone" data-cat="electric"><div class="zi">⚡</div><div class="zl">Electric</div><div class="zone-items"></div></div>
+<div class="drop-zone" data-cat="fuel"><div class="zi">🔥</div><div class="zl">Fuel</div><div class="zone-items"></div></div>
+<div class="drop-zone" data-cat="human"><div class="zi">💪</div><div class="zl">Human</div><div class="zone-items"></div></div>
+</div></div>
+</div>
+
+<div class="scr" id="w1-m3">
+<div class="mh"><div class="mt">Mission 3: Sort by Era</div><div class="ms">When was it created... or will it be?</div></div>
+<div class="score-bar"><div class="si">Score: <span class="sv" id="w1s3">0</span>/12</div><div class="si">⭐⭐⭐ Hard</div></div>
+<div style="width:100%;max-width:650px">
+<div class="items-pool" id="w1p3"></div>
+<div class="drop-zones" id="w1z3">
+<div class="drop-zone" data-cat="ancient"><div class="zi">🏛️</div><div class="zl">Ancient</div><div class="zone-items"></div></div>
+<div class="drop-zone" data-cat="modern"><div class="zi">🏙️</div><div class="zl">Modern</div><div class="zone-items"></div></div>
+<div class="drop-zone" data-cat="future"><div class="zi">🚀</div><div class="zl">Future</div><div class="zone-items"></div></div>
+</div></div>
+</div>
+
+<div class="scr" id="w1-badge">
+<div class="bwrap">
+<div class="bicon">🏅</div><div class="btitle">Mission Complete!</div>
+<div class="bname" id="w1bname"></div>
+<div class="bstats"><div class="bst"><div class="v" id="w1bsorted">0</div><div class="l">Sorted</div></div>
+<div class="bst"><div class="v" id="w1bcorrect">0</div><div class="l">Correct</div></div>
+<div class="bst"><div class="v" id="w1bacc">0%</div><div class="l">Accuracy</div></div></div>
+<div class="sbox"><p>You thought about <span class="hl">TYPE</span>, <span class="hl">POWER</span>, and <span class="hl">TIME</span> — these are called <span class="hl">FEATURES</span>.</p>
+<p>AI uses features to classify millions of things! 🚀</p></div>
+<div class="br"><button class="btn" onclick="w1Reset()"><span>Play Again</span></button><button class="btn btn-s" onclick="goHub()"><span>Back to Hub</span></button></div>
+</div></div>
+</div></div>
+
+<!-- ══════════════ WORKSHOP 2 (placeholder - links to full) ══════════════ -->
+<div class="mod" id="m-w2">
+<div class="inner"><div class="scr on">
+<div class="icon">🕵️</div>
+<h1 style="font-family:'Share Tech Mono',monospace;font-size:1.6rem;margin-bottom:4px">CODE BREAKER</h1>
+<p style="color:var(--txt2);margin-bottom:20px;max-width:380px;text-align:center">Draw shapes and train an AI to recognize them using TensorFlow.js.</p>
+<p style="color:var(--txt3);font-size:.85rem;margin-bottom:20px;text-align:center">This workshop requires TensorFlow.js. For the best experience, open <strong style="color:var(--neon)">workshop-2.html</strong> directly.</p>
+<div class="br"><button class="btn btn-s" onclick="goHub()"><span>← Back to Hub</span></button></div>
+</div></div></div>
+
+<!-- ══════════════ WORKSHOP 3 (placeholder) ══════════════ -->
+<div class="mod" id="m-w3">
+<div class="inner"><div class="scr on">
+<div class="icon">⚡</div>
+<h1 style="font-family:'Fira Code',monospace;font-size:1.4rem;margin-bottom:4px">AI ENGINEER</h1>
+<p style="color:var(--txt2);margin-bottom:20px;max-width:380px;text-align:center">Build real neural networks, train on digit data, experiment with hyperparameters.</p>
+<p style="color:var(--txt3);font-size:.85rem;margin-bottom:20px;text-align:center">This workshop requires TensorFlow.js. Open <strong style="color:var(--neon)">workshop-3.html</strong> directly.</p>
+<div class="br"><button class="btn btn-s" onclick="goHub()"><span>← Back to Hub</span></button></div>
+</div></div></div>
+
+<!-- ══════════════ WORKSHOP 4 ══════════════ -->
+<div class="mod" id="m-w4">
+<div class="inner" style="max-width:680px">
+<div class="scr on" id="w4-welcome">
+<div style="font-size:3rem;margin-bottom:8px">🎓</div>
+<h1 style="font-size:1.6rem;margin-bottom:4px">AI Decoded</h1>
+<p style="color:var(--txt2);margin-bottom:20px;max-width:380px;text-align:center;font-size:.95rem"><em>Your children are learning to build the future. Let's make sure you understand it too.</em></p>
+<button class="btn" onclick="w4Start()"><span>Begin</span></button>
+</div>
+<div class="scr" id="w4-main">
+<div class="chnav" id="w4nav"></div>
+<div id="w4content"></div>
+</div>
+</div></div>
+
+<!-- ══════════════ TOOLS ══════════════ -->
+<div class="mod" id="m-tools">
+<div class="inner" style="max-width:750px;padding-top:12px">
+<h2 style="text-align:center;font-size:1.3rem;margin-bottom:4px">🔧 Tools of the Trade</h2>
+<p style="text-align:center;color:var(--txt2);margin-bottom:16px;font-size:.88rem">TensorFlow and the AI toolkit — explained for every age</p>
+<div style="display:flex;gap:4px;justify-content:center;flex-wrap:wrap;margin-bottom:16px" id="toolTabs"></div>
+<div id="toolContent"></div>
+<div class="ftr">Powered by <a href="https://workshop-diy.org" target="_blank">workshop-diy.org</a></div>
+</div></div>
+
+<!-- ══════════════ HARDWARE ══════════════ -->
+<div class="mod" id="m-hw">
+<div class="inner" style="max-width:720px;padding-top:12px">
+<h2 style="text-align:center;font-size:1.3rem;margin-bottom:4px">🔌 Hardware Lab</h2>
+<p style="text-align:center;color:var(--txt2);margin-bottom:16px;font-size:.88rem">micro:bit &amp; ESP32-C3 projects with AI</p>
+<div id="hwContent">
+<div class="w4-card"><h3>🎮 Gesture Classifier <span style="font-size:.7rem;color:var(--neon)">[micro:bit | Beginner | 30min]</span></h3><p>Train AI to recognize shake, tilt, spin gestures using the micro:bit's accelerometer via Web Bluetooth.</p></div>
+<div class="w4-card"><h3>🌡️ Sensor Data Sorting <span style="font-size:.7rem;color:var(--neon)">[micro:bit | Beginner | 25min]</span></h3><p>Collect real temperature & light data from different environments. Classify readings as hot/cold, bright/dark.</p></div>
+<div class="w4-card"><h3>🌱 Smart Plant Monitor <span style="font-size:.7rem;color:var(--amber)">[ESP32-C3 | Intermediate | 45min]</span></h3><p>Build an IoT device monitoring plant health. Soil moisture + light + temperature sensors feed AI classifier.</p></div>
+<div class="w4-card"><h3>⚡ Edge AI Deployment <span style="font-size:.7rem;color:var(--red)">[ESP32-C3 | Advanced | 60min]</span></h3><p>Train in browser → export to TFLite → flash to ESP32-C3. AI runs on-chip, no internet needed.</p></div>
+</div>
+<div class="br" style="margin-top:16px"><button class="btn btn-s" onclick="goHub()"><span>← Hub</span></button></div>
+<div class="ftr">Powered by <a href="https://workshop-diy.org" target="_blank">workshop-diy.org</a></div>
+</div></div>
+
+<!-- ══════════════ CERTIFICATES ══════════════ -->
+<div class="mod" id="m-cert">
+<div class="inner" style="max-width:550px;padding-top:12px">
+<h2 style="text-align:center;font-size:1.3rem;margin-bottom:4px">🏅 Certificates</h2>
+<p style="text-align:center;color:var(--txt2);margin-bottom:16px;font-size:.88rem">Generate a completion certificate</p>
+<div class="w4-card">
+<label style="font-family:'Share Tech Mono',monospace;font-size:.68rem;color:var(--neon);display:block;margin-bottom:4px">NAME</label>
+<input type="text" id="certName" placeholder="Enter name" style="width:100%;padding:10px;border-radius:8px;border:1px solid var(--bdr);background:var(--bg2);color:var(--txt);font-size:.95rem;outline:none;margin-bottom:10px">
+<label style="font-family:'Share Tech Mono',monospace;font-size:.68rem;color:var(--neon);display:block;margin-bottom:4px">WORKSHOP</label>
+<select id="certWork" style="width:100%;padding:10px;border-radius:8px;border:1px solid var(--bdr);background:var(--bg2);color:var(--txt);font-size:.88rem;margin-bottom:14px">
+<option value="Junior Machine Hacker">Workshop 1 (Ages 6-9)</option>
+<option value="Certified Code Breaker">Workshop 2 (Ages 10-13)</option>
+<option value="Certified AI Engineer">Workshop 3 (Ages 14+)</option>
+<option value="AI Workshop Facilitator">Workshop 4 (Parents)</option>
+</select>
+<button class="btn" style="width:100%" onclick="genCert()"><span>Generate</span></button>
+</div>
+<div id="certDisplay" style="display:none;background:#fffdf8;color:#1a2b20;border-radius:12px;padding:36px;margin:16px 0;text-align:center;position:relative">
+<div style="position:absolute;inset:10px;border:2px solid #0d7377;border-radius:8px;pointer-events:none"></div>
+<div style="font-family:'Amiri',serif;font-size:1.4rem;color:#0d7377;margin-bottom:14px">بسم الله الرحمن الرحيم</div>
+<div style="font-size:1.2rem;font-weight:800;color:#0d7377;letter-spacing:2px">AI HACKER LAB</div>
+<div style="font-size:.8rem;color:#5a7568;margin-bottom:12px">Certificate of Completion</div>
+<div style="width:100px;height:2px;background:linear-gradient(90deg,transparent,#0d7377,transparent);margin:10px auto"></div>
+<div id="certNameD" style="font-size:1.6rem;font-weight:800;margin:10px 0"></div>
+<div id="certTitleD" style="font-size:1rem;color:#0d7377;font-weight:600"></div>
+<div id="certDateD" style="font-family:'DM Mono',monospace;font-size:.72rem;color:#8fa89a;margin-top:12px"></div>
+<div style="font-size:.65rem;color:#999;margin-top:10px">Powered by workshop-diy.org</div>
+</div>
+<div class="br" style="margin-top:12px"><button class="btn btn-s" onclick="goHub()"><span>← Hub</span></button></div>
+</div></div>
+
+<!-- ══════════════ DASHBOARD ══════════════ -->
+<div class="mod" id="m-dash">
+<div class="inner" style="max-width:580px;padding-top:12px">
+<h2 style="text-align:center;font-size:1.3rem;margin-bottom:4px">📊 Dashboard</h2>
+<p style="text-align:center;color:var(--txt2);margin-bottom:16px;font-size:.88rem">Track progress &amp; badges</p>
+<div id="dashContent"></div>
+<div class="br" style="margin-top:12px"><button class="btn btn-s" onclick="goHub()"><span>← Hub</span></button></div>
+</div></div>
+
+<!-- ══════════════ JOURNAL ══════════════ -->
+<div class="mod" id="m-journal">
+<div class="inner" style="max-width:520px;padding-top:12px">
+<h2 style="text-align:center;font-size:1.3rem;margin-bottom:4px">📓 AI Journal</h2>
+<p style="text-align:center;color:var(--txt2);margin-bottom:16px;font-size:.88rem">Write about what you learned</p>
+<div class="w4-card">
+<label style="font-family:'Share Tech Mono',monospace;font-size:.65rem;color:var(--neon);display:block;margin-bottom:3px">WHAT DID YOU LEARN?</label>
+<textarea id="jq1" placeholder="I learned that AI..." style="width:100%;min-height:60px;background:var(--bg2);border:1px solid var(--bdr);border-radius:8px;color:var(--txt);padding:8px;font-size:.9rem;resize:vertical;outline:none;margin-bottom:8px"></textarea>
+<label style="font-family:'Share Tech Mono',monospace;font-size:.65rem;color:var(--neon);display:block;margin-bottom:3px">WHAT SURPRISED YOU?</label>
+<textarea id="jq2" placeholder="I was surprised that..." style="width:100%;min-height:60px;background:var(--bg2);border:1px solid var(--bdr);border-radius:8px;color:var(--txt);padding:8px;font-size:.9rem;resize:vertical;outline:none;margin-bottom:10px"></textarea>
+<button class="btn" style="width:100%" onclick="saveJournal()"><span>Save Entry</span></button>
+</div>
+<div id="journalEntries"></div>
+<div class="br" style="margin-top:12px"><button class="btn btn-s" onclick="goHub()"><span>← Hub</span></button></div>
+</div></div>
+
+<!-- ══════════════ TIME CAPSULE ══════════════ -->
+<div class="mod" id="m-capsule">
+<div class="inner" style="max-width:480px;padding-top:12px">
+<h2 style="text-align:center;font-size:1.3rem;margin-bottom:4px">🔮 Time Capsule</h2>
+<p style="text-align:center;color:var(--txt2);margin-bottom:16px;font-size:.88rem">Predict AI's future — open it years from now</p>
+<div class="w4-card">
+<label style="font-family:'Share Tech Mono',monospace;font-size:.65rem;color:var(--neon);display:block;margin-bottom:3px">WHAT WILL AI DO IN 5 YEARS?</label>
+<textarea id="tc1" placeholder="In 5 years, AI will..." style="width:100%;min-height:50px;background:var(--bg2);border:1px solid var(--bdr);border-radius:8px;color:var(--txt);padding:8px;font-size:.9rem;resize:vertical;outline:none;margin-bottom:8px"></textarea>
+<label style="font-family:'Share Tech Mono',monospace;font-size:.65rem;color:var(--neon);display:block;margin-bottom:3px">WHAT SHOULD AI NEVER DO?</label>
+<textarea id="tc2" placeholder="AI should never..." style="width:100%;min-height:50px;background:var(--bg2);border:1px solid var(--bdr);border-radius:8px;color:var(--txt);padding:8px;font-size:.9rem;resize:vertical;outline:none;margin-bottom:10px"></textarea>
+<button class="btn" style="width:100%" onclick="sealCapsule()"><span>🔒 Seal Capsule</span></button>
+</div>
+<div id="capsules"></div>
+<div class="br" style="margin-top:12px"><button class="btn btn-s" onclick="goHub()"><span>← Hub</span></button></div>
+</div></div>
+
+<!-- Mission overlay -->
+<div class="overlay" id="w1ov">
+<div class="ov-card">
+<div style="font-size:3rem;animation:flt 2s ease-in-out infinite" id="w1ove">🎉</div>
+<div style="font-family:'Silkscreen',monospace;font-size:1.2rem;color:var(--neon);margin:8px 0" id="w1ovt"></div>
+<div style="color:var(--txt2);margin-bottom:16px" id="w1ovtx"></div>
+<button class="btn" id="w1ovb" onclick="w1Next()"><span>Next Mission</span></button>
+</div></div>
+
+</div>
+
+<script>
+/* ═══════════════════════════════════════
+   GLOBALS
+   ═══════════════════════════════════════ */
+let theme='dark',muted=false;
+function tTh(){theme=theme==='dark'?'light':'dark';document.documentElement.setAttribute('data-theme',theme==='light'?'light':'');document.getElementById('thB').textContent=theme==='dark'?'🌙':'☀️';try{localStorage.setItem('aih-th',theme)}catch(e){}}
+function tMu(){muted=!muted;document.getElementById('muB').textContent=muted?'🔇':'🔊'}
+let tT;function sT(m,c){const t=document.getElementById('toast');t.textContent=m;t.className='toast show '+c;clearTimeout(tT);tT=setTimeout(()=>t.className='toast',1600)}
+
+const AC=window.AudioContext||window.webkitAudioContext;let ac;
+function snd(t){if(muted)return;if(!ac)ac=new AC();const o=ac.createOscillator(),g=ac.createGain();o.connect(g);g.connect(ac.destination);g.gain.value=.12;
+if(t==='ok'){o.frequency.setValueAtTime(523,ac.currentTime);o.frequency.setValueAtTime(784,ac.currentTime+.1);g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+.35);o.start();o.stop(ac.currentTime+.35)}
+else if(t==='done'){o.frequency.setValueAtTime(523,ac.currentTime);o.frequency.setValueAtTime(659,ac.currentTime+.12);o.frequency.setValueAtTime(784,ac.currentTime+.24);o.frequency.setValueAtTime(1047,ac.currentTime+.36);g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+.6);o.start();o.stop(ac.currentTime+.6)}
+else if(t==='err'){o.frequency.setValueAtTime(300,ac.currentTime);o.frequency.setValueAtTime(200,ac.currentTime+.12);g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+.25);o.start();o.stop(ac.currentTime+.25)}}
+
+/* Navigation */
+function goMod(id){document.querySelectorAll('.mod').forEach(m=>m.classList.remove('on'));document.getElementById(id)?.classList.add('on');
+document.getElementById('homeB').classList.toggle('show',id!=='m-hub');window.scrollTo({top:0});
+if(id==='m-dash')renderDash();if(id==='m-journal')renderJournal();if(id==='m-capsule')renderCapsules();if(id==='m-tools')initTools()}
+function goHub(){goMod('m-hub')}
+
+/* ═══════════════════════════════════════
+   WORKSHOP 1
+   ═══════════════════════════════════════ */
+const w1S={name:'',cur:0,scores:{1:0,2:0,3:0},totals:{1:9,2:12,3:12},attempts:{1:0,2:0,3:0}};
+const w1M={1:{items:[
+{e:'🤖',l:'Robot',c:'robots'},{e:'🦾',l:'Robot Arm',c:'robots'},{e:'🤖',l:'Drone Bot',c:'robots'},
+{e:'🚗',l:'Car',c:'vehicles'},{e:'🚀',l:'Rocket',c:'vehicles'},{e:'🚁',l:'Helicopter',c:'vehicles'},
+{e:'📱',l:'Phone',c:'gadgets'},{e:'💻',l:'Laptop',c:'gadgets'},{e:'⌚',l:'Smartwatch',c:'gadgets'}]},
+2:{items:[
+{e:'🔋',l:'E-Car',c:'electric'},{e:'💻',l:'Laptop',c:'electric'},{e:'⌚',l:'Smartwatch',c:'electric'},{e:'🛸',l:'Drone',c:'electric'},
+{e:'🚀',l:'Rocket',c:'fuel'},{e:'✈️',l:'Airplane',c:'fuel'},{e:'🏍️',l:'Motorcycle',c:'fuel'},{e:'🚢',l:'Submarine',c:'fuel'},
+{e:'🚲',l:'Bicycle',c:'human'},{e:'🛹',l:'Skateboard',c:'human'},{e:'⛵',l:'Sailboat',c:'human'},{e:'🔧',l:'Hand Drill',c:'human'}]},
+3:{items:[
+{e:'☸️',l:'Wheel',c:'ancient'},{e:'🧭',l:'Compass',c:'ancient'},{e:'☀️',l:'Sundial',c:'ancient'},{e:'🏹',l:'Catapult',c:'ancient'},
+{e:'📱',l:'Smartphone',c:'modern'},{e:'🚗',l:'Car',c:'modern'},{e:'📺',l:'Television',c:'modern'},{e:'🍳',l:'Microwave',c:'modern'},
+{e:'🚁',l:'Flying Car',c:'future'},{e:'🤖',l:'Robot Helper',c:'future'},{e:'🌉',l:'Space Lift',c:'future'},{e:'⚡',l:'Teleporter',c:'future'}]}};
+const enc=["Nice one! 🔥","Crushing it! 💪","Great thinking! 🧠","Correct! ⭐","AI approved! 🤖","Like a pro! 🎯"];
+const errs=["Try again! 🤔","Not quite! 💭","Wrong group! 🔄","Keep trying! 💪"];
+
+function w1Go(id){document.querySelectorAll('#m-w1 .scr').forEach(s=>s.classList.remove('on'));document.getElementById(id)?.classList.add('on')}
+function w1Start(){w1S.name=document.getElementById('w1Name').value.trim()||'Hacker';w1Go('w1-intro1')}
+function w1StartMission(n){w1S.cur=n;w1S.scores[n]=0;w1S.attempts[n]=0;document.getElementById('w1s'+n).textContent='0';w1Go('w1-m'+n);w1Load(n)}
+
+function w1Load(n){const pool=document.getElementById('w1p'+n);const zones=document.querySelectorAll('#w1z'+n+' .zone-items');
+zones.forEach(z=>z.innerHTML='');pool.innerHTML='';
+const items=[...w1M[n].items];for(let i=items.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[items[i],items[j]]=[items[j],items[i]]}
+items.forEach((item,idx)=>{const el=document.createElement('div');el.className='drag-item';el.draggable=true;el.dataset.cat=item.c;
+el.innerHTML=`<span class="ie">${item.e}</span><span class="il">${item.l}</span>`;pool.appendChild(el);
+el.addEventListener('dragstart',e=>{window._dragged=el;el.style.opacity='.4';e.dataTransfer.effectAllowed='move'});
+el.addEventListener('dragend',()=>{el.style.opacity='';window._dragged=null});
+// Touch
+let clone;
+el.addEventListener('touchstart',e=>{window._dragged=el;const touch=e.touches[0];const rect=el.getBoundingClientRect();
+window._tOff={x:touch.clientX-rect.left,y:touch.clientY-rect.top};
+clone=el.cloneNode(true);clone.style.cssText='position:fixed;z-index:1000;pointer-events:none;opacity:.8;transform:scale(1.1)';
+clone.style.left=(touch.clientX-window._tOff.x)+'px';clone.style.top=(touch.clientY-window._tOff.y)+'px';
+document.body.appendChild(clone);el.style.opacity='.3';window._tClone=clone},{passive:true});
+el.addEventListener('touchmove',e=>{e.preventDefault();if(!window._tClone)return;const touch=e.touches[0];
+window._tClone.style.left=(touch.clientX-window._tOff.x)+'px';window._tClone.style.top=(touch.clientY-window._tOff.y)+'px';
+document.querySelectorAll('#w1z'+n+' .drop-zone').forEach(z=>{const r=z.getBoundingClientRect();
+z.classList.toggle('drag-over',touch.clientX>=r.left&&touch.clientX<=r.right&&touch.clientY>=r.top&&touch.clientY<=r.bottom)})},{passive:false});
+el.addEventListener('touchend',e=>{if(window._tClone){document.body.removeChild(window._tClone);window._tClone=null}
+if(window._dragged)window._dragged.style.opacity='';const touch=e.changedTouches[0];
+document.querySelectorAll('#w1z'+n+' .drop-zone').forEach(z=>{z.classList.remove('drag-over');const r=z.getBoundingClientRect();
+if(touch.clientX>=r.left&&touch.clientX<=r.right&&touch.clientY>=r.top&&touch.clientY<=r.bottom)w1Drop(z,n)})})});
+document.querySelectorAll('#w1z'+n+' .drop-zone').forEach(z=>{
+z.addEventListener('dragover',e=>{e.preventDefault();z.classList.add('drag-over')});
+z.addEventListener('dragleave',()=>z.classList.remove('drag-over'));
+z.addEventListener('drop',e=>{e.preventDefault();z.classList.remove('drag-over');w1Drop(z,n)})})}
+
+function w1Drop(zone,n){const el=window._dragged;if(!el)return;
+w1S.attempts[n]++;
+if(el.dataset.cat===zone.dataset.cat){
+w1S.scores[n]++;document.getElementById('w1s'+n).textContent=w1S.scores[n];
+snd('ok');sT(enc[Math.floor(Math.random()*enc.length)],'ok');
+zone.classList.add('correct');setTimeout(()=>zone.classList.remove('correct'),500);
+zone.querySelector('.zone-items').appendChild(el);el.removeAttribute('draggable');el.style.cursor='default';
+if(w1S.scores[n]>=w1S.totals[n])setTimeout(()=>w1Complete(n),600);
+}else{snd('err');sT(errs[Math.floor(Math.random()*errs.length)],'er');
+zone.classList.add('wrong');setTimeout(()=>zone.classList.remove('wrong'),400)}
+window._dragged=null}
+
+function w1Complete(n){snd('done');const ov=document.getElementById('w1ov');
+if(n<3){document.getElementById('w1ove').textContent='🎉';document.getElementById('w1ovt').textContent='Mission '+n+' Complete!';
+document.getElementById('w1ovtx').textContent='Great work, '+w1S.name+'! Ready for harder?';
+document.getElementById('w1ovb').innerHTML='<span>Next Mission</span>';document.getElementById('w1ovb').onclick=w1Next;
+}else{document.getElementById('w1ove').textContent='🏅';document.getElementById('w1ovt').textContent='All Missions Done!';
+document.getElementById('w1ovtx').textContent='Amazing, '+w1S.name+'!';
+document.getElementById('w1ovb').innerHTML='<span>See Badge</span>';document.getElementById('w1ovb').onclick=()=>{ov.classList.remove('on');w1Badge()}}
+ov.classList.add('on')}
+
+function w1Next(){document.getElementById('w1ov').classList.remove('on');const nx=w1S.cur+1;if(nx<=3)w1StartMission(nx);else w1Badge()}
+
+function w1Badge(){const t=w1S.scores[1]+w1S.scores[2]+w1S.scores[3];const a=w1S.attempts[1]+w1S.attempts[2]+w1S.attempts[3];
+document.getElementById('w1bname').textContent=w1S.name+' — Junior Machine Hacker';
+document.getElementById('w1bsorted').textContent=t;document.getElementById('w1bcorrect').textContent=t;
+document.getElementById('w1bacc').textContent=(a>0?Math.round(t/a*100):0)+'%';
+try{const b=JSON.parse(localStorage.getItem('ai-hacker-badges')||'[]');if(!b.includes('junior-machine-hacker')){b.push('junior-machine-hacker');localStorage.setItem('ai-hacker-badges',JSON.stringify(b))}}catch(e){}
+snd('done');w1Go('w1-badge')}
+
+function w1Reset(){w1S.scores={1:0,2:0,3:0};w1S.attempts={1:0,2:0,3:0};w1S.cur=0;w1Go('w1-welcome')}
+
+/* ═══════════════════════════════════════
+   WORKSHOP 4
+   ═══════════════════════════════════════ */
+const w4Ch=[
+{t:'What is AI?',i:'🤖',c:'<div class="w4-card"><h3>What is AI, Really?</h3><p>AI is a computer that learns from examples. Not magic — pattern recognition at scale. It does what humans teach it to do.</p><p style="color:var(--neon);font-weight:600">The same sorting your kids do in Workshop 1? That\'s classification. AI does it with millions of items using math.</p></div>'},
+{t:'Machine Learning',i:'📊',c:'<div class="w4-card"><h3>How ML Works</h3><p><strong>Traditional:</strong> Human writes rules → Computer follows<br><strong>ML:</strong> Human gives examples → Computer discovers rules</p><p>Your kids experience this firsthand in Workshop 2 — they provide drawings, and the AI finds patterns.</p></div>'},
+{t:'Neural Networks',i:'🧠',c:'<div class="w4-card"><h3>Inside a Neural Network</h3><p>Think of it as a team: data goes in → layers of "experts" each check one thing → answer comes out. Early layers find edges, later layers find shapes, final layer decides.</p><p>No math needed to understand this — it\'s just teamwork at massive scale.</p></div>'},
+{t:'Learning Path',i:'🗺️',c:'<div class="w4-card"><h3>Workshop Roadmap</h3><p>🤖 <strong>Ages 6-9:</strong> Sorting game (classification)<br>🕵️ <strong>Ages 10-13:</strong> Draw & train AI<br>⚡ <strong>Ages 14+:</strong> Build neural networks</p><p><strong>After each workshop, ask:</strong> "What did you build? Did AI make mistakes? What would you create with AI?"</p></div>'},
+{t:'Facilitating',i:'📋',c:'<div class="w4-card"><h3>Running a Workshop</h3><p><strong>Setup:</strong> Just open HTML in a browser. No installs.<br><strong>Timing:</strong> 5min intro → 30min activity → 10min discussion<br><strong>If stuck:</strong> Encourage trying again. More data = better AI.</p></div>'},
+{t:'Ethics',i:'⚖️',c:'<div class="w4-card"><h3>AI Ethics & Values</h3><p><strong>Trust:</strong> AI must be transparent<br><strong>Fairness:</strong> Must work for everyone<br><strong>Knowledge:</strong> Understanding AI is a responsibility<br><strong>Benefit:</strong> Tech should help people</p><p style="color:var(--amber)">Discuss: "An AI rejects a loan application. The person doesn\'t know why. Is this fair?"</p></div>'},
+{t:'Beyond',i:'🚀',c:'<div class="w4-card"><h3>Continue the Journey</h3><p>Free: Teachable Machine, ML for Kids, Khan Academy, Kaggle</p><p>Start a monthly AI study circle. Use these workshops as curriculum.</p><p style="color:var(--neon);font-weight:600;text-align:center;margin-top:10px">The tool doesn\'t matter. Your child is learning to think like an engineer.</p></div><div class="br" style="margin-top:12px"><button class="btn" onclick="w4Cert()"><span>Get Certificate</span></button></div>'}
+];
+function w4Start(){document.querySelectorAll('#m-w4 .scr').forEach(s=>s.classList.remove('on'));document.getElementById('w4-main').classList.add('on');w4Show(0)}
+function w4Show(i){const nav=document.getElementById('w4nav');nav.innerHTML='';
+w4Ch.forEach((ch,j)=>{const b=document.createElement('button');b.className='chb'+(j===i?' on':'');b.textContent=ch.i+' '+ch.t;b.onclick=()=>w4Show(j);nav.appendChild(b)});
+document.getElementById('w4content').innerHTML='<h2 style="margin-top:8px">'+w4Ch[i].i+' '+w4Ch[i].t+'</h2>'+w4Ch[i].c+
+'<div class="br" style="margin-top:12px">'+(i>0?'<button class="btn btn-s" onclick="w4Show('+(i-1)+')"><span>←</span></button>':'')+
+(i<w4Ch.length-1?'<button class="btn" onclick="w4Show('+(i+1)+')"><span>Next →</span></button>':'')+'</div>';
+window.scrollTo({top:0,behavior:'smooth'})}
+function w4Cert(){try{const b=JSON.parse(localStorage.getItem('ai-hacker-badges')||'[]');if(!b.includes('facilitator')){b.push('facilitator');localStorage.setItem('ai-hacker-badges',JSON.stringify(b))}}catch(e){}snd('done');sT('🏅 Facilitator badge earned!','ok')}
+
+/* ═══════════════════════════════════════
+   TOOLS
+   ═══════════════════════════════════════ */
+const toolData=[
+{t:'Young Hackers (6-9)',c:'<div class="w4-card"><h3>What is TensorFlow?</h3><p>A tool that helps computers learn — like a brain for machines! Google built it.</p><p><strong>Other tools:</strong> Scratch + ML (drag & drop), Teachable Machine (use your camera), ml5.js (beginner friendly)</p><p style="color:var(--neon);font-weight:600">TensorFlow is one of the most popular — and you\'re learning it!</p></div>'},
+{t:'Code Breakers (10-13)',c:'<div class="w4-card"><h3>TensorFlow.js</h3><p>An open-source ML library by Google that runs in your browser. It powered the AI you just trained!</p><p><strong>Alternatives:</strong> PyTorch (Meta, researchers), ml5.js (simpler), Teachable Machine (no code)</p><p style="color:var(--neon);font-weight:600">Good engineers know multiple tools.</p></div>'},
+{t:'AI Engineers (14+)',c:'<div class="w4-card"><h3>The Full Landscape</h3><p><strong>TensorFlow/TF.js</strong> — Google, production + browser<br><strong>PyTorch</strong> — Meta, research<br><strong>scikit-learn</strong> — Classic ML<br><strong>Keras</strong> — Fast prototyping<br><strong>Hugging Face</strong> — Pre-trained models<br><strong>JAX</strong> — High-performance research</p><p style="color:var(--neon);font-weight:600">Concepts transfer across ALL tools.</p></div>'},
+{t:'Parents & Teachers',c:'<div class="w4-card"><h3>Why TensorFlow?</h3><p>Free, browser-based, industry-standard, huge community, works on any device.</p><p>Your kids learn the same tool real engineers use. But the concepts matter more than any specific tool.</p></div>'}];
+let curTool=0;
+function initTools(){const tabs=document.getElementById('toolTabs');tabs.innerHTML='';
+toolData.forEach((t,i)=>{const b=document.createElement('button');b.className='chb'+(i===curTool?' on':'');b.textContent=t.t;
+b.onclick=()=>{curTool=i;initTools()};tabs.appendChild(b)});
+document.getElementById('toolContent').innerHTML=toolData[curTool].c}
+
+/* ═══════════════════════════════════════
+   CERTIFICATES
+   ═══════════════════════════════════════ */
+function genCert(){const name=document.getElementById('certName').value.trim();if(!name)return;
+const title=document.getElementById('certWork').value;
+document.getElementById('certNameD').textContent=name;
+document.getElementById('certTitleD').textContent=title;
+document.getElementById('certDateD').textContent=new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+document.getElementById('certDisplay').style.display='block';snd('done')}
+
+/* ═══════════════════════════════════════
+   DASHBOARD
+   ═══════════════════════════════════════ */
+const allBadges=[{id:'junior-machine-hacker',n:'Junior Hacker',i:'🤖',w:'W1 (6-9)'},
+{id:'code-breaker',n:'Code Breaker',i:'🕵️',w:'W2 (10-13)'},
+{id:'ai-engineer',n:'AI Engineer',i:'⚡',w:'W3 (14+)'},
+{id:'facilitator',n:'Facilitator',i:'🎓',w:'W4 (Parents)'}];
+function renderDash(){let earned=[];try{earned=JSON.parse(localStorage.getItem('ai-hacker-badges')||'[]')}catch(e){}
+const el=document.getElementById('dashContent');const ec=earned.length;
+let html='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0">'+
+'<div class="w4-card" style="text-align:center"><div style="font-size:1.5rem;color:var(--neon);font-weight:700">'+ec+'</div><div style="font-size:.65rem;color:var(--txt3)">EARNED</div></div>'+
+'<div class="w4-card" style="text-align:center"><div style="font-size:1.5rem;color:var(--neon);font-weight:700">'+allBadges.length+'</div><div style="font-size:.65rem;color:var(--txt3)">TOTAL</div></div>'+
+'<div class="w4-card" style="text-align:center"><div style="font-size:1.5rem;color:var(--neon);font-weight:700">'+Math.round(ec/allBadges.length*100)+'%</div><div style="font-size:.65rem;color:var(--txt3)">COMPLETE</div></div></div>';
+html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0">';
+allBadges.forEach(b=>{const has=earned.includes(b.id);
+html+='<div class="w4-card" style="text-align:center;opacity:'+(has?'1':'.35')+'"><div style="font-size:1.8rem">'+b.i+'</div><div style="font-size:.85rem;font-weight:600">'+b.n+'</div><div style="font-size:.68rem;color:var(--txt3)">'+b.w+'</div><div style="font-size:.65rem;color:'+(has?'var(--neon)':'var(--txt3)')+';margin-top:3px">'+(has?'✓ Earned':'🔒 Locked')+'</div></div>'});
+html+='</div>';el.innerHTML=html}
+
+/* ═══════════════════════════════════════
+   JOURNAL
+   ═══════════════════════════════════════ */
+function saveJournal(){const q1=document.getElementById('jq1').value,q2=document.getElementById('jq2').value;
+if(!q1&&!q2)return;const entry={date:new Date().toISOString(),q1,q2};
+let entries=[];try{entries=JSON.parse(localStorage.getItem('ai-journal')||'[]')}catch(e){}
+entries.unshift(entry);try{localStorage.setItem('ai-journal',JSON.stringify(entries))}catch(e){}
+document.getElementById('jq1').value='';document.getElementById('jq2').value='';snd('ok');sT('Entry saved!','ok');renderJournal()}
+function renderJournal(){let entries=[];try{entries=JSON.parse(localStorage.getItem('ai-journal')||'[]')}catch(e){}
+const el=document.getElementById('journalEntries');if(!entries.length){el.innerHTML='';return}
+el.innerHTML='<h3 style="font-size:.9rem;color:var(--neon);margin:12px 0 6px">Past Entries</h3>';
+entries.slice(0,10).forEach(e=>{const d=new Date(e.date).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+el.innerHTML+='<div class="w4-card"><div style="font-size:.68rem;color:var(--txt3);margin-bottom:4px">'+d+'</div>'+(e.q1?'<p style="margin:0 0 3px"><strong>Learned:</strong> '+e.q1+'</p>':'')+(e.q2?'<p style="margin:0"><strong>Surprised:</strong> '+e.q2+'</p>':'')+'</div>'})}
+
+/* ═══════════════════════════════════════
+   TIME CAPSULE
+   ═══════════════════════════════════════ */
+function sealCapsule(){const p1=document.getElementById('tc1').value,p2=document.getElementById('tc2').value;
+if(!p1&&!p2)return;const cap={date:new Date().toISOString(),p1,p2,years:5};
+let caps=[];try{caps=JSON.parse(localStorage.getItem('ai-capsules')||'[]')}catch(e){}
+caps.unshift(cap);try{localStorage.setItem('ai-capsules',JSON.stringify(caps))}catch(e){}
+document.getElementById('tc1').value='';document.getElementById('tc2').value='';snd('done');sT('🔒 Capsule sealed!','ok');renderCapsules()}
+function renderCapsules(){let caps=[];try{caps=JSON.parse(localStorage.getItem('ai-capsules')||'[]')}catch(e){}
+const el=document.getElementById('capsules');if(!caps.length){el.innerHTML='';return}
+el.innerHTML='<h3 style="font-size:.9rem;color:var(--neon);margin:12px 0 6px">Sealed Capsules</h3>';
+caps.forEach(c=>{const created=new Date(c.date);const opens=new Date(created);opens.setFullYear(opens.getFullYear()+c.years);
+const days=Math.max(0,Math.ceil((opens-new Date())/(1000*60*60*24)));const canOpen=days<=0;
+el.innerHTML+='<div class="w4-card"><div style="font-size:.68rem;color:'+(canOpen?'var(--neon)':'var(--amber)')+'">'+(canOpen?'🔓 READY':'🔒 SEALED')+' — '+created.toLocaleDateString()+'</div><div style="font-size:.75rem;color:var(--neon);margin:3px 0">'+(canOpen?'Open now!':days+' days remaining')+'</div>'+(canOpen?'<div style="font-size:.82rem;color:var(--txt2);margin-top:4px">'+[c.p1,c.p2].filter(Boolean).join(' | ')+'</div>':'<div style="font-size:.82rem;color:var(--txt3);font-style:italic">Contents sealed...</div>')+'</div>'})}
+
+/* ═══════════════════════════════════════
+   INIT
+   ═══════════════════════════════════════ */
+(function(){try{if(localStorage.getItem('aih-th')==='light')tTh()}catch(e){}
+document.getElementById('w1Name').addEventListener('keydown',e=>{if(e.key==='Enter')w1Start()})})();
+</script>
+</body>
+</html>

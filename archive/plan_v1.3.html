@@ -1,0 +1,1647 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Hacker Lab — Project Plan v1.3</title>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Outfit:wght@300;400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-deep: #0a0f0d;
+    --bg-card: #111a16;
+    --bg-card-hover: #162019;
+    --neon-green: #39ff85;
+    --neon-cyan: #00e5ff;
+    --neon-amber: #ffb300;
+    --neon-red: #ff4757;
+    --text-primary: #e8f0ec;
+    --text-secondary: #8fa89a;
+    --text-muted: #5a7568;
+    --border: #1e2e26;
+    --border-glow: rgba(57, 255, 133, 0.15);
+    --geometric-opacity: 0.03;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Outfit', sans-serif;
+    background: var(--bg-deep);
+    color: var(--text-primary);
+    line-height: 1.7;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Geometric background pattern */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      repeating-conic-gradient(from 0deg at 50% 50%, transparent 0deg, transparent 45deg, rgba(57,255,133,0.02) 45deg, rgba(57,255,133,0.02) 90deg) 0 0 / 80px 80px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 24px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── Bismillah Header ── */
+  .bismillah-header {
+    text-align: center;
+    padding: 48px 0 16px;
+  }
+
+  .bismillah {
+    font-family: 'Amiri', serif;
+    font-size: 2.4rem;
+    color: var(--neon-green);
+    text-shadow: 0 0 30px rgba(57, 255, 133, 0.3);
+    letter-spacing: 2px;
+    animation: bismillahGlow 3s ease-in-out infinite alternate;
+  }
+
+  @keyframes bismillahGlow {
+    from { text-shadow: 0 0 20px rgba(57, 255, 133, 0.2); }
+    to { text-shadow: 0 0 40px rgba(57, 255, 133, 0.5), 0 0 80px rgba(57, 255, 133, 0.15); }
+  }
+
+  /* ── Title Section ── */
+  .title-section {
+    text-align: center;
+    padding: 32px 0 48px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .title-section h1 {
+    font-size: 2.8rem;
+    font-weight: 800;
+    letter-spacing: -1px;
+    margin-bottom: 8px;
+    background: linear-gradient(135deg, var(--neon-green), var(--neon-cyan));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .title-section .version {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    color: var(--neon-amber);
+    background: rgba(255, 179, 0, 0.1);
+    padding: 4px 14px;
+    border-radius: 20px;
+    display: inline-block;
+    margin-bottom: 12px;
+  }
+
+  .title-section .subtitle {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+    font-weight: 300;
+  }
+
+  .tagline {
+    color: var(--text-muted);
+    font-style: italic;
+    margin-top: 8px;
+    font-size: 0.95rem;
+  }
+
+  /* ── Sections ── */
+  section {
+    padding: 48px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  section:last-of-type {
+    border-bottom: none;
+  }
+
+  h2 {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--neon-green);
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  h2 .icon {
+    font-size: 1.4rem;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(57, 255, 133, 0.08);
+    border-radius: 10px;
+    border: 1px solid var(--border-glow);
+  }
+
+  h3 {
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 24px 0 12px;
+  }
+
+  h4 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--neon-cyan);
+    margin: 16px 0 8px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  p {
+    color: var(--text-secondary);
+    margin-bottom: 12px;
+    font-size: 0.95rem;
+  }
+
+  /* ── Global Rules ── */
+  .rules-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 16px;
+    margin-top: 16px;
+  }
+
+  .rule-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    transition: border-color 0.3s, transform 0.2s;
+  }
+
+  .rule-card:hover {
+    border-color: rgba(57, 255, 133, 0.3);
+    transform: translateY(-2px);
+  }
+
+  .rule-card .rule-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--neon-amber);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+  }
+
+  .rule-card .rule-value {
+    color: var(--text-primary);
+    font-size: 0.9rem;
+  }
+
+  /* ── Deliverables Table ── */
+  .deliverables-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 16px;
+    font-size: 0.9rem;
+  }
+
+  .deliverables-table th {
+    text-align: left;
+    padding: 12px 16px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--neon-amber);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-bottom: 2px solid var(--border);
+    background: rgba(255, 179, 0, 0.04);
+  }
+
+  .deliverables-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-secondary);
+  }
+
+  .deliverables-table tr:hover td {
+    background: var(--bg-card);
+  }
+
+  .deliverables-table .filename {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--neon-green);
+    font-size: 0.85rem;
+  }
+
+  .deliverables-table .filetype {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    padding: 2px 10px;
+    border-radius: 12px;
+    display: inline-block;
+  }
+
+  .type-html {
+    background: rgba(0, 229, 255, 0.1);
+    color: var(--neon-cyan);
+  }
+
+  .type-md {
+    background: rgba(57, 255, 133, 0.1);
+    color: var(--neon-green);
+  }
+
+  /* ── Workshop Cards ── */
+  .workshop-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 32px;
+    margin-bottom: 32px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .workshop-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+  }
+
+  .workshop-card.w1::before { background: linear-gradient(90deg, var(--neon-green), var(--neon-cyan)); }
+  .workshop-card.w2::before { background: linear-gradient(90deg, var(--neon-cyan), var(--neon-amber)); }
+  .workshop-card.w3::before { background: linear-gradient(90deg, var(--neon-amber), var(--neon-red)); }
+  .workshop-card.w4::before { background: linear-gradient(90deg, #c084fc, #f472b6); }
+
+  .workshop-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .workshop-title {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+
+  .workshop-age {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    padding: 4px 12px;
+    border-radius: 16px;
+    border: 1px solid;
+  }
+
+  .w1 .workshop-age { color: var(--neon-green); border-color: var(--neon-green); background: rgba(57,255,133,0.08); }
+  .w2 .workshop-age { color: var(--neon-cyan); border-color: var(--neon-cyan); background: rgba(0,229,255,0.08); }
+  .w3 .workshop-age { color: var(--neon-amber); border-color: var(--neon-amber); background: rgba(255,179,0,0.08); }
+  .w4 .workshop-age { color: #c084fc; border-color: #c084fc; background: rgba(192,132,252,0.08); }
+
+  .workshop-topic {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+  }
+
+  .objectives-list, .tech-list {
+    list-style: none;
+    margin: 8px 0 16px;
+  }
+
+  .objectives-list li, .tech-list li {
+    padding: 4px 0 4px 20px;
+    position: relative;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+  }
+
+  .objectives-list li::before {
+    content: '▸';
+    position: absolute;
+    left: 0;
+    color: var(--neon-green);
+  }
+
+  .tech-list li::before {
+    content: '⚙';
+    position: absolute;
+    left: 0;
+    font-size: 0.8rem;
+  }
+
+  /* ── Screens / Flow ── */
+  .screens-container {
+    margin-top: 16px;
+  }
+
+  .screen-item {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 16px;
+    position: relative;
+  }
+
+  .screen-number {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    min-width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .screen-content {
+    flex: 1;
+  }
+
+  .screen-content .screen-name {
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 0.9rem;
+    margin-bottom: 4px;
+  }
+
+  .screen-content .screen-desc {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    line-height: 1.6;
+  }
+
+  .screen-content .screen-items {
+    margin-top: 6px;
+    padding-left: 16px;
+    list-style: none;
+  }
+
+  .screen-content .screen-items li {
+    color: var(--text-muted);
+    font-size: 0.83rem;
+    padding: 2px 0;
+    position: relative;
+    padding-left: 12px;
+  }
+
+  .screen-content .screen-items li::before {
+    content: '·';
+    position: absolute;
+    left: 0;
+    color: var(--text-muted);
+  }
+
+  /* ── Collapsible Sections ── */
+  .collapsible {
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .collapsible::after {
+    content: ' ▾';
+    font-size: 0.8em;
+    color: var(--text-muted);
+  }
+
+  .collapsible.collapsed::after {
+    content: ' ▸';
+  }
+
+  .collapsible-content {
+    overflow: hidden;
+    transition: max-height 0.4s ease;
+  }
+
+  .collapsible-content.hidden {
+    max-height: 0 !important;
+  }
+
+  /* ── Build Order ── */
+  .build-order {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 12px;
+  }
+
+  .build-step {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 16px;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+  }
+
+  .build-step .step-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--neon-green);
+    background: rgba(57, 255, 133, 0.1);
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+  }
+
+  .build-step.active {
+    border-color: var(--neon-green);
+    background: rgba(57, 255, 133, 0.05);
+  }
+
+  .build-step.active .step-num {
+    background: var(--neon-green);
+    color: var(--bg-deep);
+  }
+
+  .arrow {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+  }
+
+  /* ── Design Section ── */
+  .design-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+    margin-top: 12px;
+  }
+
+  .design-chip {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+  }
+
+  .design-chip strong {
+    display: block;
+    color: var(--text-primary);
+    font-size: 0.8rem;
+    margin-bottom: 4px;
+  }
+
+  /* ── Version History ── */
+  .version-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 12px;
+    font-size: 0.85rem;
+  }
+
+  .version-table th {
+    text-align: left;
+    padding: 10px 16px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--neon-amber);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .version-table td {
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-secondary);
+  }
+
+  /* ── Footer ── */
+  footer {
+    text-align: center;
+    padding: 48px 0;
+    border-top: 1px solid var(--border);
+    margin-top: 32px;
+  }
+
+  footer p {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+  }
+
+  footer a {
+    color: var(--neon-green);
+    text-decoration: none;
+  }
+
+  footer a:hover {
+    text-decoration: underline;
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 640px) {
+    .title-section h1 { font-size: 2rem; }
+    .bismillah { font-size: 1.8rem; }
+    .workshop-card { padding: 20px; }
+    .rules-grid { grid-template-columns: 1fr; }
+    .build-order { flex-direction: column; }
+    .arrow { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- Bismillah -->
+  <div class="bismillah-header">
+    <div class="bismillah">بسم الله الرحمن الرحيم</div>
+  </div>
+
+  <!-- Title -->
+  <div class="title-section">
+    <span class="version">v1.3 — 2026-03-08</span>
+    <h1>AI Hacker Lab</h1>
+    <p class="subtitle">Workshop Series — Project Plan</p>
+    <p class="tagline">A series of web-based workshops teaching AI &amp; Machine Learning to all ages. By Muslims, for everyone.</p>
+  </div>
+
+  <!-- Global Design Rules -->
+  <section>
+    <h2><span class="icon">⚙</span> Global Design Rules</h2>
+    <div class="rules-grid">
+      <div class="rule-card">
+        <div class="rule-label">Header</div>
+        <div class="rule-value">"بسم الله الرحمن الرحيم" — beautifully styled, top-centered, every page</div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-label">Footer</div>
+        <div class="rule-value">"Powered by workshop-diy.org" — every page</div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-label">Formats</div>
+        <div class="rule-value">All documents → .md or .html only. No PDF, no DOCX.</div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-label">Process</div>
+        <div class="rule-value">Plan first → approval → build. No coding until "go."</div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-label">Sound</div>
+        <div class="rule-value">Sound effects only (no music). Mute toggle on every page.</div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-label">No Music / Dance</div>
+        <div class="rule-value">No music or dance references anywhere — not in examples, project showcases, or content. All examples science/engineering/medical/space focused.</div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-label">Culture</div>
+        <div class="rule-value">Islamic identity, inclusive for everyone. Universal values with Islamic roots.</div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-label">Names</div>
+        <div class="rule-value">Diverse mix — Omar, Yusuf, Khadija, Leo, Aisha, Mei, Carlos, Fatima, Raj, Sarah</div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-label">Ethics</div>
+        <div class="rule-value">Trust &amp; Responsibility, Fairness for Everyone, Love of Learning, Tech that Helps People</div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-label">Avatars</div>
+        <div class="rule-value">No character faces — geometric/abstract avatars only</div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-label">Mobile</div>
+        <div class="rule-value">Touch-friendly targets throughout. Responsive design.</div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-label">Theme Toggle</div>
+        <div class="rule-value">Dark/Light mode on every page. Dark by default. Remembers preference via localStorage.</div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-label">Achievements</div>
+        <div class="rule-value">Badges earned across workshops persist via localStorage. "🏆 Badges" button on every page.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Feature Roadmap -->
+  <section>
+    <h2><span class="icon">🗺️</span> Feature Roadmap</h2>
+    <table class="deliverables-table">
+      <thead>
+        <tr><th>Phase</th><th>Version</th><th>Features</th><th>Status</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Tier 1</td><td class="filename">v1.3</td><td>Achievement system, Multiplayer mode, Build-your-own classifier, AI mistakes gallery, Dark/Light theme</td><td style="color:var(--neon-green);">🔜 Current</td></tr>
+        <tr><td>Tier 2</td><td class="filename">v1.4</td><td>Certificates, Parent dashboard, AI Journal, Time capsule, QR posters</td><td style="color:var(--neon-amber);">⏳ Next</td></tr>
+        <tr><td>Tier 3</td><td class="filename">v1.5</td><td>Offline/PWA, Live AI demo (Claude API, Workshop 4 only)</td><td style="color:var(--text-muted);">⏳ Future</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- Deliverables -->
+  <section>
+    <h2><span class="icon">📦</span> Deliverables (12 Files)</h2>
+    <table class="deliverables-table">
+      <thead>
+        <tr><th>#</th><th>File</th><th>Type</th><th>Description</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td class="filename">workshop-1.html</td><td><span class="filetype type-html">HTML</span></td><td>Ages 6-9: "Junior Hacker: Sort Mission"</td></tr>
+        <tr><td>2</td><td class="filename">workshop-1-guide.md</td><td><span class="filetype type-md">MD</span></td><td>Facilitator guide for Workshop 1</td></tr>
+        <tr><td>3</td><td class="filename">workshop-2.html</td><td><span class="filetype type-html">HTML</span></td><td>Ages 10-13: "Code Breaker: Train the AI"</td></tr>
+        <tr><td>4</td><td class="filename">workshop-2-guide.md</td><td><span class="filetype type-md">MD</span></td><td>Facilitator guide for Workshop 2</td></tr>
+        <tr><td>5</td><td class="filename">workshop-3.html</td><td><span class="filetype type-html">HTML</span></td><td>Ages 14+: "AI Engineer: Build &amp; Deploy"</td></tr>
+        <tr><td>6</td><td class="filename">workshop-3-guide.md</td><td><span class="filetype type-md">MD</span></td><td>Facilitator guide for Workshop 3</td></tr>
+        <tr><td>7</td><td class="filename">workshop-4.html</td><td><span class="filetype type-html">HTML</span></td><td>Parents/Teachers: "AI Decoded"</td></tr>
+        <tr><td>8</td><td class="filename">workshop-4-guide.md</td><td><span class="filetype type-md">MD</span></td><td>Facilitator guide for Workshop 4</td></tr>
+        <tr><td>9</td><td class="filename">tools-of-the-trade.html</td><td><span class="filetype type-html">HTML</span></td><td>TensorFlow, alternatives &amp; AI toolkit</td></tr>
+        <tr><td>10</td><td class="filename">README.md</td><td><span class="filetype type-md">MD</span></td><td>Project overview, setup, philosophy</td></tr>
+        <tr><td>11</td><td class="filename">FAQ.md</td><td><span class="filetype type-md">MD</span></td><td>Common questions from kids, parents, teachers</td></tr>
+        <tr><td>12</td><td class="filename">CHANGELOG.md</td><td><span class="filetype type-md">MD</span></td><td>Version history and changes</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- Build Order -->
+  <section>
+    <h2><span class="icon">🔨</span> Build Order</h2>
+    <div class="build-order">
+      <div class="build-step active"><span class="step-num">1</span> Workshop 1 (6-9)</div>
+      <span class="arrow">→</span>
+      <div class="build-step"><span class="step-num">2</span> Workshop 2 (10-13)</div>
+      <span class="arrow">→</span>
+      <div class="build-step"><span class="step-num">3</span> Workshop 3 (14+)</div>
+      <span class="arrow">→</span>
+      <div class="build-step"><span class="step-num">4</span> Workshop 4 (Parents)</div>
+      <span class="arrow">→</span>
+      <div class="build-step"><span class="step-num">5</span> Tools of the Trade</div>
+      <span class="arrow">→</span>
+      <div class="build-step"><span class="step-num">6</span> README.md</div>
+      <span class="arrow">→</span>
+      <div class="build-step"><span class="step-num">7</span> FAQ.md</div>
+      <span class="arrow">→</span>
+      <div class="build-step"><span class="step-num">8</span> CHANGELOG.md</div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════ -->
+  <!-- WORKSHOP 1 -->
+  <!-- ═══════════════════════════════════════ -->
+  <section>
+    <div class="workshop-card w1">
+      <div class="workshop-header">
+        <div class="workshop-title">Workshop 1: "Junior Hacker: Sort Mission"</div>
+        <span class="workshop-age">Ages 6–9</span>
+      </div>
+      <p class="workshop-topic">Topic: Inventions &amp; Machines — One main topic with increasing difficulty across 3 missions</p>
+
+      <h3 class="collapsible" onclick="toggle(this)">Learning Objectives</h3>
+      <div class="collapsible-content">
+        <ul class="objectives-list">
+          <li>Understand what classification means</li>
+          <li>Learn that AI sorts things by looking at features (type, power, era)</li>
+          <li>Practice pattern recognition</li>
+          <li>Discover that AI faces tricky decisions too</li>
+        </ul>
+      </div>
+
+      <h3 class="collapsible" onclick="toggle(this)">Screens &amp; Flow</h3>
+      <div class="collapsible-content">
+        <div class="screens-container">
+          <div class="screen-item">
+            <div class="screen-number">01</div>
+            <div class="screen-content">
+              <div class="screen-name">Welcome</div>
+              <div class="screen-desc">Bismillah top-centered. "Welcome, Junior Hacker!" title. Name input (placeholder: "Yusuf"). Animated science lab background (CSS). Big "Start Mission" button.</div>
+            </div>
+          </div>
+          <div class="screen-item">
+            <div class="screen-number">02</div>
+            <div class="screen-content">
+              <div class="screen-name">What is a Scientist?</div>
+              <div class="screen-desc">Step 1 of 3 intro cards. "Scientists look at things carefully and sort them into groups." Visual: 3 groups (robots, vehicles, gadgets) with emoji icons.</div>
+            </div>
+          </div>
+          <div class="screen-item">
+            <div class="screen-number">03</div>
+            <div class="screen-content">
+              <div class="screen-name">What is AI?</div>
+              <div class="screen-desc">Step 2 of 3. "AI is a computer that learns to sort things — just like you!" Animation showing items moving into boxes.</div>
+            </div>
+          </div>
+          <div class="screen-item">
+            <div class="screen-number">04</div>
+            <div class="screen-content">
+              <div class="screen-name">Your Mission</div>
+              <div class="screen-desc">Step 3 of 3. "Your mission: Help the AI learn by sorting inventions correctly." "Start Mission 1" button.</div>
+            </div>
+          </div>
+          <div class="screen-item">
+            <div class="screen-number">05</div>
+            <div class="screen-content">
+              <div class="screen-name">Mission 1: Sort by Type (Easy)</div>
+              <div class="screen-desc">Categories: Robots 🤖 | Vehicles 🚗 | Gadgets 📱. 9 items to drag &amp; drop. Score counter. Encouragement messages.</div>
+              <ul class="screen-items">
+                <li>Robots: 🤖 robot, 🦾 robot arm, 🤖 drone bot</li>
+                <li>Vehicles: 🚗 car, 🚀 rocket, 🚁 helicopter</li>
+                <li>Gadgets: 📱 phone, 💻 laptop, ⌚ smartwatch</li>
+              </ul>
+            </div>
+          </div>
+          <div class="screen-item">
+            <div class="screen-number">06</div>
+            <div class="screen-content">
+              <div class="screen-name">Mission 2: Sort by Power Source (Medium)</div>
+              <div class="screen-desc">Categories: Electric ⚡ | Fuel 🔥 | Human-Powered 💪. 12 items, trickier decisions. Discussion: "Some machines use MORE THAN ONE power source — AI faces tricky decisions too!"</div>
+              <ul class="screen-items">
+                <li>Electric: electric car, laptop, smartwatch, drone</li>
+                <li>Fuel: rocket, airplane, motorcycle, submarine</li>
+                <li>Human-powered: bicycle, skateboard, sailboat, hand drill</li>
+              </ul>
+            </div>
+          </div>
+          <div class="screen-item">
+            <div class="screen-number">07</div>
+            <div class="screen-content">
+              <div class="screen-name">Mission 3: Sort by Era (Hard)</div>
+              <div class="screen-desc">Categories: Ancient 🏛️ | Modern 🏙️ | Future 🚀. 12 items, requires critical thinking. Discussion: "You used FEATURES — that's exactly how AI thinks!"</div>
+              <ul class="screen-items">
+                <li>Ancient: wheel, compass, sundial, catapult</li>
+                <li>Modern: smartphone, car, television, microwave</li>
+                <li>Future: flying car, robot helper, space elevator, teleporter</li>
+              </ul>
+            </div>
+          </div>
+          <div class="screen-item">
+            <div class="screen-number">08</div>
+            <div class="screen-content">
+              <div class="screen-name">Hacker Badge &amp; Summary</div>
+              <div class="screen-desc">"Mission Complete!" animated badge. Stats: 33 inventions, 9 categories. Learning: "TYPE, POWER, and TIME are FEATURES." Badge saved to achievement system. "{name} — Junior Machine Hacker"</div>
+            </div>
+          </div>
+          <div class="screen-item">
+            <div class="screen-number">09</div>
+            <div class="screen-content">
+              <div class="screen-name">Bonus: Build Your Own Classifier ✨</div>
+              <div class="screen-desc">Kids pick 3 custom categories, choose items from an emoji picker, then play their own sorting game. "You just DESIGNED an AI task — you're thinking like an engineer!"</div>
+            </div>
+          </div>
+          <div class="screen-item">
+            <div class="screen-number">10</div>
+            <div class="screen-content">
+              <div class="screen-name">AI Mistakes Gallery 🤦</div>
+              <div class="screen-desc">3-4 funny/famous AI fails: turtle vs gun, muffin vs chihuahua, everything-is-a-cat. Each: what happened, why, what we learn. "AI is smart but not perfect!"</div>
+            </div>
+          </div>
+          <div class="screen-item">
+            <div class="screen-number">🎮</div>
+            <div class="screen-content">
+              <div class="screen-name">Multiplayer Mode (from Welcome screen)</div>
+              <div class="screen-desc">Race mode: two players sort same items side-by-side. Challenge mode: Player 1 creates custom sort, Player 2 solves it. Score comparison. Works on same device.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <h3 class="collapsible" onclick="toggle(this)">Visual Design</h3>
+      <div class="collapsible-content">
+        <div class="design-grid">
+          <div class="design-chip"><strong>Theme</strong>Dark green/black lab with neon green &amp; cyan accents</div>
+          <div class="design-chip"><strong>Patterns</strong>Islamic geometric overlays (subtle, CSS-based)</div>
+          <div class="design-chip"><strong>Items</strong>Emoji-based specimens (no external images)</div>
+          <div class="design-chip"><strong>Touch</strong>Large drag targets, mobile friendly</div>
+          <div class="design-chip"><strong>Avatars</strong>Geometric/abstract only, no faces</div>
+          <div class="design-chip"><strong>Tone</strong>Boys-friendly, action, mission-based language</div>
+        </div>
+      </div>
+
+      <h3 class="collapsible" onclick="toggle(this)">Tech Details</h3>
+      <div class="collapsible-content">
+        <ul class="tech-list">
+          <li>Single workshop-1.html file (HTML + CSS + JS inline)</li>
+          <li>No external libraries or dependencies</li>
+          <li>HTML5 drag &amp; drop API + touch event fallback</li>
+          <li>CSS animations for transitions and celebrations</li>
+          <li>localStorage for achievements and theme preference</li>
+          <li>Estimated: ~800-900 lines (expanded)</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════ -->
+  <!-- WORKSHOP 2 -->
+  <!-- ═══════════════════════════════════════ -->
+  <section>
+    <div class="workshop-card w2">
+      <div class="workshop-header">
+        <div class="workshop-title">Workshop 2: "Code Breaker: Train the AI"</div>
+        <span class="workshop-age">Ages 10–13</span>
+      </div>
+      <p class="workshop-topic">Topic: Drawing Recognition with Neural Networks</p>
+
+      <h3 class="collapsible" onclick="toggle(this)">Learning Objectives</h3>
+      <div class="collapsible-content">
+        <ul class="objectives-list">
+          <li>Understand what training data is</li>
+          <li>See how a neural network learns from examples</li>
+          <li>Experience the train → test → improve cycle</li>
+          <li>Understand accuracy and why more data = better AI</li>
+        </ul>
+      </div>
+
+      <h3 class="collapsible" onclick="toggle(this)">Screens &amp; Flow (11 screens)</h3>
+      <div class="collapsible-content">
+        <div class="screens-container">
+          <div class="screen-item">
+            <div class="screen-number">01</div>
+            <div class="screen-content">
+              <div class="screen-name">Welcome</div>
+              <div class="screen-desc">Hacker terminal aesthetic. "Welcome, Code Breaker." Name input (placeholder: "Omar"). "Enter the Lab" button.</div>
+            </div>
+          </div>
+          <div class="screen-item">
+            <div class="screen-number">02</div>
+            <div class="screen-content">
+              <div class="screen-name">Briefing: What is a Neural Network?</div>
+              <div class="screen-desc">Animated dots-and-lines network diagram. "Your brain has billions of neurons — a neural network is a computer version."</div>
+            </div>
+          </div>
+          <div class="screen-item">
+            <div class="screen-number">03</div>
+            <div class="screen-content">
+              <div class="screen-name">Briefing: How Does AI Learn?</div>
+              <div class="screen-desc">"You show it examples. Lots of examples." Visual: images in → labels out. "The more examples, the smarter it gets."</div>
+            </div>
+          </div>
+          <div class="screen-item">
+            <div class="screen-number">04</div>
+            <div class="screen-content">
+              <div class="screen-name">Briefing: What is Training?</div>
+              <div class="screen-desc">Interactive mini-demo: click emoji cats/dogs, watch accuracy go from 50% → 80%.</div>
+            </div>
+          </div>
+          <div class="screen-item">
+            <div class="screen-number">05</div>
+            <div class="screen-content">
+              <div class="screen-name">Briefing: Your Mission</div>
+              <div class="screen-desc">"Draw shapes. Train an AI to recognize them. Then test it." "Begin Training" button.</div>
+            </div>
+          </div>
+          <div class="screen-item">
+            <div class="screen-number">06</div>
+            <div class="screen-content">
+              <div class="screen-name">Phase 1: Draw Training Data</div>
+              <div class="screen-desc">Canvas for drawing. 3 categories (Circle, Triangle, Square). 5 examples each (15 total). Training set gallery. Progress bar.</div>
+            </div>
+          </div>
+          <div class="screen-item">
+            <div class="screen-number">07</div>
+            <div class="screen-content">
+              <div class="screen-name">Phase 2: Train the Model</div>
+              <div class="screen-desc">"Train AI" button. Animated: epoch counter, loss going down, accuracy going up. TensorFlow.js CNN. ~5-10 seconds.</div>
+            </div>
+          </div>
+          <div class="screen-item">
+            <div class="screen-number">08</div>
+            <div class="screen-content">
+              <div class="screen-name">Phase 3: Test Your AI</div>
+              <div class="screen-desc">Fresh canvas. Draw → AI predicts with confidence %. "Is it always right? Why not?"</div>
+            </div>
+          </div>
+          <div class="screen-item">
+            <div class="screen-number">09</div>
+            <div class="screen-content">
+              <div class="screen-name">Phase 4: Improve It</div>
+              <div class="screen-desc">Add more training data for weak categories. Retrain. See accuracy improve. Iterative cycle.</div>
+            </div>
+          </div>
+          <div class="screen-item">
+            <div class="screen-number">10</div>
+            <div class="screen-content">
+              <div class="screen-name">Experiment Zone</div>
+              <div class="screen-desc">What if only 2 examples? What if messy drawings? What if shapes look similar? Before/after accuracy.</div>
+            </div>
+          </div>
+          <div class="screen-item">
+            <div class="screen-number">11</div>
+            <div class="screen-content">
+              <div class="screen-name">Code Breaker Badge &amp; Summary</div>
+              <div class="screen-desc">Badge, stats, summary. "AI isn't magic — it learns from patterns YOU provide." Badge saved to achievements. "{name} — Certified Code Breaker"</div>
+            </div>
+          </div>
+          <div class="screen-item">
+            <div class="screen-number">12</div>
+            <div class="screen-content">
+              <div class="screen-name">Bonus: Build Your Own Classifier ✨</div>
+              <div class="screen-desc">Pick 3 custom categories, draw training data, train &amp; test a custom model. "You just designed AND built a custom AI — that's real engineering!"</div>
+            </div>
+          </div>
+          <div class="screen-item">
+            <div class="screen-number">13</div>
+            <div class="screen-content">
+              <div class="screen-name">AI Mistakes Gallery 🤦</div>
+              <div class="screen-desc">Real AI fails: snow blindness (data bias), stop sign confusion (adversarial), 4s vs 9s (similar features). "This is why YOUR job as a trainer matters!"</div>
+            </div>
+          </div>
+          <div class="screen-item">
+            <div class="screen-number">🎮</div>
+            <div class="screen-content">
+              <div class="screen-name">Multiplayer Mode (from Welcome screen)</div>
+              <div class="screen-desc">Accuracy battle: both train same categories, compare. Trick challenge: Player 1 draws tricky examples, Player 2's AI classifies. Live accuracy dashboard.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <h3 class="collapsible" onclick="toggle(this)">Visual Design</h3>
+      <div class="collapsible-content">
+        <div class="design-grid">
+          <div class="design-chip"><strong>Theme</strong>Dark hacker terminal (black, green monospace)</div>
+          <div class="design-chip"><strong>Background</strong>Matrix-style subtle animation</div>
+          <div class="design-chip"><strong>Colors</strong>Neon green primary, amber warnings, cyan accents</div>
+          <div class="design-chip"><strong>Patterns</strong>Islamic geometric border/frame elements</div>
+          <div class="design-chip"><strong>Animation</strong>Terminal-style typing reveals</div>
+          <div class="design-chip"><strong>Font</strong>Monospace for "code" feel</div>
+        </div>
+      </div>
+
+      <h3 class="collapsible" onclick="toggle(this)">Tech Details</h3>
+      <div class="collapsible-content">
+        <ul class="tech-list">
+          <li>Single workshop-2.html file</li>
+          <li>TensorFlow.js loaded from CDN</li>
+          <li>Simple CNN model (2 conv layers + dense)</li>
+          <li>Canvas API for drawing</li>
+          <li>localStorage for achievements and theme preference</li>
+          <li>Estimated: ~1100-1300 lines (expanded)</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════ -->
+  <!-- WORKSHOP 3 -->
+  <!-- ═══════════════════════════════════════ -->
+  <section>
+    <div class="workshop-card w3">
+      <div class="workshop-header">
+        <div class="workshop-title">Workshop 3: "AI Engineer: Build &amp; Deploy"</div>
+        <span class="workshop-age">Ages 14+</span>
+      </div>
+      <p class="workshop-topic">Topic: MNIST Digit Recognition — Real TensorFlow.js</p>
+
+      <h3 class="collapsible" onclick="toggle(this)">Learning Objectives</h3>
+      <div class="collapsible-content">
+        <ul class="objectives-list">
+          <li>Understand neural network architecture (layers, neurons, activation)</li>
+          <li>Write/modify real TensorFlow.js code</li>
+          <li>Train on a real dataset (MNIST digits)</li>
+          <li>Understand loss, epochs, batch size, overfitting</li>
+          <li>Experiment with hyperparameters</li>
+        </ul>
+      </div>
+
+      <h3 class="collapsible" onclick="toggle(this)">Screens &amp; Flow (9 screens)</h3>
+      <div class="collapsible-content">
+        <div class="screens-container">
+          <div class="screen-item">
+            <div class="screen-number">01</div>
+            <div class="screen-content">
+              <div class="screen-name">Welcome</div>
+              <div class="screen-desc">Clean dev environment. "Welcome, AI Engineer." Name input (placeholder: "Ibrahim"). "Open Workspace" button.</div>
+            </div>
+          </div>
+          <div class="screen-item">
+            <div class="screen-number">02</div>
+            <div class="screen-content">
+              <div class="screen-name">Module 1: What's Inside a Neural Network?</div>
+              <div class="screen-desc">Interactive network visualizer. Add/remove neurons and layers. Sliders for layers (1-5) and neurons (2-32). Animated data flow.</div>
+            </div>
+          </div>
+          <div class="screen-item">
+            <div class="screen-number">03</div>
+            <div class="screen-content">
+              <div class="screen-name">Module 2: Meet the MNIST Dataset</div>
+              <div class="screen-desc">Grid of handwritten digits from TensorFlow.js. Click to see label + pixel values. "60k training, 10k testing — why split?"</div>
+            </div>
+          </div>
+          <div class="screen-item">
+            <div class="screen-number">04</div>
+            <div class="screen-content">
+              <div class="screen-name">Module 3: Build Your Model (Code Editor)</div>
+              <div class="screen-desc">Split screen: editable code (left) + visualization (right). Pre-filled starter code. "Build Model" updates architecture diagram.</div>
+            </div>
+          </div>
+          <div class="screen-item">
+            <div class="screen-number">05</div>
+            <div class="screen-content">
+              <div class="screen-name">Module 4: Train &amp; Watch</div>
+              <div class="screen-desc">Hyperparameter controls (epochs, batch size, learning rate). Real-time loss &amp; accuracy charts. Live predictions updating. 30-60 seconds.</div>
+            </div>
+          </div>
+          <div class="screen-item">
+            <div class="screen-number">06</div>
+            <div class="screen-content">
+              <div class="screen-name">Module 5: Test &amp; Analyze</div>
+              <div class="screen-desc">Test accuracy. Confusion matrix. Most/least confident predictions. Draw your own digit → model predicts.</div>
+            </div>
+          </div>
+          <div class="screen-item">
+            <div class="screen-number">07</div>
+            <div class="screen-content">
+              <div class="screen-name">Module 6: Experiments &amp; Challenges</div>
+              <div class="screen-desc">5 challenges: >95% accuracy, 1 epoch only, high learning rate, extra layer, limited data. Hypothesis → experiment → result. Leaderboard.</div>
+            </div>
+          </div>
+          <div class="screen-item">
+            <div class="screen-number">08</div>
+            <div class="screen-content">
+              <div class="screen-name">Module 7: The Ethics Lab</div>
+              <div class="screen-desc">Interactive scenarios on bias, fairness, responsibility. Universal ethics + optional Islamic reflections section.</div>
+            </div>
+          </div>
+          <div class="screen-item">
+            <div class="screen-number">09</div>
+            <div class="screen-content">
+              <div class="screen-name">AI Engineer Badge &amp; Summary</div>
+              <div class="screen-desc">Badge, stats, concepts summary. Next steps: TensorFlow tutorials, Kaggle. Badge saved to achievements. "{name} — Certified AI Engineer"</div>
+            </div>
+          </div>
+          <div class="screen-item">
+            <div class="screen-number">10</div>
+            <div class="screen-content">
+              <div class="screen-name">Bonus: Build Your Own Model ✨</div>
+              <div class="screen-desc">Go beyond MNIST — upload/draw custom data, design custom architecture, train, test, iterate. "You just built a custom AI from scratch — welcome to the real world!"</div>
+            </div>
+          </div>
+          <div class="screen-item">
+            <div class="screen-number">11</div>
+            <div class="screen-content">
+              <div class="screen-name">AI Mistakes Gallery 🤦</div>
+              <div class="screen-desc">Real-world AI fails with ethical depth: biased hiring tools, skin-tone accuracy gaps in medical AI, gendered translations, self-driving edge cases. Each: technical reason + ethical impact + prevention. Links to Ethics Lab.</div>
+            </div>
+          </div>
+          <div class="screen-item">
+            <div class="screen-number">🎮</div>
+            <div class="screen-content">
+              <div class="screen-name">Multiplayer Mode (from Welcome screen)</div>
+              <div class="screen-desc">Accuracy leaderboard. Architecture battle: different models, same data. Hyperparameter challenge: same model, different tweaks. Split-screen real-time training comparison.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <h3 class="collapsible" onclick="toggle(this)">Visual Design</h3>
+      <div class="collapsible-content">
+        <div class="design-grid">
+          <div class="design-chip"><strong>Theme</strong>Modern IDE / VS Code inspired</div>
+          <div class="design-chip"><strong>Colors</strong>Dark theme, syntax highlighting palette</div>
+          <div class="design-chip"><strong>Layout</strong>Split panels, tabs, status bars</div>
+          <div class="design-chip"><strong>Patterns</strong>Islamic geometric subtle watermark</div>
+          <div class="design-chip"><strong>Font</strong>Monospace for code, sans-serif for UI</div>
+          <div class="design-chip"><strong>Tone</strong>Professional but approachable</div>
+        </div>
+      </div>
+
+      <h3 class="collapsible" onclick="toggle(this)">Tech Details</h3>
+      <div class="collapsible-content">
+        <ul class="tech-list">
+          <li>Single workshop-3.html file</li>
+          <li>TensorFlow.js from CDN</li>
+          <li>MNIST dataset via TensorFlow.js data API</li>
+          <li>Custom syntax-highlighted code editor</li>
+          <li>Canvas/SVG training visualizations</li>
+          <li>localStorage for achievements, leaderboard, theme</li>
+          <li>Estimated: ~1600-1900 lines (expanded)</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════ -->
+  <!-- WORKSHOP 4 -->
+  <!-- ═══════════════════════════════════════ -->
+  <section>
+    <div class="workshop-card w4">
+      <div class="workshop-header">
+        <div class="workshop-title">Workshop 4: "AI Decoded"</div>
+        <span class="workshop-age">Parents / Teachers</span>
+      </div>
+      <p class="workshop-topic">Topic: Understanding AI to Guide the Next Generation</p>
+
+      <h3 class="collapsible" onclick="toggle(this)">Learning Objectives</h3>
+      <div class="collapsible-content">
+        <ul class="objectives-list">
+          <li>Understand what AI/ML actually is (demystified)</li>
+          <li>Know what their kids are learning in each workshop</li>
+          <li>Feel confident facilitating workshops</li>
+          <li>Understand AI ethics (universal + optional Islamic perspective)</li>
+          <li>Know how to continue the learning journey</li>
+        </ul>
+      </div>
+
+      <h3 class="collapsible" onclick="toggle(this)">Screens &amp; Flow (9 screens)</h3>
+      <div class="collapsible-content">
+        <div class="screens-container">
+          <div class="screen-item">
+            <div class="screen-number">01</div>
+            <div class="screen-content">
+              <div class="screen-name">Welcome</div>
+              <div class="screen-desc">"AI Decoded — A Guide for Parents &amp; Teachers." "Your children are learning to build the future." "Begin" button.</div>
+            </div>
+          </div>
+          <div class="screen-item">
+            <div class="screen-number">02</div>
+            <div class="screen-content">
+              <div class="screen-name">Chapter 1: What is AI, Really?</div>
+              <div class="screen-desc">Interactive sorting demo. User sorts emoji items → "You just did classification!" Simple input → processing → output animation.</div>
+            </div>
+          </div>
+          <div class="screen-item">
+            <div class="screen-number">03</div>
+            <div class="screen-content">
+              <div class="screen-name">Chapter 2: What is Machine Learning?</div>
+              <div class="screen-desc">Traditional programming vs ML (interactive toggle). Watch AI learn in real-time with 2D classification plot.</div>
+            </div>
+          </div>
+          <div class="screen-item">
+            <div class="screen-number">04</div>
+            <div class="screen-content">
+              <div class="screen-name">Chapter 3: Inside a Neural Network</div>
+              <div class="screen-desc">Simplified visual. Click-through: data in → layers process → answer out. No math, just intuition.</div>
+            </div>
+          </div>
+          <div class="screen-item">
+            <div class="screen-number">05</div>
+            <div class="screen-content">
+              <div class="screen-name">Chapter 4: Your Child's Learning Path</div>
+              <div class="screen-desc">Visual roadmap of all 3 kid workshops. Click each for details, duration (~45 min), discussion prompts.</div>
+            </div>
+          </div>
+          <div class="screen-item">
+            <div class="screen-number">06</div>
+            <div class="screen-content">
+              <div class="screen-name">Chapter 5: Facilitating a Workshop</div>
+              <div class="screen-desc">Step-by-step guide. Setup: just a browser. Timing: intro 5min, activity 30min, discussion 10min. Common issues &amp; solutions.</div>
+            </div>
+          </div>
+          <div class="screen-item">
+            <div class="screen-number">07</div>
+            <div class="screen-content">
+              <div class="screen-name">Chapter 6: AI Ethics &amp; Values</div>
+              <div class="screen-desc">Universal: Trust, Fairness, Knowledge, Public Good. Interactive scenarios. Optional expandable: Islamic reflections (Amana, Adl, Ilm, Maslaha).</div>
+            </div>
+          </div>
+          <div class="screen-item">
+            <div class="screen-number">08</div>
+            <div class="screen-content">
+              <div class="screen-name">Chapter 7: Beyond the Workshop</div>
+              <div class="screen-desc">Continued learning resources. Free platforms. Book suggestions. How to set up an AI club / study circle. Screen time balance.</div>
+            </div>
+          </div>
+          <div class="screen-item">
+            <div class="screen-number">09</div>
+            <div class="screen-content">
+              <div class="screen-name">Summary &amp; Certificate</div>
+              <div class="screen-desc">"You're ready to guide the next generation." Key takeaways. Facilitator certificate. Badge saved to achievements. Links to all kid workshops.</div>
+            </div>
+          </div>
+          <div class="screen-item">
+            <div class="screen-number">10</div>
+            <div class="screen-content">
+              <div class="screen-name">AI Mistakes Gallery (for adults) 🤦</div>
+              <div class="screen-desc">Real-world cases with nuance: biased hiring algorithms, demographic gaps in medical AI, deepfakes &amp; misinformation, autonomous vehicle controversies. Each: what happened, why, what's being done, discussion questions. "These are the conversations your kids need you to have with them."</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <h3 class="collapsible" onclick="toggle(this)">Visual Design</h3>
+      <div class="collapsible-content">
+        <div class="design-grid">
+          <div class="design-chip"><strong>Theme</strong>Clean, elegant, warm</div>
+          <div class="design-chip"><strong>Colors</strong>Light theme — creamy white, warm grays, teal/gold</div>
+          <div class="design-chip"><strong>Patterns</strong>Islamic geometric borders &amp; section dividers</div>
+          <div class="design-chip"><strong>Typography</strong>Readable, generous spacing</div>
+          <div class="design-chip"><strong>Bismillah</strong>Beautiful Arabic calligraphy</div>
+          <div class="design-chip"><strong>Tone</strong>Professional but welcoming</div>
+        </div>
+      </div>
+
+      <h3 class="collapsible" onclick="toggle(this)">Tech Details</h3>
+      <div class="collapsible-content">
+        <ul class="tech-list">
+          <li>Single workshop-4.html file</li>
+          <li>Lightweight TensorFlow.js for Chapter 2 demo</li>
+          <li>CSS animations for visual explanations</li>
+          <li>localStorage for achievements and theme preference</li>
+          <li>Estimated: ~1200-1400 lines (expanded)</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════ -->
+  <!-- FACILITATOR GUIDES -->
+  <!-- ═══════════════════════════════════════ -->
+  <section>
+    <h2><span class="icon">📘</span> Facilitator Guides (.md files)</h2>
+    <p>Each workshop has a companion guide. Every guide includes a <strong>"For Developers &amp; Engineers"</strong> section for technical volunteers/mentors who help run the workshops.</p>
+
+    <!-- Guide 1 -->
+    <div class="workshop-card w1" style="margin-top:24px;">
+      <div class="workshop-header">
+        <div class="workshop-title">Workshop 1 Guide — <code style="color:var(--neon-green);font-size:0.9rem;">workshop-1-guide.md</code></div>
+        <span class="workshop-age">Ages 6–9</span>
+      </div>
+
+      <h3 class="collapsible" onclick="toggle(this)">Facilitator Section</h3>
+      <div class="collapsible-content">
+        <ul class="objectives-list">
+          <li>Learning objectives &amp; key concepts</li>
+          <li>Session timing: intro 5min, activity 30min, discussion 10min (~45min total)</li>
+          <li>Setup: just open the HTML in any browser</li>
+          <li>Discussion prompts for after each mission</li>
+          <li>Common questions kids ask &amp; suggested answers</li>
+          <li>Tips for managing drag &amp; drop with younger kids</li>
+        </ul>
+      </div>
+
+      <h3 class="collapsible" onclick="toggle(this)">For Developers &amp; Engineers</h3>
+      <div class="collapsible-content">
+        <h4>Introduction</h4>
+        <p>Welcome — you're the technical mentor helping kids discover AI. Kids will sort items and learn classification. Your job: assist with tech issues, guide discussions, spark curiosity.</p>
+        <h4>Tools Used</h4>
+        <ul class="tech-list">
+          <li>Pure HTML5 + CSS + JavaScript (no libraries)</li>
+          <li>HTML5 Drag &amp; Drop API with touch fallback</li>
+          <li>CSS animations for celebrations</li>
+          <li>No server, no database, no installs — 100% in the browser</li>
+        </ul>
+        <h4>Genius Project Examples (to inspire the kids)</h4>
+        <ul class="objectives-list">
+          <li>Google Photos: auto-sorts photos by people, places, things — classification at scale</li>
+          <li>Self-driving cars: recognizing stop signs, pedestrians, lane lines</li>
+          <li>Recycling robots: AI sorting plastic, glass, metal on conveyor belts</li>
+          <li>Mars rover: classifying rock types on Mars to decide which to study</li>
+          <li>Airport security scanners: AI classifying objects in luggage</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Guide 2 -->
+    <div class="workshop-card w2">
+      <div class="workshop-header">
+        <div class="workshop-title">Workshop 2 Guide — <code style="color:var(--neon-cyan);font-size:0.9rem;">workshop-2-guide.md</code></div>
+        <span class="workshop-age">Ages 10–13</span>
+      </div>
+
+      <h3 class="collapsible" onclick="toggle(this)">Facilitator Section</h3>
+      <div class="collapsible-content">
+        <ul class="objectives-list">
+          <li>Learning objectives &amp; key concepts</li>
+          <li>Session timing (~45min)</li>
+          <li>Setup: browser with JavaScript enabled</li>
+          <li>How to help kids draw good training data</li>
+          <li>Discussion prompts about accuracy and improvement</li>
+          <li>What to do if the model doesn't train well</li>
+        </ul>
+      </div>
+
+      <h3 class="collapsible" onclick="toggle(this)">For Developers &amp; Engineers</h3>
+      <div class="collapsible-content">
+        <h4>Introduction</h4>
+        <p>Guide kids through their first real ML training experience. They'll draw, train, test, and iterate — the real ML cycle. Help with canvas issues and explain what's happening under the hood when asked.</p>
+        <h4>Tools Used</h4>
+        <ul class="tech-list">
+          <li>TensorFlow.js (loaded from CDN)</li>
+          <li>Simple CNN architecture (2 conv layers + dense)</li>
+          <li>HTML5 Canvas API for drawing input</li>
+          <li>No server — model trains entirely in the browser</li>
+        </ul>
+        <h4>Genius Project Examples (to inspire the kids)</h4>
+        <ul class="objectives-list">
+          <li>Quick Draw by Google: trained on 50 million drawings from real people</li>
+          <li>Handwriting recognition: how tablets and phones read your handwriting</li>
+          <li>Medical X-ray scanning: AI trained to spot fractures from X-ray images</li>
+          <li>Plant disease detection: farmers photograph leaves, AI identifies diseases</li>
+          <li>Satellite image analysis: AI classifies land use from space photos</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Guide 3 -->
+    <div class="workshop-card w3">
+      <div class="workshop-header">
+        <div class="workshop-title">Workshop 3 Guide — <code style="color:var(--neon-amber);font-size:0.9rem;">workshop-3-guide.md</code></div>
+        <span class="workshop-age">Ages 14+</span>
+      </div>
+
+      <h3 class="collapsible" onclick="toggle(this)">Facilitator Section</h3>
+      <div class="collapsible-content">
+        <ul class="objectives-list">
+          <li>Learning objectives &amp; key concepts</li>
+          <li>Session timing (~60min — longer for teens)</li>
+          <li>Setup: modern browser, decent CPU for training</li>
+          <li>How to guide code editing without doing it for them</li>
+          <li>Challenge facilitation tips</li>
+          <li>Ethics discussion guide</li>
+        </ul>
+      </div>
+
+      <h3 class="collapsible" onclick="toggle(this)">For Developers &amp; Engineers</h3>
+      <div class="collapsible-content">
+        <h4>Introduction</h4>
+        <p>Senior mentor for aspiring AI engineers. Teens will write real TF.js code, train on MNIST, and experiment with hyperparameters. Your job: code review, explain concepts deeper, help debug, encourage experimentation.</p>
+        <h4>Tools Used</h4>
+        <ul class="tech-list">
+          <li>TensorFlow.js (full API from CDN)</li>
+          <li>MNIST dataset via TensorFlow.js data API</li>
+          <li>Custom syntax-highlighted code editor</li>
+          <li>Canvas/SVG for training visualizations</li>
+          <li>Real CNN architecture — same concepts used in production</li>
+        </ul>
+        <h4>Genius Project Examples (to inspire the teens)</h4>
+        <ul class="objectives-list">
+          <li>AlphaFold by DeepMind: predicted protein structures — solved a 50-year biology problem</li>
+          <li>Autonomous drones: navigation and obstacle avoidance using neural networks</li>
+          <li>Mars rover Perseverance: AI-powered navigation and rock classification</li>
+          <li>Real-time translation: neural networks translating languages instantly</li>
+          <li>Weather forecasting: deep learning models outperforming traditional methods</li>
+          <li>AI for earthquake detection: neural networks detecting seismic patterns</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Guide 4 -->
+    <div class="workshop-card w4">
+      <div class="workshop-header">
+        <div class="workshop-title">Workshop 4 Guide — <code style="color:#c084fc;font-size:0.9rem;">workshop-4-guide.md</code></div>
+        <span class="workshop-age">Parents / Teachers</span>
+      </div>
+
+      <h3 class="collapsible" onclick="toggle(this)">Facilitator Section</h3>
+      <div class="collapsible-content">
+        <ul class="objectives-list">
+          <li>Learning objectives &amp; key concepts</li>
+          <li>Session timing (~45min)</li>
+          <li>How to make adults comfortable with "not knowing"</li>
+          <li>Discussion facilitation for ethics topics</li>
+          <li>How to connect this to their kids' workshops</li>
+          <li>Group activity suggestions</li>
+        </ul>
+      </div>
+
+      <h3 class="collapsible" onclick="toggle(this)">For Developers &amp; Engineers</h3>
+      <div class="collapsible-content">
+        <h4>Introduction</h4>
+        <p>Bridge between technical reality and parent/teacher understanding. Adults will learn AI basics through interactive demos. Your job: answer technical questions simply, avoid jargon, relate to real life.</p>
+        <h4>Tools Used</h4>
+        <ul class="tech-list">
+          <li>Lightweight TensorFlow.js for the interactive classification demo</li>
+          <li>CSS animations for visual explanations</li>
+          <li>No complex setup — just a browser</li>
+        </ul>
+        <h4>Genius Project Examples (to show how AI touches daily life)</h4>
+        <ul class="objectives-list">
+          <li>Spam filters: AI classifying emails as spam or not — been doing it for 20 years</li>
+          <li>Google Translate: neural networks translating 100+ languages</li>
+          <li>Medical diagnosis: AI assisting doctors in detecting diseases from scans</li>
+          <li>Traffic navigation: AI predicting fastest routes in real-time</li>
+          <li>Accessibility tools: AI generating image descriptions for visually impaired users</li>
+          <li>Search engines: AI understanding what you mean, not just what you type</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════ -->
+  <!-- TOOLS OF THE TRADE -->
+  <!-- ═══════════════════════════════════════ -->
+  <section>
+    <div class="workshop-card" style="border-top: 3px solid var(--neon-green);">
+      <div class="workshop-header">
+        <div class="workshop-title">Tools of the Trade — <code style="color:var(--neon-green);font-size:0.9rem;">tools-of-the-trade.html</code></div>
+        <span class="workshop-age" style="color:var(--neon-green);border-color:var(--neon-green);background:rgba(57,255,133,0.08);">All Ages</span>
+      </div>
+      <p class="workshop-topic">A dedicated standalone page covering TensorFlow and alternatives. Linked from every workshop via a "Tools of the Trade 🔧" button. Never interrupts the mission/game flow.</p>
+
+      <h3 class="collapsible" onclick="toggle(this)">Purpose</h3>
+      <div class="collapsible-content">
+        <ul class="objectives-list">
+          <li>Introduce TensorFlow and explain it at every age level</li>
+          <li>Present alternatives so learners understand the landscape</li>
+          <li>Keep tool education separate from the hands-on workshop experience</li>
+          <li>Each workshop links to its age-appropriate tab within this page</li>
+        </ul>
+      </div>
+
+      <h3 class="collapsible" onclick="toggle(this)">Tab 1: "For Young Hackers" (Ages 6-9)</h3>
+      <div class="collapsible-content">
+        <div class="screens-container">
+          <div class="screen-item">
+            <div class="screen-number">TF</div>
+            <div class="screen-content">
+              <div class="screen-name">What is TensorFlow?</div>
+              <div class="screen-desc">"TensorFlow is a tool that helps computers learn — like a brain for machines! Scientists at Google built it." Friendly visual of a computer with a brain glowing inside. Analogy: "A calculator helps you do math. TensorFlow helps computers learn."</div>
+            </div>
+          </div>
+          <div class="screen-item">
+            <div class="screen-number">ALT</div>
+            <div class="screen-content">
+              <div class="screen-name">Other Cool Tools</div>
+              <div class="screen-desc">Scratch + Machine Learning — drag-and-drop blocks. Teachable Machine — train with your camera, no code. ml5.js — friendly helper for beginners.</div>
+            </div>
+          </div>
+          <div class="screen-item">
+            <div class="screen-number">💡</div>
+            <div class="screen-content">
+              <div class="screen-name">Big Idea</div>
+              <div class="screen-desc">"There are many tools for teaching computers. TensorFlow is one of the most popular — and you're learning it!"</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <h3 class="collapsible" onclick="toggle(this)">Tab 2: "For Code Breakers" (Ages 10-13)</h3>
+      <div class="collapsible-content">
+        <div class="screens-container">
+          <div class="screen-item">
+            <div class="screen-number">TF</div>
+            <div class="screen-content">
+              <div class="screen-name">What is TensorFlow?</div>
+              <div class="screen-desc">"TensorFlow is an open-source machine learning library created by Google. TensorFlow.js is the version that runs in your browser. It's the engine that powers the AI you just trained." Diagram: your drawing → TensorFlow.js → prediction.</div>
+            </div>
+          </div>
+          <div class="screen-item">
+            <div class="screen-number">ALT</div>
+            <div class="screen-content">
+              <div class="screen-name">The AI Toolkit</div>
+              <div class="screen-desc">Comparison cards for: TensorFlow.js (Google, what we use), PyTorch (Meta, popular with researchers), ml5.js (beginner-friendly), Teachable Machine (no-code), Scratch + ML (AI-powered games). Each card: name, creator, difficulty, best for.</div>
+            </div>
+          </div>
+          <div class="screen-item">
+            <div class="screen-number">💡</div>
+            <div class="screen-content">
+              <div class="screen-name">Big Idea</div>
+              <div class="screen-desc">"TensorFlow is powerful and versatile — but it's not the only option. Good engineers know multiple tools."</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <h3 class="collapsible" onclick="toggle(this)">Tab 3: "For AI Engineers" (Ages 14+)</h3>
+      <div class="collapsible-content">
+        <div class="screens-container">
+          <div class="screen-item">
+            <div class="screen-number">TF</div>
+            <div class="screen-content">
+              <div class="screen-name">What is TensorFlow?</div>
+              <div class="screen-desc">"Google's open-source framework for ML and deep learning. Released 2015, one of the most widely-used ML frameworks." History timeline: Google Brain → TF 1.0 (2017) → TF 2.0 (2019) → TF.js.</div>
+            </div>
+          </div>
+          <div class="screen-item">
+            <div class="screen-number">ALT</div>
+            <div class="screen-content">
+              <div class="screen-name">The Full Landscape</div>
+              <div class="screen-desc">Full comparison table: TensorFlow/TF.js (Google, Python/JS, production), PyTorch (Meta, Python, research), scikit-learn (community, classic ML), Keras (fast prototyping), ONNX (interoperability), Hugging Face (pre-trained models), JAX (high-performance research). Includes difficulty levels and use cases.</div>
+            </div>
+          </div>
+          <div class="screen-item">
+            <div class="screen-number">&lt;/&gt;</div>
+            <div class="screen-content">
+              <div class="screen-name">Code Comparison</div>
+              <div class="screen-desc">"Hello World" side-by-side in TensorFlow.js, PyTorch, and scikit-learn. Same task, different syntax. Shows transferable concepts.</div>
+            </div>
+          </div>
+          <div class="screen-item">
+            <div class="screen-number">🧭</div>
+            <div class="screen-content">
+              <div class="screen-name">When to Use What</div>
+              <div class="screen-desc">Decision guide: Web → TF.js. Research → PyTorch. Prototype → Keras. Not deep learning → scikit-learn. Pre-trained models → Hugging Face.</div>
+            </div>
+          </div>
+          <div class="screen-item">
+            <div class="screen-number">💡</div>
+            <div class="screen-content">
+              <div class="screen-name">Big Idea</div>
+              <div class="screen-desc">"The concepts you learn — layers, training, loss, accuracy — work across ALL these tools. You're learning transferable skills."</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <h3 class="collapsible" onclick="toggle(this)">Tab 4: "For Parents &amp; Teachers"</h3>
+      <div class="collapsible-content">
+        <div class="screens-container">
+          <div class="screen-item">
+            <div class="screen-number">TF</div>
+            <div class="screen-content">
+              <div class="screen-name">What is TensorFlow?</div>
+              <div class="screen-desc">"Google's free, open-source AI tool. Used by Airbnb, Twitter, Intel, and thousands of startups. Your kids are learning the same tool used by real engineers. TF.js means no installation — just open and learn."</div>
+            </div>
+          </div>
+          <div class="screen-item">
+            <div class="screen-number">❓</div>
+            <div class="screen-content">
+              <div class="screen-name">Why TensorFlow for These Workshops?</div>
+              <div class="screen-desc">Free and open-source. Runs in the browser (no setup). Industry-standard (real career skills). Huge community. Works on any device.</div>
+            </div>
+          </div>
+          <div class="screen-item">
+            <div class="screen-number">ALT</div>
+            <div class="screen-content">
+              <div class="screen-name">Other Tools Your Kids Might Encounter</div>
+              <div class="screen-desc">PyTorch (the other major framework), Scratch + ML (for under 10s), Teachable Machine (no-code), Hugging Face (pre-trained models), scikit-learn (traditional ML).</div>
+            </div>
+          </div>
+          <div class="screen-item">
+            <div class="screen-number">💡</div>
+            <div class="screen-content">
+              <div class="screen-name">Key Message</div>
+              <div class="screen-desc">"The specific tool doesn't matter as much as the concepts. Classification, training, features, accuracy — these ideas are universal. Your child is learning to think like an AI engineer, not just use one tool."</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <h3 class="collapsible" onclick="toggle(this)">Visual Design &amp; Tech</h3>
+      <div class="collapsible-content">
+        <div class="design-grid">
+          <div class="design-chip"><strong>Theme</strong>Matches project aesthetic — dark, neon, geometric</div>
+          <div class="design-chip"><strong>Navigation</strong>Tab-based, one per age group</div>
+          <div class="design-chip"><strong>Code</strong>Syntax-highlighted snippets (teens tab)</div>
+          <div class="design-chip"><strong>Linked</strong>"Tools of the Trade 🔧" button in each workshop</div>
+          <div class="design-chip"><strong>Tech</strong>Single HTML file, no dependencies, ~400-500 lines</div>
+          <div class="design-chip"><strong>Mobile</strong>Responsive, touch-friendly tabs</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════ -->
+  <!-- SHARED FILES -->
+  <!-- ═══════════════════════════════════════ -->
+  <section>
+    <h2><span class="icon">📄</span> Shared Files</h2>
+
+    <h3>README.md</h3>
+    <p>Bismillah (top). Project title. What this is. Who it's for (all backgrounds). Workshop overview with links. Tools of the Trade page link. How to run (just open HTML). Cultural notes: "By Muslims, for everyone." Credits. License. Footer.</p>
+
+    <h3>FAQ.md</h3>
+    <p>Bismillah (top). For Kids: "What is AI?", "Will AI take over?", "Can I build my own AI?", "What is TensorFlow?". For Parents: "Is this safe?", "What data collected?" (none), "Screen time?", "Why TensorFlow?". For Teachers: "Curriculum fit?", "No coding knowledge?", "Offline use?", "Can I use PyTorch instead?". Footer.</p>
+
+    <h3>CHANGELOG.md</h3>
+    <p>Bismillah (top). Version history with dates and changes. Footer.</p>
+  </section>
+
+  <!-- Version History -->
+  <section>
+    <h2><span class="icon">📋</span> Version History</h2>
+    <table class="version-table">
+      <thead>
+        <tr><th>Version</th><th>Date</th><th>Changes</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>v1.0</td><td>2026-03-08</td><td>Initial full plan</td></tr>
+        <tr><td>v1.1</td><td>2026-03-08</td><td>Added "Tools of the Trade" dedicated section (TensorFlow intro + alternatives per age). Added CHANGELOG.md. Updated FAQ. Deliverables: 10 → 12.</td></tr>
+        <tr><td>v1.2</td><td>2026-03-08</td><td>Added "For Developers &amp; Engineers" section to all 4 workshop guides. Added "No music, no dance" global rule. All examples science/engineering/medical/space focused.</td></tr>
+        <tr><td>v1.3</td><td>2026-03-08</td><td><strong>Tier 1 features:</strong> Achievement system, Multiplayer mode, Build-your-own classifier, AI Mistakes Gallery, Dark/Light theme toggle. Added Feature Roadmap. Expanded line estimates.</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+</div>
+
+<!-- Footer -->
+<footer>
+  <p>Powered by <a href="https://workshop-diy.org" target="_blank">workshop-diy.org</a></p>
+</footer>
+
+<script>
+  function toggle(el) {
+    el.classList.toggle('collapsed');
+    const content = el.nextElementSibling;
+    if (content) {
+      content.classList.toggle('hidden');
+    }
+  }
+</script>
+
+</body>
+</html>

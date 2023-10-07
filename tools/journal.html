@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Hacker Lab — AI Journal</title>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=Outfit:wght@400;600;700&family=Caveat:wght@400;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0f0d;--bg2:#111a16;--bg3:#162019;--neon:#39ff85;--nd:rgba(57,255,133,.1);
+  --cyan:#00e5ff;--amber:#ffb300;--txt:#e8f0ec;--txt2:#8fa89a;--txt3:#5a7568;--bdr:#1e2e26;
+  --tr:.3s ease}
+[data-theme="light"]{--bg:#faf8f5;--bg2:#fff;--bg3:#f0ede8;--neon:#0a8a3e;--nd:rgba(10,138,62,.06);
+  --cyan:#0077a8;--amber:#b87900;--txt:#2c2c2c;--txt2:#5a5a5a;--txt3:#999;--bdr:#e0dcd5}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;padding:16px;transition:all var(--tr)}
+.bism{font-family:'Amiri',serif;font-size:1.7rem;font-weight:700;color:var(--neon);text-align:center;padding:20px 0 8px}
+h1{text-align:center;font-size:1.5rem;margin-bottom:4px}
+.sub{text-align:center;color:var(--txt2);margin-bottom:20px;font-size:.9rem}
+.app{max-width:560px;margin:0 auto}
+.topc{position:fixed;top:8px;right:10px;display:flex;gap:5px;z-index:100}
+.cb{width:32px;height:32px;border-radius:7px;border:1px solid var(--bdr);background:var(--bg2);color:var(--txt2);
+  font-size:.95rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all var(--tr)}
+.cb:hover{border-color:var(--neon);color:var(--neon)}
+
+/* Prompts */
+.prompt{background:var(--bg2);border:1px solid var(--bdr);border-radius:12px;padding:16px;margin:10px 0;transition:all var(--tr)}
+.prompt:hover{border-color:var(--neon)}
+.prompt label{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--neon);letter-spacing:1px;
+  display:block;margin-bottom:6px;text-transform:uppercase}
+.prompt textarea{width:100%;min-height:80px;background:var(--bg);border:1px solid var(--bdr);border-radius:8px;
+  color:var(--txt);font-family:'Caveat',cursive;font-size:1.15rem;padding:12px;resize:vertical;outline:none;
+  line-height:1.5;transition:border var(--tr)}
+.prompt textarea:focus{border-color:var(--neon)}
+.prompt textarea::placeholder{color:var(--txt3)}
+
+/* Workshop selector */
+.ws-sel{display:flex;gap:6px;justify-content:center;margin:12px 0;flex-wrap:wrap}
+.ws-btn{padding:6px 12px;border-radius:6px;border:1px solid var(--bdr);background:var(--bg2);
+  color:var(--txt3);font-size:.75rem;cursor:pointer;transition:all var(--tr)}
+.ws-btn.on{border-color:var(--neon);color:var(--neon);background:var(--nd)}
+
+.btn{padding:13px 32px;border-radius:10px;border:2px solid var(--neon);background:transparent;color:var(--neon);
+  font-family:'JetBrains Mono',monospace;font-size:.82rem;cursor:pointer;display:block;margin:16px auto;
+  text-transform:uppercase;letter-spacing:1px;transition:all var(--tr)}
+.btn:hover{background:var(--neon);color:var(--bg)}
+
+/* Entries timeline */
+.timeline{margin:24px 0}
+.tl-header{font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--neon);margin-bottom:10px;
+  text-transform:uppercase;letter-spacing:2px}
+.entry{background:var(--bg2);border:1px solid var(--bdr);border-radius:12px;padding:16px;margin:8px 0;
+  position:relative;transition:all var(--tr)}
+.entry:hover{border-color:var(--neon)}
+.entry::before{content:'';position:absolute;left:-8px;top:20px;width:8px;height:2px;background:var(--neon)}
+.entry .e-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.entry .e-date{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--txt3)}
+.entry .e-ws{font-family:'JetBrains Mono',monospace;font-size:.6rem;padding:2px 6px;border-radius:4px;
+  color:var(--cyan);background:var(--cd);border:1px solid rgba(0,229,255,.2)}
+.entry .e-q{font-size:.72rem;color:var(--txt3);margin-bottom:3px;font-family:'JetBrains Mono',monospace}
+.entry .e-a{font-family:'Caveat',cursive;font-size:1.05rem;color:var(--txt2);line-height:1.5;margin-bottom:6px}
+.entry .e-del{position:absolute;top:8px;right:10px;background:none;border:none;color:var(--txt3);
+  cursor:pointer;font-size:.8rem;opacity:.4;transition:opacity var(--tr)}
+.entry .e-del:hover{opacity:1;color:var(--red)}
+
+.empty{text-align:center;padding:30px;color:var(--txt3);font-size:.9rem}
+.stats{display:flex;gap:8px;justify-content:center;margin:12px 0}
+.stat{background:var(--bg2);border:1px solid var(--bdr);border-radius:8px;padding:10px 16px;text-align:center}
+.stat .sv{font-family:'JetBrains Mono',monospace;font-size:1.2rem;color:var(--neon);font-weight:700}
+.stat .sl{font-size:.62rem;color:var(--txt3);text-transform:uppercase}
+
+.ftr{text-align:center;padding:20px;font-size:.72rem;color:var(--txt3)}.ftr a{color:var(--neon);text-decoration:none}
+.cb.lang{font-size:.65rem;font-weight:700;width:auto;padding:0 8px;font-family:monospace}
+</style>
+</head>
+<body>
+<div class="topc">
+<button class="cb" id="thB" onclick="tTh()">🌙</button>
+<button class="cb lang" id="_lnB" onclick="_cycleLang()" style="font-size:.65rem;font-weight:700;width:auto;padding:0 8px">EN</button></div>
+<div class="bism">بسم الله الرحمن الرحيم</div>
+<h1>📓 AI Journal</h1>
+<p class="sub">Reflect on what you learned — writing helps you remember</p>
+<div class="app">
+
+<div class="ws-sel" id="wsSel"></div>
+<div class="prompt"><label>What did you learn today?</label>
+<textarea id="q1" placeholder="I learned that AI..."></textarea></div>
+<div class="prompt"><label>What surprised you about AI?</label>
+<textarea id="q2" placeholder="I was surprised that..."></textarea></div>
+<div class="prompt"><label>What would you build with AI?</label>
+<textarea id="q3" placeholder="If I could build anything with AI, I would..."></textarea></div>
+<div class="prompt"><label>What question do you still have?</label>
+<textarea id="q4" placeholder="I still wonder about..."></textarea></div>
+<button class="btn" onclick="save()">Save Entry ✓</button>
+
+<div class="stats" id="stats"></div>
+<div class="timeline" id="timeline"></div>
+</div>
+<div class="ftr">Powered by <a href="https://workshop-diy.org" target="_blank">workshop-diy.org</a></div>
+<script>
+let ws='General';const wsList=['General','Workshop 1','Workshop 2','Workshop 3','Workshop 4','Hardware Lab'];
+function buildWsSel(){const el=document.getElementById('wsSel');el.innerHTML='';
+wsList.forEach(w=>{const b=document.createElement('button');b.className='ws-btn'+(ws===w?' on':'');
+b.textContent=w;b.onclick=()=>{ws=w;buildWsSel()};el.appendChild(b)})}
+buildWsSel();
+
+function save(){const e={date:new Date().toISOString(),ws,q1:document.getElementById('q1').value.trim(),
+  q2:document.getElementById('q2').value.trim(),q3:document.getElementById('q3').value.trim(),
+  q4:document.getElementById('q4').value.trim()};
+if(!e.q1&&!e.q2&&!e.q3&&!e.q4)return;
+let entries=[];try{entries=JSON.parse(localStorage.getItem('ai-journal')||'[]')}catch(ex){}
+entries.unshift(e);try{localStorage.setItem('ai-journal',JSON.stringify(entries))}catch(ex){}
+['q1','q2','q3','q4'].forEach(id=>document.getElementById(id).value='');render()}
+
+function del(i){let entries=[];try{entries=JSON.parse(localStorage.getItem('ai-journal')||'[]')}catch(e){}
+if(confirm('Delete this entry?')){entries.splice(i,1);try{localStorage.setItem('ai-journal',JSON.stringify(entries))}catch(e){}render()}}
+
+function render(){let entries=[];try{entries=JSON.parse(localStorage.getItem('ai-journal')||'[]')}catch(e){}
+// Stats
+const st=document.getElementById('stats');
+st.innerHTML=`<div class="stat"><div class="sv">${entries.length}</div><div class="sl">Entries</div></div>
+<div class="stat"><div class="sv">${new Set(entries.map(e=>e.ws)).size}</div><div class="sl">Workshops</div></div>
+<div class="stat"><div class="sv">${entries.length?Math.ceil((Date.now()-new Date(entries[entries.length-1].date))/(1000*60*60*24)):0}</div><div class="sl">Days Active</div></div>`;
+// Timeline
+const tl=document.getElementById('timeline');
+if(!entries.length){tl.innerHTML='<div class="empty">No entries yet — write your first reflection above!</div>';return}
+tl.innerHTML='<div class="tl-header">📝 Your Journey</div>';
+entries.forEach((e,i)=>{const d=new Date(e.date).toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'});
+let html=`<div class="entry"><button class="e-del" onclick="del(${i})">✕</button>
+<div class="e-meta"><span class="e-date">${d}</span><span class="e-ws">${e.ws}</span></div>`;
+if(e.q1)html+=`<div class="e-q">Learned:</div><div class="e-a">${esc(e.q1)}</div>`;
+if(e.q2)html+=`<div class="e-q">Surprised:</div><div class="e-a">${esc(e.q2)}</div>`;
+if(e.q3)html+=`<div class="e-q">Would build:</div><div class="e-a">${esc(e.q3)}</div>`;
+if(e.q4)html+=`<div class="e-q">Still wondering:</div><div class="e-a">${esc(e.q4)}</div>`;
+tl.innerHTML+=html+'</div>'})}
+function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML}
+
+let th='dark';function tTh(){th=th==='dark'?'light':'dark';
+document.documentElement.setAttribute('data-theme',th==='light'?'light':'');
+document.getElementById('thB').textContent=th==='dark'?'🌙':'☀️'}
+
+render();
+</script>
+
+<script>
+const _i18n = {"en": {"title": "AI Journal", "sub": "Write about what you learned", "q1": "What did you learn?", "q2": "What surprised you?", "saveBtn": "Save Entry"}, "ar": {"title": "مذكرة الذكاء", "sub": "اكتب عما تعلمته", "q1": "ماذا تعلمت؟", "q2": "ما الذي فاجأك؟", "saveBtn": "حفظ"}, "fr": {"title": "Journal IA", "sub": "Écris ce que tu as appris", "q1": "Qu'as-tu appris ?", "q2": "Qu'est-ce qui t'a surpris ?", "saveBtn": "Enregistrer"}};
+let _lang = 'en';
+function _cycleLang() {
+  const langs = ['en', 'ar', 'fr'];
+  _lang = langs[(langs.indexOf(_lang) + 1) % langs.length];
+  document.getElementById('_lnB').textContent = _lang.toUpperCase();
+  document.documentElement.lang = _lang === 'ar' ? 'ar' : _lang;
+  document.documentElement.dir = _lang === 'ar' ? 'rtl' : 'ltr';
+  const t = _i18n[_lang] || _i18n.en;
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const k = el.dataset.i18n;
+    if (t[k]) el.textContent = t[k];
+  });
+  if (t.title) document.title = t.title;
+  try { localStorage.setItem('aih-lang', _lang); } catch(e) {}
+}
+(function() {
+  try {
+    const s = localStorage.getItem('aih-lang');
+    if (s && _i18n[s]) { _lang = s; _cycleLang(); }
+  } catch(e) {}
+})();
+</script>
+
+</body>
+</html>

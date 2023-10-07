@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Hacker Lab — Code Breaker: Train the AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Share+Tech+Mono&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#080808;--bg2:#0e0e0e;--bg3:#151515;--bg4:#1c1c1c;
+  --neon:#39ff85;--nd:rgba(57,255,133,.12);--ng:rgba(57,255,133,.4);
+  --cyan:#00e5ff;--cd:rgba(0,229,255,.12);
+  --amber:#ffb300;--ad:rgba(255,179,0,.08);
+  --red:#ff4757;--rd:rgba(255,71,87,.12);
+  --txt:#d0ddd4;--txt2:#7a8f82;--txt3:#4a5f52;
+  --bdr:#1a2a1f;
+  --mono:'Share Tech Mono',monospace;--body:'Rajdhani',sans-serif;
+  --tr:.3s cubic-bezier(.4,0,.2,1);
+}
+[data-theme="light"]{
+  --bg:#f0f3f1;--bg2:#e6ebe8;--bg3:#fff;--bg4:#f5f8f6;
+  --neon:#0a8a3e;--nd:rgba(10,138,62,.08);--ng:rgba(10,138,62,.25);
+  --cyan:#0077a8;--cd:rgba(0,119,168,.08);
+  --amber:#b87900;--ad:rgba(184,121,0,.06);
+  --red:#d4384a;--rd:rgba(212,56,74,.08);
+  --txt:#1e2e24;--txt2:#5a7066;--txt3:#8fa89a;
+  --bdr:#c8d8ce;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--body);background:var(--bg);color:var(--txt);min-height:100vh;overflow-x:hidden;transition:background var(--tr),color var(--tr)}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(57,255,133,.012) 2px,rgba(57,255,133,.012) 4px);
+  animation:scanl 10s linear infinite}
+@keyframes scanl{0%{background-position:0 0}100%{background-position:0 300px}}
+body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(1px 1px at 15% 25%,var(--neon) 50%,transparent),
+  radial-gradient(1px 1px at 85% 15%,var(--cyan) 50%,transparent),
+  radial-gradient(1px 1px at 45% 75%,var(--neon) 50%,transparent);
+  animation:twink 5s ease-in-out infinite alternate;opacity:.2}
+@keyframes twink{0%{opacity:.12}100%{opacity:.3}}
+
+.app{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column}
+.scr{display:none;flex:1;flex-direction:column;align-items:center;justify-content:center;
+  padding:20px;min-height:calc(100vh - 100px);animation:fi .4s ease}
+.scr.on{display:flex}
+@keyframes fi{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@keyframes flt{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+
+.hdr{text-align:center;padding:18px 16px 6px}
+.bism{font-family:'Amiri',serif;font-size:1.75rem;font-weight:700;color:var(--neon);
+  text-shadow:0 0 25px var(--nd);animation:bg 3s ease-in-out infinite alternate}
+@keyframes bg{from{text-shadow:0 0 15px var(--nd)}to{text-shadow:0 0 40px var(--ng)}}
+
+.topc{position:fixed;top:10px;right:14px;display:flex;gap:6px;z-index:100}
+.cb{width:36px;height:36px;border-radius:9px;border:1px solid var(--bdr);background:var(--bg3);
+  color:var(--txt2);font-size:1.05rem;cursor:pointer;display:flex;align-items:center;justify-content:center;
+  transition:all var(--tr);-webkit-tap-highlight-color:transparent}
+.cb:hover{border-color:var(--neon);color:var(--neon);box-shadow:0 0 10px var(--nd)}
+
+.btn{padding:14px 36px;border-radius:12px;border:2px solid var(--neon);background:transparent;
+  color:var(--neon);font-family:var(--mono);font-size:.88rem;cursor:pointer;text-transform:uppercase;
+  letter-spacing:2px;transition:all var(--tr);position:relative;overflow:hidden;-webkit-tap-highlight-color:transparent}
+.btn::before{content:'';position:absolute;inset:0;background:var(--neon);opacity:0;transition:opacity var(--tr)}
+.btn:hover{color:var(--bg);box-shadow:0 0 28px var(--ng);transform:translateY(-2px)}
+.btn:hover::before{opacity:1}
+.btn span{position:relative;z-index:1}
+.btn:active{transform:translateY(0)}
+.btn-s{border-color:var(--bdr);color:var(--txt2)}
+.btn-s::before{background:var(--cyan)}
+.btn-s:hover{border-color:var(--cyan);box-shadow:0 0 25px var(--cd)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn:disabled:hover{transform:none;box-shadow:none}
+.btn:disabled:hover::before{opacity:0}
+.br{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+
+.card{max-width:520px;width:100%;text-align:center}
+.card h2{font-size:1.45rem;font-weight:700;margin-bottom:10px}
+.card p{font-size:1rem;color:var(--txt2);line-height:1.7;margin-bottom:16px}
+.icon{font-size:3.8rem;margin-bottom:14px;display:block;animation:flt 3s ease-in-out infinite}
+.tag{font-family:var(--mono);font-size:.65rem;color:var(--amber);text-transform:uppercase;letter-spacing:3px;margin-bottom:16px}
+
+/* Network viz */
+.nv{display:flex;align-items:center;justify-content:center;gap:20px;margin:16px 0 24px;flex-wrap:wrap}
+.nvl{display:flex;flex-direction:column;gap:7px;align-items:center}
+.nvn{width:18px;height:18px;border-radius:50%;border:2px solid var(--neon);background:var(--nd);
+  animation:np 2s ease-in-out infinite}
+.nvn:nth-child(2){animation-delay:.25s}.nvn:nth-child(3){animation-delay:.5s}.nvn:nth-child(4){animation-delay:.75s}
+@keyframes np{0%,100%{box-shadow:0 0 3px var(--nd)}50%{box-shadow:0 0 12px var(--nd)}}
+.nva{color:var(--txt3);font-size:1.1rem}
+.nvlb{font-family:var(--mono);font-size:.55rem;color:var(--txt3);text-transform:uppercase;margin-top:3px}
+
+/* Cat selector */
+.cats{display:flex;gap:8px;justify-content:center;margin-bottom:12px;flex-wrap:wrap}
+.catb{padding:10px 18px;border-radius:10px;border:2px solid var(--bdr);background:var(--bg3);
+  color:var(--txt2);font-family:var(--mono);font-size:.82rem;cursor:pointer;transition:all var(--tr);
+  display:flex;align-items:center;gap:8px}
+.catb.act{border-color:var(--neon);color:var(--neon);background:var(--nd)}
+.catb .cc{font-size:.7rem;background:var(--bg2);padding:2px 6px;border-radius:4px;color:var(--txt3)}
+.catb.act .cc{background:rgba(57,255,133,.2);color:var(--neon)}
+.catb.full{opacity:.5}
+
+/* Progress */
+.pw{width:100%;max-width:420px;margin:0 auto 12px}
+.pb{width:100%;height:8px;background:var(--bg3);border-radius:4px;overflow:hidden;margin:4px 0}
+.pf{height:100%;background:linear-gradient(90deg,var(--neon),var(--cyan));border-radius:4px;
+  transition:width .4s ease;box-shadow:0 0 6px var(--nd)}
+.pt{font-family:var(--mono);font-size:.75rem;color:var(--txt3);text-align:center}
+
+/* Canvas */
+.cvw{position:relative;margin:0 auto 10px}
+.cv{border:2px solid var(--bdr);border-radius:14px;background:var(--bg2);cursor:crosshair;
+  touch-action:none;display:block;box-shadow:0 4px 20px rgba(0,0,0,.3),0 0 30px var(--nd);transition:border-color var(--tr)}
+.cv:hover{border-color:var(--neon)}
+.cvt{display:flex;gap:8px;justify-content:center;margin-bottom:12px}
+.cvt button{padding:8px 18px;border-radius:8px;border:1px solid var(--bdr);background:var(--bg3);
+  color:var(--txt2);font-family:var(--mono);font-size:.78rem;cursor:pointer;transition:all var(--tr)}
+.cvt button:hover{border-color:var(--neon);color:var(--neon)}
+.cvt .svb{border-color:var(--neon);color:var(--neon)}
+.cvt .svb:hover{background:var(--neon);color:var(--bg)}
+
+/* Gallery */
+.gal{display:flex;flex-wrap:wrap;gap:5px;justify-content:center;margin:8px auto;max-width:480px;min-height:20px}
+.gt{width:44px;height:44px;border:1px solid var(--bdr);border-radius:6px;overflow:hidden;transition:all var(--tr)}
+.gt img{width:100%;height:100%;object-fit:contain}
+.gt:hover{border-color:var(--neon);transform:scale(1.1)}
+
+/* Training */
+.td{max-width:460px;width:100%;margin:12px 0}
+.ts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}
+.tsc{background:var(--bg3);border:1px solid var(--bdr);border-radius:10px;padding:12px;text-align:center}
+.tsc .sv{font-family:var(--mono);font-size:1.3rem;color:var(--neon);font-weight:700}
+.tsc .sl{font-size:.65rem;color:var(--txt3);text-transform:uppercase;letter-spacing:1px;margin-top:2px}
+.chc{background:var(--bg3);border:1px solid var(--bdr);border-radius:12px;padding:10px;margin:10px 0}
+.chc canvas{width:100%;height:130px;display:block}
+.chl{display:flex;gap:16px;justify-content:center;margin-top:6px;font-family:var(--mono);font-size:.65rem}
+.ld{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:4px;vertical-align:middle}
+.tl{font-family:var(--mono);font-size:.78rem;color:var(--txt3);text-align:center;margin:8px 0}
+
+/* Prediction */
+.pr{background:var(--bg3);border:1px solid var(--bdr);border-radius:14px;padding:20px;max-width:420px;width:100%;margin:12px 0;text-align:center}
+.prl{font-family:var(--mono);font-size:1.6rem;color:var(--neon);font-weight:700}
+.prc{font-size:.9rem;color:var(--txt2);margin-top:4px}
+.cbs{margin-top:14px}
+.cbr{display:flex;align-items:center;gap:8px;margin:5px 0}
+.cbn{font-family:var(--mono);font-size:.75rem;color:var(--txt3);width:65px;text-align:right}
+.cbt{flex:1;height:10px;background:var(--bg2);border-radius:5px;overflow:hidden}
+.cbf{height:100%;border-radius:5px;transition:width .5s ease}
+.cbp{font-family:var(--mono);font-size:.72rem;color:var(--txt3);width:35px;text-align:right}
+
+/* Mistakes */
+.mg{display:grid;grid-template-columns:1fr;gap:14px;max-width:520px;width:100%;margin:16px 0}
+.mc{background:var(--bg3);border:1px solid var(--bdr);border-radius:14px;padding:18px;text-align:left;transition:all var(--tr)}
+.mc:hover{border-color:var(--amber)}
+.mc .mh{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.mc .me{font-size:2rem}
+.mc .mt{font-size:1rem;font-weight:600}
+.mc .mw{color:var(--txt2);font-size:.88rem;line-height:1.6;margin-bottom:6px}
+.mc .my{font-family:var(--mono);font-size:.78rem;color:var(--amber);background:var(--ad);padding:8px 12px;border-radius:8px;margin-bottom:6px}
+.mc .ml{font-size:.82rem;color:var(--neon);font-weight:600}
+
+/* Badge */
+.bwrap{max-width:440px;width:100%;text-align:center}
+.bicon{font-size:5rem;margin-bottom:14px;filter:drop-shadow(0 0 18px var(--ng));animation:flt 3s ease-in-out infinite}
+.btitle{font-family:var(--mono);font-size:1.25rem;color:var(--neon);text-transform:uppercase;letter-spacing:2px;margin-bottom:6px}
+.bname{font-size:1.5rem;font-weight:800;margin-bottom:20px}
+.bstats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px}
+.bst{background:var(--bg3);border:1px solid var(--bdr);border-radius:12px;padding:14px 6px}
+.bst .v{font-family:var(--mono);font-size:1.5rem;color:var(--neon);font-weight:700}
+.bst .l{font-size:.65rem;color:var(--txt3);text-transform:uppercase;letter-spacing:1px;margin-top:3px}
+.sbox{background:var(--bg3);border:1px solid var(--bdr);border-radius:14px;padding:18px;margin-bottom:20px;text-align:left}
+.sbox p{font-size:.92rem;color:var(--txt2);margin-bottom:8px;line-height:1.6}
+.sbox p:last-child{margin-bottom:0}
+.sbox .hl{color:var(--neon);font-weight:700}
+
+/* Toast */
+.toast{position:fixed;top:72px;left:50%;transform:translateX(-50%) translateY(-16px);padding:10px 24px;
+  border-radius:12px;font-family:var(--mono);font-size:.82rem;font-weight:700;z-index:200;opacity:0;
+  pointer-events:none;transition:all .3s ease}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.ok{background:var(--neon);color:var(--bg);box-shadow:0 4px 16px var(--ng)}
+.toast.er{background:var(--red);color:#fff;box-shadow:0 4px 16px var(--rd)}
+
+.ftr{text-align:center;padding:16px;font-size:.78rem;color:var(--txt3)}
+.ftr a{color:var(--neon);text-decoration:none}
+.ftr a:hover{text-decoration:underline}
+
+@media(max-width:600px){
+  .bism{font-size:1.35rem}.btn{padding:12px 26px;font-size:.8rem}
+  .nv{gap:12px}.ts,.bstats{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+<div class="toast" id="toast"></div>
+<div class="topc">
+  <button class="cb" id="thB" onclick="tTh()">🌙</button>
+  <button class="cb" id="muB" onclick="tMu()">🔊</button>
+  <button class="cb" onclick="sT('🏆 Badges saved locally!','ok')">🏆</button>
+</div>
+<div class="app">
+<div class="hdr"><div class="bism">بسم الله الرحمن الرحيم</div></div>
+
+<!-- WELCOME -->
+<div class="scr on" id="s-wel">
+  <div class="icon">🕵️</div>
+  <h1 style="font-family:var(--mono);font-size:1.9rem;letter-spacing:2px;margin-bottom:4px">CODE BREAKER</h1>
+  <p style="color:var(--txt2);margin-bottom:28px;max-width:400px;text-align:center;font-size:1.02rem">
+    Train an AI to recognize your drawings. You are the data scientist.</p>
+  <div style="display:flex;flex-direction:column;align-items:center;gap:6px;margin-bottom:26px;width:100%;max-width:300px">
+    <label class="tag" style="margin-bottom:0;letter-spacing:2px">Agent Name</label>
+    <input type="text" id="pName" placeholder="Omar" maxlength="20" autocomplete="off"
+      style="width:100%;padding:13px 18px;border-radius:12px;border:2px solid var(--bdr);background:var(--bg3);
+      color:var(--txt);font-family:var(--mono);font-size:1.05rem;text-align:center;outline:none;transition:all var(--tr)"
+      onfocus="this.style.borderColor='var(--neon)';this.style.boxShadow='0 0 16px var(--nd)'"
+      onblur="this.style.borderColor='var(--bdr)';this.style.boxShadow='none'">
+  </div>
+  <button class="btn" onclick="startBrief()"><span>Enter the Lab</span></button>
+</div>
+
+<!-- BRIEF 1 -->
+<div class="scr" id="s-b1">
+  <div class="card"><div class="tag">Briefing 1 of 4</div><div class="icon">🧠</div>
+  <h2>What is a Neural Network?</h2>
+  <p>Your brain has billions of neurons connected together. A neural network is a computer version — layers of nodes that process information step by step.</p>
+  <div class="nv">
+    <div class="nvl"><div class="nvn"></div><div class="nvn"></div><div class="nvn"></div><div class="nvlb">Input</div></div>
+    <div class="nva">→</div>
+    <div class="nvl"><div class="nvn"></div><div class="nvn"></div><div class="nvn"></div><div class="nvn"></div><div class="nvlb">Hidden</div></div>
+    <div class="nva">→</div>
+    <div class="nvl"><div class="nvn"></div><div class="nvn"></div><div class="nvn"></div><div class="nvlb">Output</div></div>
+  </div>
+  <button class="btn" onclick="go('s-b2')"><span>Next</span></button></div>
+</div>
+
+<!-- BRIEF 2 -->
+<div class="scr" id="s-b2">
+  <div class="card"><div class="tag">Briefing 2 of 4</div><div class="icon">📊</div>
+  <h2>How Does AI Learn?</h2>
+  <p>You show it examples — lots of examples. Each one teaches the AI a little more about patterns. The more you show, the smarter it gets!</p>
+  <div style="display:flex;align-items:center;justify-content:center;gap:14px;margin:18px 0 24px;flex-wrap:wrap">
+    <div style="font-size:2.2rem;animation:flt 3s ease-in-out infinite">🖼️ 🖼️ 🖼️</div>
+    <div style="font-size:1.6rem;color:var(--neon)">→</div>
+    <div style="font-size:2.5rem;animation:flt 3s ease-in-out infinite;animation-delay:.5s">🧠</div>
+    <div style="font-size:1.6rem;color:var(--neon)">→</div>
+    <div style="font-size:2.2rem;animation:flt 3s ease-in-out infinite;animation-delay:1s">🏷️</div>
+  </div>
+  <div class="br">
+    <button class="btn btn-s" onclick="go('s-b1')"><span>Back</span></button>
+    <button class="btn" onclick="go('s-b3')"><span>Next</span></button>
+  </div></div>
+</div>
+
+<!-- BRIEF 3 -->
+<div class="scr" id="s-b3">
+  <div class="card"><div class="tag">Briefing 3 of 4</div><div class="icon">🎯</div>
+  <h2>What is Training?</h2>
+  <p>Training means showing the AI examples so it can find patterns. It starts bad and improves — just like learning a new skill!</p>
+  <div style="display:flex;justify-content:center;gap:16px;margin:18px 0 26px;flex-wrap:wrap">
+    <div style="text-align:center;padding:12px 16px;background:var(--bg3);border-radius:10px;border:1px solid var(--bdr)">
+      <div style="font-family:var(--mono);font-size:1.8rem;color:var(--neon);opacity:.35">50%</div>
+      <div style="font-family:var(--mono);font-size:.65rem;color:var(--txt3)">Start</div></div>
+    <div style="font-size:1.4rem;color:var(--neon);align-self:center">→</div>
+    <div style="text-align:center;padding:12px 16px;background:var(--bg3);border-radius:10px;border:1px solid var(--bdr)">
+      <div style="font-family:var(--mono);font-size:1.8rem;color:var(--neon);opacity:.65">75%</div>
+      <div style="font-family:var(--mono);font-size:.65rem;color:var(--txt3)">Training...</div></div>
+    <div style="font-size:1.4rem;color:var(--neon);align-self:center">→</div>
+    <div style="text-align:center;padding:12px 16px;background:var(--nd);border-radius:10px;border:1px solid var(--neon)">
+      <div style="font-family:var(--mono);font-size:1.8rem;color:var(--neon)">95%</div>
+      <div style="font-family:var(--mono);font-size:.65rem;color:var(--neon)">Trained!</div></div>
+  </div>
+  <div class="br">
+    <button class="btn btn-s" onclick="go('s-b2')"><span>Back</span></button>
+    <button class="btn" onclick="go('s-b4')"><span>Next</span></button>
+  </div></div>
+</div>
+
+<!-- BRIEF 4 -->
+<div class="scr" id="s-b4">
+  <div class="card"><div class="tag">Briefing 4 of 4</div><div class="icon">✏️</div>
+  <h2>Your Mission</h2>
+  <p>Draw shapes, train an AI to recognize them, then test it. Three shapes, three categories — you control the data!</p>
+  <div style="display:flex;justify-content:center;gap:16px;margin:16px 0 28px">
+    <div style="text-align:center;font-size:2.2rem;padding:10px 14px;background:var(--bg3);border-radius:10px;border:1px solid var(--bdr)">⭕<div style="font-size:.65rem;color:var(--txt3);font-family:var(--mono)">Circle</div></div>
+    <div style="text-align:center;font-size:2.2rem;padding:10px 14px;background:var(--bg3);border-radius:10px;border:1px solid var(--bdr)">🔺<div style="font-size:.65rem;color:var(--txt3);font-family:var(--mono)">Triangle</div></div>
+    <div style="text-align:center;font-size:2.2rem;padding:10px 14px;background:var(--bg3);border-radius:10px;border:1px solid var(--bdr)">⬜<div style="font-size:.65rem;color:var(--txt3);font-family:var(--mono)">Square</div></div>
+  </div>
+  <div class="br">
+    <button class="btn btn-s" onclick="go('s-b3')"><span>Back</span></button>
+    <button class="btn" onclick="startDraw()"><span>Begin Training</span></button>
+  </div></div>
+</div>
+
+<!-- PHASE 1: DRAW -->
+<div class="scr" id="s-draw">
+  <div style="text-align:center;margin-bottom:12px">
+    <div class="tag">Phase 1: Collect Data</div>
+    <h2 style="font-size:1.2rem;margin-bottom:3px">Draw Training Examples</h2>
+    <p style="color:var(--txt2);font-size:.9rem">Select a shape, draw it, save. 5 of each shape needed.</p>
+  </div>
+  <div class="cats" id="catSel"></div>
+  <div class="pw"><div class="pb"><div class="pf" id="dProg" style="width:0%"></div></div>
+  <div class="pt">Training data: <span style="color:var(--neon)" id="dCnt">0</span>/15</div></div>
+  <div class="cvw"><canvas id="dCv" class="cv" width="220" height="220"></canvas></div>
+  <div class="cvt">
+    <button onclick="clrDraw()">🗑️ Clear</button>
+    <button onclick="undoS()">↩️ Undo</button>
+    <button class="svb" onclick="saveDraw()">✓ Save</button>
+  </div>
+  <div class="gal" id="dGal"></div>
+  <div id="trWrap" style="display:none;margin-top:14px">
+    <button class="btn" onclick="goTrain()"><span>⚡ Train AI</span></button>
+  </div>
+</div>
+
+<!-- PHASE 2: TRAIN -->
+<div class="scr" id="s-train">
+  <div style="text-align:center;margin-bottom:8px">
+    <div class="tag">Phase 2: Training</div>
+    <h2 style="font-size:1.2rem">Training Your AI...</h2>
+  </div>
+  <div class="td">
+    <div class="ts">
+      <div class="tsc"><div class="sv" id="trEp">0/10</div><div class="sl">Epoch</div></div>
+      <div class="tsc"><div class="sv" id="trAc">0%</div><div class="sl">Accuracy</div></div>
+      <div class="tsc"><div class="sv" id="trLo">—</div><div class="sl">Loss</div></div>
+    </div>
+    <div class="pw"><div class="pb"><div class="pf" id="trProg" style="width:0%"></div></div></div>
+    <div class="chc"><canvas id="trCh"></canvas>
+    <div class="chl"><span><span class="ld" style="background:var(--neon)"></span>Accuracy</span>
+    <span><span class="ld" style="background:var(--red)"></span>Loss</span></div></div>
+    <div class="tl" id="trLog">Preparing model...</div>
+  </div>
+</div>
+
+<!-- PHASE 3: TEST -->
+<div class="scr" id="s-test">
+  <div style="text-align:center;margin-bottom:12px">
+    <div class="tag">Phase 3: Test</div>
+    <h2 style="font-size:1.2rem;margin-bottom:3px">Test Your AI</h2>
+    <p style="color:var(--txt2);font-size:.9rem">Draw a shape and see if your AI recognizes it!</p>
+  </div>
+  <div class="cvw"><canvas id="tCv" class="cv" width="220" height="220"></canvas></div>
+  <div class="cvt">
+    <button onclick="clrTest()">🗑️ Clear</button>
+    <button class="svb" onclick="predict()">⚡ Predict</button>
+  </div>
+  <div class="pr" id="pRes" style="display:none">
+    <div class="prl" id="pLbl"></div>
+    <div class="prc" id="pCnf"></div>
+    <div class="cbs" id="pBars"></div>
+  </div>
+  <div class="br" style="margin-top:14px">
+    <button class="btn btn-s" onclick="go('s-draw')"><span>+ Add Data</span></button>
+    <button class="btn btn-s" onclick="go('s-mistakes')"><span>🤦 AI Fails</span></button>
+    <button class="btn" onclick="showBadge()"><span>Finish →</span></button>
+  </div>
+</div>
+
+<!-- MISTAKES -->
+<div class="scr" id="s-mistakes">
+  <div style="text-align:center;margin-bottom:8px">
+    <div class="tag">AI Mistakes Gallery</div>
+    <h2 style="font-size:1.2rem">Even AI Gets It Wrong! 🤦</h2>
+    <p style="color:var(--txt2);font-size:.9rem">Real-world AI fails that teach us about data quality</p>
+  </div>
+  <div class="mg">
+    <div class="mc"><div class="mh"><span class="me">❄️</span><div class="mt">The AI That Forgot Snow</div></div>
+    <div class="mw">An image classifier trained only on summer photos completely failed when shown winter scenes. It had never learned what snow looks like!</div>
+    <div class="my">Why? → Training data was biased — only one season represented</div>
+    <div class="ml">Lesson: Data must represent ALL situations the AI will face.</div></div>
+
+    <div class="mc"><div class="mh"><span class="me">🛑</span><div class="mt">Stop Sign Confusion</div></div>
+    <div class="mw">Researchers showed that adding small stickers to a stop sign could trick AI into seeing it as a speed limit sign.</div>
+    <div class="my">Why? → Small changes humans ignore can fool AI completely</div>
+    <div class="ml">Lesson: AI sees patterns differently than humans — it can be tricked.</div></div>
+
+    <div class="mc"><div class="mh"><span class="me">4️⃣</span><div class="mt">4s vs 9s</div></div>
+    <div class="mw">Handwriting AI often confuses digit 4 with 9 because they share similar features — an angled line and a vertical stroke.</div>
+    <div class="my">Why? → Similar features between categories make classification harder</div>
+    <div class="ml">Lesson: Clear, distinct examples help AI learn better — your job matters!</div></div>
+
+    <div class="mc"><div class="mh"><span class="me">🐕</span><div class="mt">Muffin or Chihuahua?</div></div>
+    <div class="mw">AI struggled to tell apart photos of chihuahuas and blueberry muffins — they look surprisingly similar from above!</div>
+    <div class="my">Why? → Visual similarity across categories confuses pattern matching</div>
+    <div class="ml">Lesson: AI needs diverse examples to learn subtle differences.</div></div>
+  </div>
+  <div class="br" style="margin-top:14px">
+    <button class="btn btn-s" onclick="go('s-test')"><span>← Back to Testing</span></button>
+  </div>
+</div>
+
+<!-- BADGE -->
+<div class="scr" id="s-badge">
+  <div class="bwrap">
+    <div class="bicon">🏅</div>
+    <div class="btitle">Code Breaker</div>
+    <div class="bname" id="bN"></div>
+    <div class="bstats">
+      <div class="bst"><div class="v" id="bD">0</div><div class="l">Drawings</div></div>
+      <div class="bst"><div class="v" id="bA">0%</div><div class="l">Accuracy</div></div>
+      <div class="bst"><div class="v" id="bT">0</div><div class="l">Tests</div></div>
+    </div>
+    <div class="sbox">
+      <p><span class="hl">Training data</span> = the examples you give the AI.</p>
+      <p><span class="hl">More data</span> = better accuracy — you proved it!</p>
+      <p>AI isn't magic — it learns from <span class="hl">patterns YOU provide</span>. You're a real data scientist now! 🚀</p>
+    </div>
+    <div class="br"><button class="btn" onclick="location.reload()"><span>Play Again</span></button></div>
+  </div>
+</div>
+
+<div class="ftr">Powered by <a href="https://workshop-diy.org" target="_blank">workshop-diy.org</a></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.17.0/dist/tf.min.js"></script>
+<script>
+const S={name:'',cats:['Circle','Triangle','Square'],data:{Circle:[],Triangle:[],Square:[]},
+  perCat:5,total:15,curCat:'Circle',model:null,acc:0,tests:0,muted:false,theme:'dark',strokes:[]};
+const AC=window.AudioContext||window.webkitAudioContext;let ac;
+function snd(t){if(S.muted)return;if(!ac)ac=new AC();const o=ac.createOscillator(),g=ac.createGain();
+o.connect(g);g.connect(ac.destination);g.gain.value=.12;
+if(t==='ok'){o.frequency.setValueAtTime(523,ac.currentTime);o.frequency.setValueAtTime(784,ac.currentTime+.1);
+g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+.35);o.start();o.stop(ac.currentTime+.35)}
+else if(t==='done'){o.frequency.setValueAtTime(523,ac.currentTime);o.frequency.setValueAtTime(659,ac.currentTime+.12);
+o.frequency.setValueAtTime(784,ac.currentTime+.24);o.frequency.setValueAtTime(1047,ac.currentTime+.36);
+g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+.6);o.start();o.stop(ac.currentTime+.6)}}
+
+function go(id){document.querySelectorAll('.scr').forEach(s=>s.classList.remove('on'));
+document.getElementById(id)?.classList.add('on');window.scrollTo({top:0,behavior:'smooth'})}
+let tt;function sT(m,c){const t=document.getElementById('toast');t.textContent=m;t.className='toast show '+c;
+clearTimeout(tt);tt=setTimeout(()=>t.className='toast',1800)}
+function tTh(){S.theme=S.theme==='dark'?'light':'dark';
+document.documentElement.setAttribute('data-theme',S.theme==='light'?'light':'');
+document.getElementById('thB').textContent=S.theme==='dark'?'🌙':'☀️';
+try{localStorage.setItem('cb-theme',S.theme)}catch(e){}}
+function tMu(){S.muted=!S.muted;document.getElementById('muB').textContent=S.muted?'🔇':'🔊'}
+
+function startBrief(){S.name=document.getElementById('pName').value.trim()||'Agent';go('s-b1')}
+document.getElementById('pName').addEventListener('keydown',e=>{if(e.key==='Enter')startBrief()});
+
+let dCtx,tCtx,drawing=false,curStroke=[];
+function startDraw(){go('s-draw');initCv('dCv',true);buildCats();updDraw()}
+
+function initCv(id,track){const c=document.getElementById(id);const ctx=c.getContext('2d');
+ctx.fillStyle='#111';ctx.fillRect(0,0,c.width,c.height);
+ctx.strokeStyle='#fff';ctx.lineWidth=5;ctx.lineCap='round';ctx.lineJoin='round';
+if(id==='dCv'){dCtx=ctx;S.strokes=[]}else tCtx=ctx;
+const gP=e=>{const r=c.getBoundingClientRect();return{
+  x:((e.touches?e.touches[0]:e).clientX-r.left)*(c.width/r.width),
+  y:((e.touches?e.touches[0]:e).clientY-r.top)*(c.height/r.height)}};
+const sd=e=>{drawing=true;const p=gP(e);ctx.beginPath();ctx.moveTo(p.x,p.y);if(track)curStroke=[p]};
+const md=e=>{if(!drawing)return;const p=gP(e);ctx.lineTo(p.x,p.y);ctx.stroke();if(track)curStroke.push(p)};
+const ed=()=>{if(drawing&&track&&curStroke.length>0){S.strokes.push([...curStroke]);curStroke=[]}drawing=false};
+c.onmousedown=sd;c.onmousemove=md;c.onmouseup=ed;c.onmouseleave=ed;
+c.ontouchstart=e=>{e.preventDefault();sd(e)};c.ontouchmove=e=>{e.preventDefault();md(e)};c.ontouchend=e=>{e.preventDefault();ed()}}
+
+function clrDraw(){const c=document.getElementById('dCv');dCtx.fillStyle='#111';dCtx.fillRect(0,0,c.width,c.height);
+dCtx.strokeStyle='#fff';dCtx.lineWidth=5;dCtx.lineCap='round';dCtx.lineJoin='round';S.strokes=[]}
+function undoS(){if(!S.strokes.length)return;S.strokes.pop();const c=document.getElementById('dCv');
+dCtx.fillStyle='#111';dCtx.fillRect(0,0,c.width,c.height);dCtx.strokeStyle='#fff';dCtx.lineWidth=5;dCtx.lineCap='round';dCtx.lineJoin='round';
+S.strokes.forEach(st=>{dCtx.beginPath();st.forEach((p,i)=>i===0?dCtx.moveTo(p.x,p.y):dCtx.lineTo(p.x,p.y));dCtx.stroke()})}
+
+function buildCats(){const el=document.getElementById('catSel');el.innerHTML='';
+const icons={Circle:'⭕',Triangle:'🔺',Square:'⬜'};
+S.cats.forEach(cat=>{const n=S.data[cat].length;const full=n>=S.perCat;
+const b=document.createElement('button');b.className='catb'+(S.curCat===cat?' act':'')+(full?' full':'');
+b.innerHTML=icons[cat]+' '+cat+' <span class="cc">'+n+'/'+S.perCat+'</span>';
+b.onclick=()=>{S.curCat=cat;buildCats()};el.appendChild(b)})}
+
+function saveDraw(){const cat=S.curCat;
+if(S.data[cat].length>=S.perCat){sT(cat+' is full! Pick another.','er');return}
+if(!S.strokes.length){sT('Draw something first!','er');return}
+const c=document.getElementById('dCv');const tmp=document.createElement('canvas');tmp.width=28;tmp.height=28;
+tmp.getContext('2d').drawImage(c,0,0,28,28);const id=tmp.getContext('2d').getImageData(0,0,28,28);
+const g=new Float32Array(784);for(let i=0;i<id.data.length;i+=4)g[i/4]=id.data[i]/255;
+S.data[cat].push({px:g,th:c.toDataURL('image/png',.5)});
+snd('ok');sT('Saved! '+cat+' ('+S.data[cat].length+'/'+S.perCat+')','ok');
+clrDraw();updDraw();buildCats();
+if(S.data[cat].length>=S.perCat){const nx=S.cats.find(c=>S.data[c].length<S.perCat);if(nx){S.curCat=nx;buildCats()}}}
+
+function updDraw(){const tot=S.cats.reduce((a,c)=>a+S.data[c].length,0);
+document.getElementById('dCnt').textContent=tot;
+document.getElementById('dProg').style.width=(tot/S.total*100)+'%';
+const gal=document.getElementById('dGal');gal.innerHTML='';
+S.cats.forEach(cat=>S.data[cat].forEach(d=>{const div=document.createElement('div');div.className='gt';
+div.innerHTML='<img src="'+d.th+'">';gal.appendChild(div)}));
+document.getElementById('trWrap').style.display=tot>=S.total?'block':'none'}
+
+async function goTrain(){go('s-train');document.getElementById('trLog').textContent='Loading TensorFlow.js...';
+await tf.ready();const xs=[],ys=[];
+S.cats.forEach((cat,ci)=>S.data[cat].forEach(d=>{xs.push(d.px);ys.push(ci)}));
+const xT=tf.tensor2d(xs,[xs.length,784]).reshape([xs.length,28,28,1]);
+const yT=tf.oneHot(tf.tensor1d(ys,'int32'),3);
+document.getElementById('trLog').textContent='Building model...';
+const model=tf.sequential();
+model.add(tf.layers.conv2d({inputShape:[28,28,1],filters:8,kernelSize:3,activation:'relu',padding:'same'}));
+model.add(tf.layers.maxPooling2d({poolSize:2}));
+model.add(tf.layers.conv2d({filters:16,kernelSize:3,activation:'relu',padding:'same'}));
+model.add(tf.layers.maxPooling2d({poolSize:2}));
+model.add(tf.layers.flatten());
+model.add(tf.layers.dense({units:32,activation:'relu'}));
+model.add(tf.layers.dense({units:3,activation:'softmax'}));
+model.compile({optimizer:tf.train.adam(.01),loss:'categoricalCrossentropy',metrics:['accuracy']});
+const ep=10,aH=[],lH=[];
+const cc=document.getElementById('trCh');const cx=cc.getContext('2d');
+cc.width=cc.parentElement.clientWidth-20;cc.height=130;
+document.getElementById('trLog').textContent='Training in progress...';
+await model.fit(xT,yT,{epochs:ep,batchSize:4,shuffle:true,callbacks:{onEpochEnd:(e,l)=>{
+  const a=Math.round(l.acc*100);aH.push(a);lH.push(l.loss);
+  document.getElementById('trEp').textContent=(e+1)+'/'+ep;
+  document.getElementById('trAc').textContent=a+'%';
+  document.getElementById('trLo').textContent=l.loss.toFixed(3);
+  document.getElementById('trProg').style.width=((e+1)/ep*100)+'%';
+  cx.clearRect(0,0,cc.width,cc.height);const w=cc.width,h=cc.height;
+  cx.strokeStyle='#39ff85';cx.lineWidth=2.5;cx.beginPath();
+  aH.forEach((v,i)=>{const x=i/(ep-1)*w,y=h-(v/100)*h;i===0?cx.moveTo(x,y):cx.lineTo(x,y)});cx.stroke();
+  const ml=Math.max(...lH,1);cx.strokeStyle='#ff4757';cx.lineWidth=2.5;cx.beginPath();
+  lH.forEach((v,i)=>{const x=i/(ep-1)*w,y=h-(1-v/ml)*h;i===0?cx.moveTo(x,y):cx.lineTo(x,y)});cx.stroke()}}});
+S.model=model;S.acc=aH[aH.length-1]||0;xT.dispose();yT.dispose();
+snd('done');document.getElementById('trLog').textContent='✓ Training complete! '+S.acc+'% accuracy';
+setTimeout(()=>{go('s-test');initCv('tCv',false)},1500)}
+
+function clrTest(){const c=document.getElementById('tCv');tCtx.fillStyle='#111';tCtx.fillRect(0,0,c.width,c.height);
+tCtx.strokeStyle='#fff';tCtx.lineWidth=5;tCtx.lineCap='round';tCtx.lineJoin='round';
+document.getElementById('pRes').style.display='none'}
+
+async function predict(){if(!S.model){sT('Train first!','er');return}
+const c=document.getElementById('tCv');const tmp=document.createElement('canvas');tmp.width=28;tmp.height=28;
+tmp.getContext('2d').drawImage(c,0,0,28,28);const id=tmp.getContext('2d').getImageData(0,0,28,28);
+const g=new Float32Array(784);for(let i=0;i<id.data.length;i+=4)g[i/4]=id.data[i]/255;
+const inp=tf.tensor(g,[1,28,28,1]);const pr=S.model.predict(inp);const ps=await pr.data();inp.dispose();pr.dispose();
+const mx=ps.indexOf(Math.max(...ps));const lbl=S.cats[mx];const cf=Math.round(ps[mx]*100);S.tests++;
+document.getElementById('pRes').style.display='block';
+document.getElementById('pLbl').textContent=lbl;
+document.getElementById('pCnf').textContent=cf+'% confident';
+const cols=['#39ff85','#00e5ff','#ffb300'];const bars=document.getElementById('pBars');bars.innerHTML='';
+S.cats.forEach((cat,i)=>{const p=Math.round(ps[i]*100);
+bars.innerHTML+=`<div class="cbr"><span class="cbn">${cat}</span><div class="cbt"><div class="cbf" style="width:${p}%;background:${cols[i]}"></div></div><span class="cbp">${p}%</span></div>`});
+snd('ok');sT('AI says: '+lbl+' ('+cf+'%)','ok')}
+
+function showBadge(){const tot=S.cats.reduce((a,c)=>a+S.data[c].length,0);
+document.getElementById('bN').textContent=S.name+' — Certified Code Breaker';
+document.getElementById('bD').textContent=tot;
+document.getElementById('bA').textContent=S.acc+'%';
+document.getElementById('bT').textContent=S.tests;
+try{const b=JSON.parse(localStorage.getItem('ai-hacker-badges')||'[]');
+if(!b.includes('code-breaker')){b.push('code-breaker');localStorage.setItem('ai-hacker-badges',JSON.stringify(b))}}catch(e){}
+snd('done');go('s-badge')}
+
+(function(){try{if(localStorage.getItem('cb-theme')==='light')tTh()}catch(e){}})();
+</script>
+
+<style>.cb.lang{font-size:.65rem;font-weight:700;width:auto;padding:0 8px;font-family:monospace}</style>
+<button class="cb lang" id="_lnB" onclick="_cycleLang()" style="position:fixed;top:8px;right:120px;z-index:100;width:auto;padding:0 8px;height:32px;border-radius:7px;border:1px solid var(--bdr,#1e2e26);background:var(--bg3,#112118);color:var(--txt2,#8fa89a);font-size:.65rem;font-weight:700;font-family:monospace;cursor:pointer;display:flex;align-items:center;justify-content:center">EN</button>
+<script>
+const _i18n={"en": {"title": "Code Breaker", "welcome": "CODE BREAKER", "sub": "Train AI to recognize drawings.", "nameLabel": "Agent Name", "startBtn": "Enter the Lab", "next": "Next", "back": "Back", "predict": "Predict", "finish": "Finish", "playAgain": "Play Again"}, "ar": {"title": "كاسر الشفرة", "welcome": "كاسر الشفرة", "sub": "درّب الذكاء على التعرف على الرسومات.", "nameLabel": "اسم العميل", "startBtn": "ادخل المختبر", "next": "التالي", "back": "رجوع", "predict": "توقّع", "finish": "إنهاء", "playAgain": "العب مجدداً"}, "fr": {"title": "Code Breaker", "welcome": "CODE BREAKER", "sub": "Entraîne l'IA à reconnaître des dessins.", "nameLabel": "Nom d'agent", "startBtn": "Entrer", "next": "Suivant", "back": "Retour", "predict": "Prédire", "finish": "Terminer", "playAgain": "Rejouer"}};let _lang='en';
+function _cycleLang(){const l=['en','ar','fr'];_lang=l[(l.indexOf(_lang)+1)%l.length];
+document.getElementById('_lnB').textContent=_lang.toUpperCase();
+document.documentElement.lang=_lang==='ar'?'ar':_lang;
+document.documentElement.dir=_lang==='ar'?'rtl':'ltr';
+const t=_i18n[_lang]||_i18n.en;
+document.querySelectorAll('[data-i18n]').forEach(el=>{const k=el.dataset.i18n;if(t[k])el.textContent=t[k]});
+if(t.title)document.title=t.title;
+try{localStorage.setItem('aih-lang',_lang)}catch(e){}}
+(function(){try{const s=localStorage.getItem('aih-lang');if(s&&_i18n[s]){_lang=s;setTimeout(_cycleLang,100)}}catch(e){}})();
+</script>
+
+</body>
+</html>

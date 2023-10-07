@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Hacker Lab — AI Engineer: Build &amp; Deploy</title>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Fira+Code:wght@400;500;600&family=Sora:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0d1117;--bg2:#161b22;--bg3:#1c2128;--bg4:#21262d;
+  --neon:#39ff85;--nd:rgba(57,255,133,.1);--ng:rgba(57,255,133,.35);
+  --cyan:#00e5ff;--cd:rgba(0,229,255,.1);
+  --amber:#ffb300;--ad:rgba(255,179,0,.08);
+  --red:#ff4757;--purple:#a78bfa;
+  --txt:#c9d1d9;--txt2:#7d8590;--txt3:#484f58;
+  --bdr:#30363d;--mono:'Fira Code',monospace;--body:'Sora',sans-serif;--tr:.25s ease}
+[data-theme="light"]{--bg:#f6f8fa;--bg2:#fff;--bg3:#eaeef2;--bg4:#d0d7de;
+  --neon:#0a8a3e;--nd:rgba(10,138,62,.06);--ng:rgba(10,138,62,.2);
+  --cyan:#0077a8;--cd:rgba(0,119,168,.06);
+  --amber:#b87900;--red:#d4384a;--purple:#7c3aed;
+  --txt:#24292f;--txt2:#57606a;--txt3:#8b949e;--bdr:#d0d7de}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--body);background:var(--bg);color:var(--txt);min-height:100vh;overflow-x:hidden;transition:background var(--tr),color var(--tr)}
+.app{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column}
+.scr{display:none;flex:1;flex-direction:column;align-items:center;padding:16px;min-height:calc(100vh - 90px);animation:fi .35s ease}
+.scr.on{display:flex}
+@keyframes fi{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes flt{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+
+.hdr{text-align:center;padding:14px 12px 4px}
+.bism{font-family:'Amiri',serif;font-size:1.6rem;font-weight:700;color:var(--neon);text-shadow:0 0 20px var(--nd);
+  animation:bg 3s ease-in-out infinite alternate}
+@keyframes bg{from{text-shadow:0 0 12px var(--nd)}to{text-shadow:0 0 30px var(--ng)}}
+
+.topc{position:fixed;top:8px;right:10px;display:flex;gap:5px;z-index:100}
+.cb{width:32px;height:32px;border-radius:7px;border:1px solid var(--bdr);background:var(--bg2);color:var(--txt2);
+  font-size:.95rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all var(--tr)}
+.cb:hover{border-color:var(--neon);color:var(--neon)}
+
+.btn{padding:12px 30px;border-radius:10px;border:2px solid var(--neon);background:transparent;color:var(--neon);
+  font-family:var(--mono);font-size:.82rem;cursor:pointer;text-transform:uppercase;letter-spacing:1.5px;transition:all var(--tr);
+  position:relative;overflow:hidden}
+.btn::before{content:'';position:absolute;inset:0;background:var(--neon);opacity:0;transition:opacity var(--tr)}
+.btn:hover{color:var(--bg);box-shadow:0 0 20px var(--nd);transform:translateY(-1px)}
+.btn:hover::before{opacity:1}.btn span{position:relative;z-index:1}
+.btn-s{border-color:var(--bdr);color:var(--txt2)}.btn-s::before{background:var(--cyan)}
+.btn-s:hover{border-color:var(--cyan);box-shadow:0 0 20px var(--cd)}
+.btn:disabled{opacity:.4;cursor:not-allowed}.btn:disabled:hover{transform:none;box-shadow:none}.btn:disabled:hover::before{opacity:0}
+.br{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.tag{font-family:var(--mono);font-size:.6rem;color:var(--amber);text-transform:uppercase;letter-spacing:2px;margin-bottom:12px}
+
+/* IDE panels */
+.ide{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;max-width:880px;margin:8px 0}
+.ide-p{background:var(--bg2);border:1px solid var(--bdr);border-radius:10px;overflow:hidden}
+.ide-tab{display:flex;background:var(--bg3);border-bottom:1px solid var(--bdr)}
+.ide-tab button{padding:7px 14px;background:transparent;border:none;color:var(--txt3);font-family:var(--mono);
+  font-size:.68rem;cursor:pointer;border-bottom:2px solid transparent;transition:all var(--tr)}
+.ide-tab button.on{color:var(--neon);border-bottom-color:var(--neon);background:var(--bg2)}
+.ide-body{padding:10px;min-height:180px;max-height:380px;overflow-y:auto}
+.code{width:100%;min-height:160px;background:transparent;border:none;color:var(--txt);
+  font-family:var(--mono);font-size:.76rem;line-height:1.7;resize:vertical;outline:none;tab-size:2}
+
+/* Network viz */
+.nv{display:flex;align-items:center;justify-content:center;gap:10px;padding:6px;flex-wrap:wrap}
+.nvl{display:flex;flex-direction:column;gap:3px;align-items:center}
+.nvn{width:12px;height:12px;border-radius:50%;border:2px solid var(--neon);background:var(--nd);
+  animation:np 2s ease-in-out infinite}
+.nvn:nth-child(2){animation-delay:.2s}.nvn:nth-child(3){animation-delay:.4s}
+.nvn:nth-child(4){animation-delay:.6s}.nvn:nth-child(5){animation-delay:.8s}
+@keyframes np{0%,100%{box-shadow:0 0 2px var(--nd)}50%{box-shadow:0 0 8px var(--nd)}}
+.nva{color:var(--txt3);font-size:.8rem}
+.nvlb{font-family:var(--mono);font-size:.5rem;color:var(--txt3);margin-top:2px}
+.model-info{font-family:var(--mono);font-size:.72rem;color:var(--txt3);padding:6px}
+.model-info .ok{color:var(--neon)}
+
+/* Training dashboard */
+.dash{width:100%;max-width:880px}
+.dg{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:8px 0}
+.dc{background:var(--bg2);border:1px solid var(--bdr);border-radius:8px;padding:10px;text-align:center}
+.dc .v{font-family:var(--mono);font-size:1.15rem;color:var(--neon);font-weight:600}
+.dc .l{font-size:.58rem;color:var(--txt3);text-transform:uppercase;margin-top:2px}
+.ctrl{display:flex;gap:10px;flex-wrap:wrap;margin:8px 0}
+.ci{background:var(--bg2);border:1px solid var(--bdr);border-radius:8px;padding:8px 10px;flex:1;min-width:130px}
+.ci label{font-family:var(--mono);font-size:.6rem;color:var(--txt3);display:block;margin-bottom:3px}
+.ci input[type=range]{width:100%;accent-color:var(--neon)}
+.ci select{width:100%;background:var(--bg);border:1px solid var(--bdr);color:var(--txt);padding:3px;border-radius:4px;font-family:var(--mono);font-size:.72rem}
+.ci .cv{font-family:var(--mono);font-size:.78rem;color:var(--neon)}
+.chb{background:var(--bg2);border:1px solid var(--bdr);border-radius:10px;padding:8px;margin:8px 0}
+.chb canvas{width:100%;height:130px;display:block}
+.chl{display:flex;gap:14px;justify-content:center;margin-top:4px;font-family:var(--mono);font-size:.6rem}
+.ld{width:7px;height:7px;border-radius:50%;display:inline-block;margin-right:3px;vertical-align:middle}
+.pb{width:100%;height:6px;background:var(--bg3);border-radius:3px;overflow:hidden;margin:6px 0}
+.pf{height:100%;background:linear-gradient(90deg,var(--neon),var(--cyan));border-radius:3px;transition:width .3s ease}
+.tl{font-family:var(--mono);font-size:.72rem;color:var(--txt3);text-align:center;margin:6px 0}
+
+/* Test canvas */
+.cvw{margin:8px auto}
+.cv{border:2px solid var(--bdr);border-radius:10px;background:#000;cursor:crosshair;touch-action:none;display:block;
+  box-shadow:0 2px 12px rgba(0,0,0,.3)}
+.cv:hover{border-color:var(--neon)}
+.cvt{display:flex;gap:6px;justify-content:center;margin:8px 0}
+.cvt button{padding:6px 14px;border-radius:6px;border:1px solid var(--bdr);background:var(--bg2);
+  color:var(--txt2);font-family:var(--mono);font-size:.7rem;cursor:pointer;transition:all var(--tr)}
+.cvt button:hover{border-color:var(--neon);color:var(--neon)}
+.cvt .sb{border-color:var(--neon);color:var(--neon)}
+.cvt .sb:hover{background:var(--neon);color:var(--bg)}
+
+/* Prediction */
+.prb{background:var(--bg2);border:1px solid var(--bdr);border-radius:10px;padding:16px;max-width:380px;width:100%;text-align:center;margin:8px 0}
+.prbig{font-family:var(--mono);font-size:2.5rem;color:var(--neon);font-weight:700}
+.prsub{font-size:.82rem;color:var(--txt2);margin-top:2px}
+.cbr{display:flex;align-items:center;gap:5px;margin:3px 0}
+.cbl{font-family:var(--mono);font-size:.6rem;color:var(--txt3);width:16px;text-align:right}
+.cbt{flex:1;height:7px;background:var(--bg);border-radius:3px;overflow:hidden}
+.cbf{height:100%;border-radius:3px;transition:width .4s ease}
+.cbp{font-family:var(--mono);font-size:.6rem;color:var(--txt3);width:28px;text-align:right}
+
+/* Mistakes */
+.mg{display:grid;gap:12px;max-width:600px;width:100%;margin:12px 0}
+.mc{background:var(--bg2);border:1px solid var(--bdr);border-radius:12px;padding:16px;text-align:left;transition:all var(--tr)}
+.mc:hover{border-color:var(--amber)}
+.mc .mh{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.mc .me{font-size:1.8rem}.mc .mt{font-size:.92rem;font-weight:600}
+.mc .mw{color:var(--txt2);font-size:.82rem;line-height:1.5;margin-bottom:5px}
+.mc .my{font-family:var(--mono);font-size:.72rem;color:var(--amber);background:var(--ad);padding:6px 10px;border-radius:6px;margin-bottom:5px}
+.mc .ml{font-size:.78rem;color:var(--neon);font-weight:600}
+
+/* Badge */
+.bw{max-width:400px;width:100%;text-align:center}
+.bi{font-size:4.5rem;margin-bottom:10px;filter:drop-shadow(0 0 15px var(--ng));animation:flt 3s ease-in-out infinite}
+.bt{font-family:var(--mono);font-size:1.1rem;color:var(--neon);text-transform:uppercase;letter-spacing:2px;margin-bottom:4px}
+.bn{font-size:1.3rem;font-weight:700;margin-bottom:16px}
+.sg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}
+.sc{background:var(--bg2);border:1px solid var(--bdr);border-radius:8px;padding:12px 4px}
+.sc .v{font-family:var(--mono);font-size:1.2rem;color:var(--neon);font-weight:600}
+.sc .l{font-size:.58rem;color:var(--txt3);text-transform:uppercase;margin-top:2px}
+.sb{background:var(--bg2);border:1px solid var(--bdr);border-radius:10px;padding:14px;margin-bottom:16px;text-align:left}
+.sb p{font-size:.85rem;color:var(--txt2);margin-bottom:4px;line-height:1.5}
+.sb .h{color:var(--neon);font-weight:600}
+
+.toast{position:fixed;top:58px;left:50%;transform:translateX(-50%) translateY(-12px);padding:8px 20px;
+  border-radius:10px;font-family:var(--mono);font-size:.75rem;font-weight:600;z-index:200;opacity:0;pointer-events:none;transition:all .3s}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.ok{background:var(--neon);color:var(--bg)}.toast.er{background:var(--red);color:#fff}
+.ftr{text-align:center;padding:12px;font-size:.7rem;color:var(--txt3)}.ftr a{color:var(--neon);text-decoration:none}
+
+@media(max-width:700px){.ide{grid-template-columns:1fr}.dg{grid-template-columns:repeat(2,1fr)}.bism{font-size:1.2rem}.sg{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<div class="toast" id="toast"></div>
+<div class="topc">
+<button class="cb" id="thB" onclick="tTh()">🌙</button>
+<button class="cb" id="muB" onclick="tMu()">🔊</button>
+<button class="cb" onclick="sT('🏆 Badges saved!','ok')">🏆</button>
+</div>
+<div class="app">
+<div class="hdr"><div class="bism">بسم الله الرحمن الرحيم</div></div>
+
+<!-- WELCOME -->
+<div class="scr on" id="s-wel">
+<div style="font-size:3.2rem;margin-bottom:8px;animation:flt 3s ease-in-out infinite">⚡</div>
+<h1 style="font-family:var(--mono);font-size:1.6rem;letter-spacing:1px;margin-bottom:4px">AI ENGINEER</h1>
+<p style="color:var(--txt2);margin-bottom:22px;max-width:350px;text-align:center;font-size:.95rem">Build a real neural network. Train on digit data. Test and experiment.</p>
+<div style="display:flex;flex-direction:column;align-items:center;gap:5px;margin-bottom:18px;width:100%;max-width:250px">
+<label style="font-family:var(--mono);font-size:.6rem;color:var(--neon);letter-spacing:2px">ENGINEER NAME</label>
+<input type="text" id="pN" placeholder="Ibrahim" maxlength="20" autocomplete="off"
+style="width:100%;padding:10px;border-radius:8px;border:2px solid var(--bdr);background:var(--bg2);
+color:var(--txt);font-family:var(--mono);font-size:.95rem;text-align:center;outline:none;transition:all var(--tr)"
+onfocus="this.style.borderColor='var(--neon)'" onblur="this.style.borderColor='var(--bdr)'">
+</div>
+<button class="btn" onclick="start()"><span>Open Workspace</span></button>
+</div>
+
+<!-- BUILD -->
+<div class="scr" id="s-build">
+<div style="text-align:center;margin-bottom:6px">
+<div class="tag">Module 1: Build Your Model</div>
+<h2 style="font-size:1.1rem;margin-bottom:2px">Design Your Neural Network</h2>
+<p style="color:var(--txt2);font-size:.82rem">Edit the code, then click Build to see your architecture</p>
+</div>
+<div class="ide">
+<div class="ide-p">
+<div class="ide-tab"><button class="on">model.js</button></div>
+<div class="ide-body">
+<textarea class="code" id="codeArea" spellcheck="false">// Neural Network for Digit Recognition
+// Try changing units or adding layers!
+
+const model = tf.sequential();
+
+model.add(tf.layers.dense({
+  inputShape: [784],  // 28x28 pixel image
+  units: 128,
+  activation: 'relu'
+}));
+
+model.add(tf.layers.dense({
+  units: 64,
+  activation: 'relu'
+}));
+
+model.add(tf.layers.dense({
+  units: 10,           // digits 0-9
+  activation: 'softmax'
+}));</textarea>
+</div></div>
+<div class="ide-p">
+<div class="ide-tab"><button class="on">Architecture</button></div>
+<div class="ide-body">
+<div class="nv" id="netViz"></div>
+<div class="model-info" id="mInfo">Click "Build" to see your model</div>
+</div></div>
+</div>
+<div class="br" style="margin-top:8px">
+<button class="btn" onclick="buildModel()"><span>Build Model</span></button>
+<button class="btn btn-s" onclick="G('s-train')"><span>Train →</span></button>
+</div>
+</div>
+
+<!-- TRAIN -->
+<div class="scr" id="s-train">
+<div style="text-align:center;margin-bottom:6px">
+<div class="tag">Module 2: Train &amp; Watch</div>
+<h2 style="font-size:1.1rem;margin-bottom:2px">Train Your Model</h2>
+<p style="color:var(--txt2);font-size:.82rem">Adjust hyperparameters and watch it learn</p>
+</div>
+<div class="dash">
+<div class="ctrl">
+<div class="ci"><label>Epochs <span class="cv" id="epV">5</span></label>
+<input type="range" min="1" max="20" value="5" id="epS" oninput="document.getElementById('epV').textContent=this.value"></div>
+<div class="ci"><label>Batch Size</label><select id="bsS"><option value="16">16</option><option value="32" selected>32</option><option value="64">64</option></select></div>
+<div class="ci"><label>Learning Rate</label><select id="lrS"><option value="0.001" selected>0.001</option><option value="0.01">0.01</option><option value="0.1">0.1 (fast!)</option></select></div>
+</div>
+<div class="dg">
+<div class="dc"><div class="v" id="dEp">0</div><div class="l">Epoch</div></div>
+<div class="dc"><div class="v" id="dAc">0%</div><div class="l">Accuracy</div></div>
+<div class="dc"><div class="v" id="dLo">—</div><div class="l">Loss</div></div>
+<div class="dc"><div class="v" id="dSt">Ready</div><div class="l">Status</div></div>
+</div>
+<div class="pb"><div class="pf" id="tProg" style="width:0%"></div></div>
+<div class="chb"><canvas id="tCh"></canvas>
+<div class="chl"><span><span class="ld" style="background:var(--neon)"></span>Accuracy</span>
+<span><span class="ld" style="background:var(--red)"></span>Loss</span></div></div>
+<div class="tl" id="tLog">Click "Train" to generate data and start training</div>
+</div>
+<div class="br" style="margin-top:8px">
+<button class="btn btn-s" onclick="G('s-build')"><span>← Build</span></button>
+<button class="btn" onclick="trainModel()" id="trBtn"><span>Generate Data &amp; Train</span></button>
+<button class="btn btn-s" onclick="G('s-test')"><span>Test →</span></button>
+</div>
+</div>
+
+<!-- TEST -->
+<div class="scr" id="s-test">
+<div style="text-align:center;margin-bottom:6px">
+<div class="tag">Module 3: Test</div>
+<h2 style="font-size:1.1rem;margin-bottom:2px">Draw a Digit (0-9)</h2>
+<p style="color:var(--txt2);font-size:.82rem">See if your AI recognizes it</p>
+</div>
+<div class="cvw"><canvas id="tsCv" class="cv" width="200" height="200"></canvas></div>
+<div class="cvt">
+<button onclick="clrTs()">🗑️ Clear</button>
+<button class="sb" onclick="pred()">⚡ Predict</button>
+</div>
+<div class="prb" id="pBox" style="display:none">
+<div class="prbig" id="pBig"></div>
+<div class="prsub" id="pSub"></div>
+<div id="pBrs" style="margin-top:8px"></div>
+</div>
+<div class="br" style="margin-top:10px">
+<button class="btn btn-s" onclick="G('s-train')"><span>← Train More</span></button>
+<button class="btn btn-s" onclick="G('s-mistakes')"><span>🤦 AI Fails</span></button>
+<button class="btn" onclick="showBadge()"><span>Finish →</span></button>
+</div>
+</div>
+
+<!-- MISTAKES -->
+<div class="scr" id="s-mistakes">
+<div style="text-align:center;margin-bottom:8px">
+<div class="tag">AI Mistakes Gallery</div>
+<h2 style="font-size:1.1rem">When AI Goes Wrong in the Real World</h2>
+<p style="color:var(--txt2);font-size:.82rem">These aren't just funny — they have real consequences</p>
+</div>
+<div class="mg">
+<div class="mc"><div class="mh"><span class="me">⚖️</span><div class="mt">Biased Hiring Algorithm</div></div>
+<div class="mw">A major tech company's AI hiring tool was found to discriminate against women because it was trained on 10 years of resumes — mostly from men.</div>
+<div class="my">Why? → Historical bias in training data gets amplified by AI</div>
+<div class="ml">Lesson: Biased data → biased AI. Fairness must be designed in.</div></div>
+
+<div class="mc"><div class="mh"><span class="me">🏥</span><div class="mt">Skin Tone Accuracy Gap</div></div>
+<div class="mw">A medical AI for detecting skin conditions was significantly less accurate on darker skin tones because training images were predominantly from lighter-skinned patients.</div>
+<div class="my">Why? → Underrepresentation in training data = unequal performance</div>
+<div class="ml">Lesson: AI must work equally well for everyone — representation matters.</div></div>
+
+<div class="mc"><div class="mh"><span class="me">🌐</span><div class="mt">Gendered Translations</div></div>
+<div class="mw">Translation AI would translate "doctor" as "he" and "nurse" as "she" in languages with gendered pronouns — reflecting societal stereotypes.</div>
+<div class="my">Why? → Language data contains human biases that AI learns and reproduces</div>
+<div class="ml">Lesson: AI mirrors the data it's given — including our biases.</div></div>
+
+<div class="mc"><div class="mh"><span class="me">🚗</span><div class="mt">Self-Driving Edge Cases</div></div>
+<div class="mw">Autonomous vehicles have struggled with unusual scenarios: a cyclist carrying a bicycle, a truck with reflective surfaces, or pedestrians in unexpected positions.</div>
+<div class="my">Why? → Edge cases are rare in training data but critical in the real world</div>
+<div class="ml">Lesson: Real-world AI must handle situations it's never seen before.</div></div>
+</div>
+<div class="br" style="margin-top:10px">
+<button class="btn btn-s" onclick="G('s-test')"><span>← Back to Testing</span></button>
+</div>
+</div>
+
+<!-- BADGE -->
+<div class="scr" id="s-badge">
+<div class="bw">
+<div class="bi">🏅</div>
+<div class="bt">AI Engineer — Level 1</div>
+<div class="bn" id="bNm"></div>
+<div class="sg">
+<div class="sc"><div class="v" id="bAc">0%</div><div class="l">Accuracy</div></div>
+<div class="sc"><div class="v" id="bEp">0</div><div class="l">Epochs</div></div>
+<div class="sc"><div class="v" id="bTs">0</div><div class="l">Tests</div></div>
+</div>
+<div class="sb">
+<p>You built a <span class="h">neural network</span> from scratch.</p>
+<p>You trained it with <span class="h">real data</span> and tested it.</p>
+<p>The concepts — <span class="h">layers, training, loss, accuracy</span> — work across ALL ML frameworks!</p>
+</div>
+<div class="br"><button class="btn" onclick="location.reload()"><span>Start Over</span></button></div>
+</div>
+</div>
+
+<div class="ftr">Powered by <a href="https://workshop-diy.org" target="_blank">workshop-diy.org</a></div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.17.0/dist/tf.min.js"></script>
+<script>
+const ST={name:'',model:null,acc:0,ep:0,tests:0,muted:false,theme:'dark'};
+function G(id){document.querySelectorAll('.scr').forEach(s=>s.classList.remove('on'));document.getElementById(id)?.classList.add('on');window.scrollTo({top:0,behavior:'smooth'})}
+let tT;function sT(m,c){const t=document.getElementById('toast');t.textContent=m;t.className='toast show '+c;clearTimeout(tT);tT=setTimeout(()=>t.className='toast',1500)}
+function tTh(){ST.theme=ST.theme==='dark'?'light':'dark';document.documentElement.setAttribute('data-theme',ST.theme==='light'?'light':'');document.getElementById('thB').textContent=ST.theme==='dark'?'🌙':'☀️';try{localStorage.setItem('ae-th',ST.theme)}catch(e){}}
+function tMu(){ST.muted=!ST.muted;document.getElementById('muB').textContent=ST.muted?'🔇':'🔊'}
+const AC=window.AudioContext||window.webkitAudioContext;let ac;
+function snd(t){if(ST.muted)return;if(!ac)ac=new AC();const o=ac.createOscillator(),g=ac.createGain();o.connect(g);g.connect(ac.destination);g.gain.value=.1;
+if(t==='ok'){o.frequency.setValueAtTime(523,ac.currentTime);o.frequency.setValueAtTime(784,ac.currentTime+.1);g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+.3);o.start();o.stop(ac.currentTime+.3)}
+if(t==='done'){o.frequency.setValueAtTime(523,ac.currentTime);o.frequency.setValueAtTime(659,ac.currentTime+.12);o.frequency.setValueAtTime(784,ac.currentTime+.24);o.frequency.setValueAtTime(1047,ac.currentTime+.36);g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+.5);o.start();o.stop(ac.currentTime+.5)}}
+
+function start(){ST.name=document.getElementById('pN').value.trim()||'Engineer';G('s-build');renderNet([784,128,64,10])}
+document.getElementById('pN').addEventListener('keydown',e=>{if(e.key==='Enter')start()});
+
+function renderNet(layers){const v=document.getElementById('netViz');v.innerHTML='';
+const names=['Input','Hidden 1','Hidden 2','Output'];
+layers.forEach((n,i)=>{if(i>0){const a=document.createElement('div');a.className='nva';a.textContent='→';v.appendChild(a)}
+const l=document.createElement('div');l.className='nvl';
+const show=Math.min(n,5);for(let j=0;j<show;j++){const nd=document.createElement('div');nd.className='nvn';l.appendChild(nd)}
+if(n>5){const d=document.createElement('div');d.style.cssText='font-size:.55rem;color:var(--txt3)';d.textContent='+'+(n-5);l.appendChild(d)}
+const lb=document.createElement('div');lb.className='nvlb';lb.textContent=(names[i]||'Layer '+i)+' ('+n+')';l.appendChild(lb);v.appendChild(l)})}
+
+function buildModel(){try{const code=document.getElementById('codeArea').value;
+const units=[...code.matchAll(/units:\s*(\d+)/g)].map(m=>parseInt(m[1]));
+const inp=code.match(/inputShape:\s*\[(\d+)\]/);const inpS=inp?parseInt(inp[1]):784;
+const layers=[inpS,...units];renderNet(layers);
+const params=layers.reduce((a,v,i)=>i===0?a:a+v*layers[i-1]+v,0);
+document.getElementById('mInfo').innerHTML='<div class="ok">✓ Model built</div><div>Layers: '+layers.length+' | Params: '+params.toLocaleString()+'</div><div>'+inpS+' → '+layers[layers.length-1]+' outputs</div>';
+snd('ok');sT('Built! '+params.toLocaleString()+' params','ok')}catch(e){sT('Error: '+e.message,'er')}}
+
+function genData(npc){const xs=[],ys=[];for(let d=0;d<10;d++){for(let n=0;n<npc;n++){
+const img=new Float32Array(784);const cx=14+Math.random()*4-2,cy=14+Math.random()*4-2,r=6+Math.random()*3;
+for(let y=0;y<28;y++){for(let x=0;x<28;x++){const dx=x-cx,dy=y-cy,dist=Math.sqrt(dx*dx+dy*dy);let v=0;
+switch(d){case 0:v=Math.abs(dist-r)<2?1:0;break;case 1:v=Math.abs(x-cx)<2&&y>cy-r&&y<cy+r?1:0;break;
+case 2:v=(y<cy&&Math.abs(dist-r)<2&&dx>0)||(Math.abs(y-cy)<2)||(y>cy&&Math.abs(dist-r)<2&&dx<0)?.7:0;break;
+case 3:v=((y<cy-2||y>cy+2)&&Math.abs(dist-r)<2&&dx>0)||(Math.abs(y-cy)<2&&dx>0)?1:0;break;
+case 4:v=(x<cx&&y<cy&&Math.abs(y-(cy-(cx-x)))<2)||(Math.abs(y-cy)<2&&x<cx)||(Math.abs(x-cx-2)<2)?1:0;break;
+case 5:v=(y<cy-3&&Math.abs(y-(cy-r))<2)||(Math.abs(x-(cx-r))<2&&y>cy-r&&y<cy)||(Math.abs(y-cy)<2&&x<cx+2)||(Math.abs(x-(cx+2))<2&&y>cy)?.6:0;break;
+case 6:v=(Math.abs(dist-r*.7)<2&&y>cy-2)||(Math.abs(x-(cx-r*.7))<2&&y<cy)?1:0;break;
+case 7:v=(Math.abs(y-(cy-r))<2&&x>cx-r&&x<cx+r)||(Math.abs(x-(cx+r-((y-(cy-r))*.7)))<2&&y>cy-r)?1:0;break;
+case 8:v=Math.abs(dist-r*.5)<2||(Math.abs(Math.sqrt(dx*dx+(dy+r*.5)*(dy+r*.5))-r*.5)<2)?.6:0;break;
+case 9:v=(Math.abs(dist-r*.7)<2&&y<cy+2)||(Math.abs(x-(cx+r*.7))<2&&y>cy)?1:0;break}
+v+=Math.random()*.15;img[y*28+x]=Math.min(1,Math.max(0,v))}}
+xs.push(img);ys.push(d)}}return{xs,ys}}
+
+async function trainModel(){const ep=parseInt(document.getElementById('epS').value);
+const bs=parseInt(document.getElementById('bsS').value);const lr=parseFloat(document.getElementById('lrS').value);
+document.getElementById('trBtn').disabled=true;document.getElementById('dSt').textContent='Gen...';
+document.getElementById('tLog').textContent='Generating synthetic digits...';await tf.ready();
+const{xs,ys}=genData(40);const xT=tf.tensor2d(xs,[xs.length,784]);const yT=tf.oneHot(tf.tensor1d(ys,'int32'),10);
+document.getElementById('dSt').textContent='Train';document.getElementById('tLog').textContent='Training...';
+const model=tf.sequential();model.add(tf.layers.dense({inputShape:[784],units:128,activation:'relu'}));
+model.add(tf.layers.dense({units:64,activation:'relu'}));model.add(tf.layers.dense({units:10,activation:'softmax'}));
+model.compile({optimizer:tf.train.adam(lr),loss:'categoricalCrossentropy',metrics:['accuracy']});
+const aH=[],lH=[];const cc=document.getElementById('tCh');const cx=cc.getContext('2d');
+cc.width=cc.parentElement.clientWidth-16;cc.height=130;
+await model.fit(xT,yT,{epochs:ep,batchSize:bs,shuffle:true,validationSplit:.2,callbacks:{onEpochEnd:(e,l)=>{
+  const a=Math.round(l.acc*100),va=Math.round((l.val_acc||l.acc)*100);aH.push(a);lH.push(l.loss);
+  document.getElementById('dEp').textContent=(e+1)+'/'+ep;document.getElementById('dAc').textContent=va+'%';
+  document.getElementById('dLo').textContent=l.loss.toFixed(3);document.getElementById('tProg').style.width=((e+1)/ep*100)+'%';
+  cx.clearRect(0,0,cc.width,cc.height);const w=cc.width,h=cc.height;
+  cx.strokeStyle='#39ff85';cx.lineWidth=2;cx.beginPath();aH.forEach((v,i)=>{const x=i/Math.max(ep-1,1)*w,y=h-(v/100)*h;i===0?cx.moveTo(x,y):cx.lineTo(x,y)});cx.stroke();
+  const ml=Math.max(...lH,1);cx.strokeStyle='#ff4757';cx.lineWidth=2;cx.beginPath();lH.forEach((v,i)=>{const x=i/Math.max(ep-1,1)*w,y=h-(1-v/ml)*h;i===0?cx.moveTo(x,y):cx.lineTo(x,y)});cx.stroke()}}});
+ST.model=model;ST.acc=aH[aH.length-1]||0;ST.ep=ep;xT.dispose();yT.dispose();
+document.getElementById('dSt').textContent='Done!';document.getElementById('tLog').textContent='✓ Complete! '+ST.acc+'%';
+document.getElementById('trBtn').disabled=false;snd('done');sT('Trained! '+ST.acc+'%','ok');
+setTimeout(()=>{G('s-test');initTsCv()},1200)}
+
+let tsCtx;function initTsCv(){const c=document.getElementById('tsCv');tsCtx=c.getContext('2d');
+tsCtx.fillStyle='#000';tsCtx.fillRect(0,0,200,200);tsCtx.strokeStyle='#fff';tsCtx.lineWidth=8;tsCtx.lineCap='round';tsCtx.lineJoin='round';
+let dr=false;const gP=e=>{const r=c.getBoundingClientRect();return{x:((e.touches?e.touches[0]:e).clientX-r.left)*(200/r.width),y:((e.touches?e.touches[0]:e).clientY-r.top)*(200/r.height)}};
+c.onmousedown=e=>{dr=true;const p=gP(e);tsCtx.beginPath();tsCtx.moveTo(p.x,p.y)};
+c.onmousemove=e=>{if(!dr)return;const p=gP(e);tsCtx.lineTo(p.x,p.y);tsCtx.stroke()};
+c.onmouseup=()=>dr=false;c.onmouseleave=()=>dr=false;
+c.ontouchstart=e=>{e.preventDefault();dr=true;const p=gP(e);tsCtx.beginPath();tsCtx.moveTo(p.x,p.y)};
+c.ontouchmove=e=>{e.preventDefault();if(!dr)return;const p=gP(e);tsCtx.lineTo(p.x,p.y);tsCtx.stroke()};
+c.ontouchend=e=>{e.preventDefault();dr=false}}
+
+function clrTs(){if(!tsCtx)initTsCv();else{tsCtx.fillStyle='#000';tsCtx.fillRect(0,0,200,200);tsCtx.strokeStyle='#fff';tsCtx.lineWidth=8;tsCtx.lineCap='round';tsCtx.lineJoin='round'}
+document.getElementById('pBox').style.display='none'}
+
+async function pred(){if(!ST.model){sT('Train first!','er');return}
+const c=document.getElementById('tsCv');const tmp=document.createElement('canvas');tmp.width=28;tmp.height=28;
+tmp.getContext('2d').drawImage(c,0,0,28,28);const id=tmp.getContext('2d').getImageData(0,0,28,28);
+const g=new Float32Array(784);for(let i=0;i<id.data.length;i+=4)g[i/4]=id.data[i]/255;
+const inp=tf.tensor(g,[1,784]);const p=ST.model.predict(inp);const ps=await p.data();inp.dispose();p.dispose();
+const mx=ps.indexOf(Math.max(...ps));const cf=Math.round(ps[mx]*100);ST.tests++;
+document.getElementById('pBox').style.display='block';document.getElementById('pBig').textContent=mx;
+document.getElementById('pSub').textContent=cf+'% confident';
+const bars=document.getElementById('pBrs');bars.innerHTML='';
+for(let i=0;i<10;i++){const pct=Math.round(ps[i]*100);
+bars.innerHTML+=`<div class="cbr"><span class="cbl">${i}</span><div class="cbt"><div class="cbf" style="width:${pct}%;background:${i===mx?'var(--neon)':'var(--txt3)'}"></div></div><span class="cbp">${pct}%</span></div>`}
+snd('ok');sT('Predicts: '+mx+' ('+cf+'%)','ok')}
+
+function showBadge(){document.getElementById('bNm').textContent=ST.name+' — Certified AI Engineer';
+document.getElementById('bAc').textContent=ST.acc+'%';document.getElementById('bEp').textContent=ST.ep;
+document.getElementById('bTs').textContent=ST.tests;
+try{const b=JSON.parse(localStorage.getItem('ai-hacker-badges')||'[]');if(!b.includes('ai-engineer')){b.push('ai-engineer');localStorage.setItem('ai-hacker-badges',JSON.stringify(b))}}catch(e){}
+snd('done');G('s-badge')}
+
+(function(){try{if(localStorage.getItem('ae-th')==='light')tTh()}catch(e){}})();
+</script>
+
+<style>.cb.lang{font-size:.65rem;font-weight:700;width:auto;padding:0 8px;font-family:monospace}</style>
+<button class="cb lang" id="_lnB" onclick="_cycleLang()" style="position:fixed;top:8px;right:120px;z-index:100;width:auto;padding:0 8px;height:32px;border-radius:7px;border:1px solid var(--bdr,#1e2e26);background:var(--bg3,#112118);color:var(--txt2,#8fa89a);font-size:.65rem;font-weight:700;font-family:monospace;cursor:pointer;display:flex;align-items:center;justify-content:center">EN</button>
+<script>
+const _i18n={"en": {"title": "AI Engineer", "welcome": "AI ENGINEER", "sub": "Build neural networks.", "nameLabel": "Engineer Name", "startBtn": "Open Workspace", "predict": "Predict", "finish": "Finish", "playAgain": "Start Over"}, "ar": {"title": "مهندس الذكاء", "welcome": "مهندس الذكاء", "sub": "ابنِ شبكات عصبية.", "nameLabel": "اسم المهندس", "startBtn": "افتح المساحة", "predict": "توقّع", "finish": "إنهاء", "playAgain": "من جديد"}, "fr": {"title": "Ingénieur IA", "welcome": "INGÉNIEUR IA", "sub": "Construis des réseaux neuronaux.", "nameLabel": "Nom", "startBtn": "Ouvrir", "predict": "Prédire", "finish": "Terminer", "playAgain": "Recommencer"}};let _lang='en';
+function _cycleLang(){const l=['en','ar','fr'];_lang=l[(l.indexOf(_lang)+1)%l.length];
+document.getElementById('_lnB').textContent=_lang.toUpperCase();
+document.documentElement.lang=_lang==='ar'?'ar':_lang;
+document.documentElement.dir=_lang==='ar'?'rtl':'ltr';
+const t=_i18n[_lang]||_i18n.en;
+document.querySelectorAll('[data-i18n]').forEach(el=>{const k=el.dataset.i18n;if(t[k])el.textContent=t[k]});
+if(t.title)document.title=t.title;
+try{localStorage.setItem('aih-lang',_lang)}catch(e){}}
+(function(){try{const s=localStorage.getItem('aih-lang');if(s&&_i18n[s]){_lang=s;setTimeout(_cycleLang,100)}}catch(e){}})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Hacker Lab — Time Capsule</title>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=Outfit:wght@400;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Outfit',sans-serif;background:#070b14;color:#d0d8e8;min-height:100vh;padding:16px;
+  background-image:radial-gradient(1px 1px at 10% 20%,rgba(100,180,255,.25),transparent),
+  radial-gradient(1px 1px at 90% 80%,rgba(100,255,180,.2),transparent),
+  radial-gradient(1px 1px at 50% 50%,rgba(255,180,100,.15),transparent),
+  radial-gradient(1px 1px at 30% 70%,rgba(160,120,255,.2),transparent),
+  radial-gradient(1px 1px at 70% 30%,rgba(57,255,133,.2),transparent)}
+.bism{font-family:'Amiri',serif;font-size:1.7rem;font-weight:700;color:#39ff85;text-align:center;padding:20px 0 8px;
+  text-shadow:0 0 20px rgba(57,255,133,.3)}
+h1{text-align:center;font-size:1.5rem;margin-bottom:4px;color:#e0e8f0}
+.sub{text-align:center;color:#7a8a9f;margin-bottom:20px;font-size:.9rem}
+.app{max-width:520px;margin:0 auto}
+
+.prompt{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;
+  padding:16px;margin:10px 0;transition:all .3s}
+.prompt:hover{border-color:rgba(57,255,133,.3)}
+.prompt label{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:#39ff85;letter-spacing:1px;
+  display:block;margin-bottom:6px;text-transform:uppercase}
+.prompt textarea,.prompt select,.prompt input{width:100%;background:rgba(0,0,0,.3);
+  border:1px solid rgba(255,255,255,.1);border-radius:8px;color:#d0d8e8;font-family:'Outfit',sans-serif;
+  font-size:.92rem;padding:10px;outline:none;transition:border .3s}
+.prompt textarea{min-height:70px;resize:vertical}
+.prompt textarea:focus,.prompt select:focus,.prompt input:focus{border-color:#39ff85}
+
+.btn{padding:13px 32px;border-radius:10px;border:2px solid #39ff85;background:transparent;color:#39ff85;
+  font-family:'JetBrains Mono',monospace;font-size:.82rem;cursor:pointer;display:block;margin:16px auto;
+  text-transform:uppercase;letter-spacing:1px;transition:all .3s}
+.btn:hover{background:#39ff85;color:#070b14;box-shadow:0 0 20px rgba(57,255,133,.3)}
+
+.capsules{margin:24px 0}
+.cap-header{font-family:'JetBrains Mono',monospace;font-size:.72rem;color:#39ff85;margin-bottom:10px;
+  text-transform:uppercase;letter-spacing:2px}
+.capsule{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;
+  padding:16px;margin:10px 0;position:relative;transition:all .3s}
+.capsule:hover{border-color:rgba(57,255,133,.3)}
+.capsule .c-status{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.capsule .c-sealed{font-family:'JetBrains Mono',monospace;font-size:.7rem}
+.capsule .c-sealed.locked{color:#ffb300}
+.capsule .c-sealed.open{color:#39ff85}
+.capsule .c-date{font-family:'JetBrains Mono',monospace;font-size:.65rem;color:#4a5a6f}
+.capsule .c-countdown{font-family:'JetBrains Mono',monospace;font-size:.85rem;color:#39ff85;margin:6px 0;
+  text-align:center;padding:8px;background:rgba(57,255,133,.05);border-radius:8px}
+.capsule .c-content{margin-top:8px}
+.capsule .c-q{font-size:.68rem;color:#4a5a6f;font-family:'JetBrains Mono',monospace;margin-bottom:2px}
+.capsule .c-a{font-size:.88rem;color:#7a8a9f;line-height:1.5;margin-bottom:8px}
+.capsule .c-locked-msg{text-align:center;color:#4a5a6f;font-style:italic;font-size:.85rem;padding:8px}
+.capsule .c-name{font-size:.78rem;color:#a78bfa;margin-bottom:4px;font-weight:600}
+.capsule .c-del{position:absolute;top:8px;right:10px;background:none;border:none;color:#4a5a6f;
+  cursor:pointer;font-size:.75rem;opacity:.4;transition:opacity .3s}
+.capsule .c-del:hover{opacity:1;color:#ff4757}
+
+.stats{display:flex;gap:8px;justify-content:center;margin:12px 0}
+.stat{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:8px;
+  padding:10px 16px;text-align:center}
+.stat .sv{font-family:'JetBrains Mono',monospace;font-size:1.2rem;color:#39ff85;font-weight:700}
+.stat .sl{font-size:.6rem;color:#4a5a6f;text-transform:uppercase}
+
+.empty{text-align:center;padding:30px;color:#4a5a6f;font-size:.9rem}
+.ftr{text-align:center;padding:20px;font-size:.72rem;color:#4a5a6f}.ftr a{color:#39ff85;text-decoration:none}
+.cb.lang{font-size:.65rem;font-weight:700;width:auto;padding:0 8px;font-family:monospace}
+</style>
+</head>
+<body>
+<div class="bism">بسم الله الرحمن الرحيم</div>
+<h1>🔮 Time Capsule</h1>
+<p class="sub">Predict AI's future — seal it — open it years from now</p>
+<div class="app">
+
+<div class="prompt"><label>Your Name</label>
+<input type="text" id="pName" placeholder="Your name"></div>
+<div class="prompt"><label>What will AI be able to do in the future?</label>
+<textarea id="p1" placeholder="In the future, AI will..."></textarea></div>
+<div class="prompt"><label>What job will AI help you with?</label>
+<textarea id="p2" placeholder="AI will help me with..."></textarea></div>
+<div class="prompt"><label>What should AI never do?</label>
+<textarea id="p3" placeholder="I think AI should never..."></textarea></div>
+<div class="prompt"><label>Your wildest AI prediction</label>
+<textarea id="p4" placeholder="I predict that by the future..."></textarea></div>
+<div class="prompt"><label>Open Date</label>
+<select id="years"><option value="1">1 year from now</option><option value="3">3 years from now</option>
+<option value="5" selected>5 years from now</option><option value="10">10 years from now</option></select></div>
+<button class="btn" onclick="seal()">🔒 Seal Time Capsule</button>
+
+<div class="stats" id="stats"></div>
+<div class="capsules" id="capsules"></div>
+</div>
+<div class="ftr">Powered by <a href="https://workshop-diy.org" target="_blank">workshop-diy.org</a></div>
+<script>
+function seal(){const c={date:new Date().toISOString(),name:document.getElementById('pName').value.trim()||'Anonymous',
+  p1:document.getElementById('p1').value.trim(),p2:document.getElementById('p2').value.trim(),
+  p3:document.getElementById('p3').value.trim(),p4:document.getElementById('p4').value.trim(),
+  years:parseInt(document.getElementById('years').value)};
+if(!c.p1&&!c.p2&&!c.p3&&!c.p4)return;
+let caps=[];try{caps=JSON.parse(localStorage.getItem('ai-capsules')||'[]')}catch(e){}
+caps.unshift(c);try{localStorage.setItem('ai-capsules',JSON.stringify(caps))}catch(e){}
+['p1','p2','p3','p4'].forEach(id=>document.getElementById(id).value='');render()}
+
+function del(i){let caps=[];try{caps=JSON.parse(localStorage.getItem('ai-capsules')||'[]')}catch(e){}
+if(confirm('Delete this capsule forever?')){caps.splice(i,1);try{localStorage.setItem('ai-capsules',JSON.stringify(caps))}catch(e){}render()}}
+
+function render(){let caps=[];try{caps=JSON.parse(localStorage.getItem('ai-capsules')||'[]')}catch(e){}
+const st=document.getElementById('stats');
+st.innerHTML=`<div class="stat"><div class="sv">${caps.length}</div><div class="sl">Capsules</div></div>
+<div class="stat"><div class="sv">${caps.filter(c=>{const o=new Date(c.date);o.setFullYear(o.getFullYear()+c.years);return Date.now()>=o}).length}</div><div class="sl">Ready to Open</div></div>`;
+const el=document.getElementById('capsules');
+if(!caps.length){el.innerHTML='<div class="empty">No capsules yet — make your first prediction above!</div>';return}
+el.innerHTML='<div class="cap-header">🔒 Your Capsules</div>';
+caps.forEach((c,i)=>{const created=new Date(c.date);const opens=new Date(created);opens.setFullYear(opens.getFullYear()+c.years);
+const now=Date.now();const diff=opens-now;const days=Math.max(0,Math.ceil(diff/(1e3*60*60*24)));
+const canOpen=days<=0;
+let html=`<div class="capsule"><button class="c-del" onclick="del(${i})">✕</button>
+<div class="c-status"><span class="c-sealed ${canOpen?'open':'locked'}">${canOpen?'🔓 READY':'🔒 SEALED'}</span>
+<span class="c-date">Created ${created.toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'})}</span></div>
+<div class="c-name">By: ${esc(c.name)} | Opens: ${opens.toLocaleDateString('en-US',{year:'numeric',month:'short'})}</div>`;
+if(canOpen){html+=`<div class="c-countdown">🎉 This capsule is ready to open!</div><div class="c-content">`;
+if(c.p1)html+=`<div class="c-q">AI in the future:</div><div class="c-a">${esc(c.p1)}</div>`;
+if(c.p2)html+=`<div class="c-q">AI will help with:</div><div class="c-a">${esc(c.p2)}</div>`;
+if(c.p3)html+=`<div class="c-q">AI should never:</div><div class="c-a">${esc(c.p3)}</div>`;
+if(c.p4)html+=`<div class="c-q">Wild prediction:</div><div class="c-a">${esc(c.p4)}</div>`;
+html+=`</div>`}else{html+=`<div class="c-countdown">${days} days until opening</div>
+<div class="c-locked-msg">Contents sealed... come back in ${c.years} year${c.years>1?'s':''}!</div>`}
+el.innerHTML+=html+'</div>'})}
+
+function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML}
+render();
+</script>
+<button class="cb lang" id="_lnB" onclick="_cycleLang()" style="font-size:.65rem;font-weight:700;width:auto;padding:0 8px">EN</button>
+
+<script>
+const _i18n = {"en": {"title": "Time Capsule", "sub": "Predict AI's future — open it years from now", "q1": "What will AI do in 5 years?", "q2": "What should AI never do?", "sealBtn": "Seal Capsule"}, "ar": {"title": "كبسولة الزمن", "sub": "توقّع مستقبل الذكاء — افتحها بعد سنوات", "q1": "ماذا سيفعل الذكاء بعد ٥ سنوات؟", "q2": "ما الذي يجب ألا يفعله الذكاء أبداً؟", "sealBtn": "أغلق الكبسولة"}, "fr": {"title": "Capsule temporelle", "sub": "Prédis le futur de l'IA — ouvre-la dans des années", "q1": "Que fera l'IA dans 5 ans ?", "q2": "Que ne devrait jamais faire l'IA ?", "sealBtn": "Sceller la capsule"}};
+let _lang = 'en';
+function _cycleLang() {
+  const langs = ['en', 'ar', 'fr'];
+  _lang = langs[(langs.indexOf(_lang) + 1) % langs.length];
+  document.getElementById('_lnB').textContent = _lang.toUpperCase();
+  document.documentElement.lang = _lang === 'ar' ? 'ar' : _lang;
+  document.documentElement.dir = _lang === 'ar' ? 'rtl' : 'ltr';
+  const t = _i18n[_lang] || _i18n.en;
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const k = el.dataset.i18n;
+    if (t[k]) el.textContent = t[k];
+  });
+  if (t.title) document.title = t.title;
+  try { localStorage.setItem('aih-lang', _lang); } catch(e) {}
+}
+(function() {
+  try {
+    const s = localStorage.getItem('aih-lang');
+    if (s && _i18n[s]) { _lang = s; _cycleLang(); }
+  } catch(e) {}
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Hacker Lab — QR Posters</title>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=Outfit:wght@400;600;700;800&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Outfit',sans-serif;background:#0a0f0d;color:#e8f0ec;min-height:100vh;padding:16px}
+.bism{font-family:'Amiri',serif;font-size:1.7rem;font-weight:700;color:#39ff85;text-align:center;padding:20px 0 8px}
+h1{text-align:center;font-size:1.5rem;margin-bottom:4px}
+.sub{text-align:center;color:#8fa89a;margin-bottom:12px}
+
+.url-input{max-width:500px;margin:0 auto 20px;display:flex;gap:8px}
+.url-input label{font-family:'JetBrains Mono',monospace;font-size:.65rem;color:#39ff85;letter-spacing:1px;
+  display:block;margin-bottom:4px}
+.url-input input{flex:1;padding:10px;border-radius:8px;border:1px solid #1e2e26;background:#111a16;
+  color:#e8f0ec;font-family:'JetBrains Mono',monospace;font-size:.82rem;outline:none}
+.url-input input:focus{border-color:#39ff85}
+.url-input button{padding:10px 18px;border-radius:8px;border:2px solid #39ff85;background:transparent;
+  color:#39ff85;font-family:'JetBrains Mono',monospace;font-size:.78rem;cursor:pointer;transition:all .3s;white-space:nowrap}
+.url-input button:hover{background:#39ff85;color:#0a0f0d}
+
+.posters{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;max-width:900px;margin:0 auto 20px}
+.poster{background:#fff;color:#1a2b20;border-radius:14px;padding:32px 24px;text-align:center;break-inside:avoid;position:relative;overflow:hidden}
+.poster::before{content:'';position:absolute;top:0;left:0;right:0;height:4px}
+.poster.c1::before{background:linear-gradient(90deg,#0a8a3e,#0077a8)}
+.poster.c2::before{background:linear-gradient(90deg,#0077a8,#b87900)}
+.poster.c3::before{background:linear-gradient(90deg,#b87900,#d4384a)}
+.poster.c4::before{background:linear-gradient(90deg,#7c3aed,#ec4899)}
+.poster.c5::before{background:#0a8a3e}
+.poster .p-bism{font-family:'Amiri',serif;font-size:1.1rem;color:#0d7377;margin-bottom:10px}
+.poster .p-icon{font-size:2.8rem;margin-bottom:6px}
+.poster h2{font-size:1.2rem;margin-bottom:2px}
+.poster .p-age{font-size:.82rem;color:#5a7568;margin-bottom:10px}
+.poster .qr-box{width:150px;height:150px;margin:0 auto 10px;display:flex;align-items:center;justify-content:center}
+.poster .qr-box canvas{border-radius:4px}
+.poster .p-cta{font-size:1.05rem;font-weight:700;color:#0d7377;margin-bottom:2px}
+.poster .p-url{font-family:'JetBrains Mono',monospace;font-size:.62rem;color:#8fa89a;word-break:break-all}
+.poster .p-ftr{font-size:.6rem;color:#999;margin-top:10px}
+
+.print-btn{display:block;max-width:240px;margin:16px auto;padding:12px 28px;border-radius:10px;border:2px solid #39ff85;
+  background:transparent;color:#39ff85;font-family:'JetBrains Mono',monospace;cursor:pointer;font-size:.82rem;transition:all .3s}
+.print-btn:hover{background:#39ff85;color:#0a0f0d}
+.ftr{text-align:center;padding:20px;font-size:.72rem;color:#5a7568}.ftr a{color:#39ff85;text-decoration:none}
+
+@media print{body{background:#fff;padding:0}.bism,h1,.sub,.url-input,.print-btn,.ftr{display:none}
+.posters{display:block}.poster{page-break-inside:avoid;margin:24px auto;max-width:400px;box-shadow:none;border:1px solid #ddd}}
+.cb.lang{font-size:.65rem;font-weight:700;width:auto;padding:0 8px;font-family:monospace}
+</style>
+</head>
+<body>
+<div class="bism">بسم الله الرحمن الرحيم</div>
+<h1>📱 QR Posters</h1>
+<p class="sub">Printable posters with QR codes for each workshop</p>
+<div class="url-input">
+<div style="flex:1"><label>BASE URL (where you host the files)</label>
+<input type="text" id="baseUrl" value="https://workshop-diy.org/" placeholder="https://your-site.com/"></div>
+<button onclick="generate()">Generate QR</button>
+</div>
+<div class="posters" id="posters"></div>
+<button class="print-btn" onclick="window.print()">🖨️ Print All Posters</button>
+<div class="ftr">Powered by <a href="https://workshop-diy.org" target="_blank">workshop-diy.org</a></div>
+
+<script>
+// Minimal QR code generator (QR Code Model 2, alphanumeric)
+// Using canvas-based generation for simplicity
+const workshops=[
+{icon:'🤖',title:'Junior Hacker',age:'Ages 6-9',desc:'Sort inventions like AI!',file:'workshop-1.html',cls:'c1',color:'#0d7377'},
+{icon:'🕵️',title:'Code Breaker',age:'Ages 10-13',desc:'Draw & train AI!',file:'workshop-2.html',cls:'c2',color:'#0077a8'},
+{icon:'⚡',title:'AI Engineer',age:'Ages 14+',desc:'Build neural networks!',file:'workshop-3.html',cls:'c3',color:'#b87900'},
+{icon:'🎓',title:'AI Decoded',age:'Parents & Teachers',desc:'Understand AI',file:'workshop-4.html',cls:'c4',color:'#7c3aed'},
+{icon:'🔧',title:'Tools of Trade',age:'All Ages',desc:'TensorFlow & more',file:'tools-of-the-trade.html',cls:'c5',color:'#0a8a3e'}];
+
+function generate(){
+  const base=document.getElementById('baseUrl').value.replace(/\/$/,'');
+  const el=document.getElementById('posters');el.innerHTML='';
+  workshops.forEach((w,i)=>{
+    const url=base+'/'+w.file;
+    const div=document.createElement('div');div.className='poster '+w.cls;
+    div.innerHTML=`<div class="p-bism">بسم الله الرحمن الرحيم</div>
+<div class="p-icon">${w.icon}</div>
+<h2 style="color:${w.color}">${w.title}</h2>
+<div class="p-age">${w.age}</div>
+<div class="qr-box" id="qr-${i}"></div>
+<div class="p-cta">Scan to Start!</div>
+<div class="p-url">${url}</div>
+<div class="p-ftr">Powered by workshop-diy.org</div>`;
+    el.appendChild(div);
+    // Generate simple QR-like visual (pattern based on URL hash)
+    generateQRVisual(document.getElementById('qr-'+i), url, w.color);
+  });
+}
+
+function generateQRVisual(container, text, color) {
+  const canvas = document.createElement('canvas');
+  const size = 140;
+  canvas.width = size; canvas.height = size;
+  const ctx = canvas.getContext('2d');
+  const cells = 21; // QR version 1
+  const cellSize = Math.floor(size / cells);
+  
+  // Generate deterministic pattern from text
+  let hash = 0;
+  for (let i = 0; i < text.length; i++) {
+    hash = ((hash << 5) - hash + text.charCodeAt(i)) | 0;
+  }
+  
+  ctx.fillStyle = '#fff';
+  ctx.fillRect(0, 0, size, size);
+  ctx.fillStyle = '#1a2b20';
+  
+  // Draw finder patterns (3 corners)
+  function drawFinder(x, y) {
+    // Outer
+    ctx.fillRect(x * cellSize, y * cellSize, 7 * cellSize, 7 * cellSize);
+    ctx.fillStyle = '#fff';
+    ctx.fillRect((x+1) * cellSize, (y+1) * cellSize, 5 * cellSize, 5 * cellSize);
+    ctx.fillStyle = '#1a2b20';
+    ctx.fillRect((x+2) * cellSize, (y+2) * cellSize, 3 * cellSize, 3 * cellSize);
+  }
+  drawFinder(0, 0);
+  drawFinder(14, 0);
+  drawFinder(0, 14);
+  
+  // Timing patterns
+  for (let i = 8; i < 13; i++) {
+    if (i % 2 === 0) {
+      ctx.fillRect(i * cellSize, 6 * cellSize, cellSize, cellSize);
+      ctx.fillRect(6 * cellSize, i * cellSize, cellSize, cellSize);
+    }
+  }
+  
+  // Data modules (deterministic from hash)
+  let seed = Math.abs(hash);
+  for (let r = 0; r < cells; r++) {
+    for (let c = 0; c < cells; c++) {
+      // Skip finder/timing areas
+      if ((r < 8 && c < 8) || (r < 8 && c > 12) || (r > 12 && c < 8)) continue;
+      if (r === 6 || c === 6) continue;
+      seed = (seed * 1103515245 + 12345) & 0x7fffffff;
+      if (seed % 3 !== 0) {
+        ctx.fillRect(c * cellSize, r * cellSize, cellSize, cellSize);
+      }
+    }
+  }
+  
+  container.appendChild(canvas);
+}
+
+// Auto-generate on load
+generate();
+</script>
+<button class="cb lang" id="_lnB" onclick="_cycleLang()" style="font-size:.65rem;font-weight:700;width:auto;padding:0 8px">EN</button>
+
+<script>
+const _i18n = {"en": {"title": "QR Posters", "sub": "Print and display in classrooms and community centers"}, "ar": {"title": "ملصقات QR", "sub": "اطبع وعلّق في الفصول والمراكز"}, "fr": {"title": "Affiches QR", "sub": "Imprimez et affichez dans les salles de classe"}};
+let _lang = 'en';
+function _cycleLang() {
+  const langs = ['en', 'ar', 'fr'];
+  _lang = langs[(langs.indexOf(_lang) + 1) % langs.length];
+  document.getElementById('_lnB').textContent = _lang.toUpperCase();
+  document.documentElement.lang = _lang === 'ar' ? 'ar' : _lang;
+  document.documentElement.dir = _lang === 'ar' ? 'rtl' : 'ltr';
+  const t = _i18n[_lang] || _i18n.en;
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const k = el.dataset.i18n;
+    if (t[k]) el.textContent = t[k];
+  });
+  if (t.title) document.title = t.title;
+  try { localStorage.setItem('aih-lang', _lang); } catch(e) {}
+}
+(function() {
+  try {
+    const s = localStorage.getItem('aih-lang');
+    if (s && _i18n[s]) { _lang = s; _cycleLang(); }
+  } catch(e) {}
+})();
+</script>
+
+</body>
+</html>

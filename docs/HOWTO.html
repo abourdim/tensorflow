@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Hacker Lab — How To Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Outfit:wght@300;400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#faf8f5;--bg2:#fff;--bg3:#f0ede8;--teal:#0d7377;--td:rgba(13,115,119,.06);--gold:#b8860b;--txt:#2c2c2c;--txt2:#5a5a5a;--txt3:#999;--bdr:#e0dcd5;--mono:'JetBrains Mono',monospace;--body:'Outfit',sans-serif}
+[data-theme="dark"]{--bg:#0a0f0d;--bg2:#111a16;--bg3:#162019;--teal:#39ff85;--td:rgba(57,255,133,.08);--gold:#ffb300;--txt:#e8f0ec;--txt2:#8fa89a;--txt3:#5a7568;--bdr:#1e2e26}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--body);background:var(--bg);color:var(--txt);line-height:1.7;transition:all .3s}
+.page{max-width:720px;margin:0 auto;padding:20px 16px 40px}
+.bism{font-family:'Amiri',serif;font-size:1.7rem;font-weight:700;color:var(--teal);text-align:center;padding:20px 0 12px}
+h1{font-size:1.8rem;font-weight:700;text-align:center;margin-bottom:4px;color:var(--teal)}
+h2{font-size:1.2rem;font-weight:600;color:var(--teal);margin:24px 0 8px;padding-bottom:4px;border-bottom:1px solid var(--bdr)}
+h3{font-size:1rem;font-weight:600;margin:16px 0 6px}
+p{color:var(--txt2);margin-bottom:10px;font-size:.92rem}
+strong{color:var(--txt)}
+em{color:var(--txt3)}
+a{color:var(--teal);text-decoration:none}a:hover{text-decoration:underline}
+ul,ol{margin:6px 0 12px 20px;color:var(--txt2);font-size:.9rem}
+li{margin:3px 0}
+code{font-family:var(--mono);font-size:.82rem;background:var(--bg3);padding:2px 6px;border-radius:4px;color:var(--teal)}
+pre{background:var(--bg3);border:1px solid var(--bdr);border-radius:8px;padding:14px;overflow-x:auto;font-family:var(--mono);font-size:.78rem;color:var(--txt2);margin:10px 0;line-height:1.5}
+table{width:100%;border-collapse:collapse;margin:10px 0;font-size:.85rem}
+th{text-align:left;padding:8px 10px;background:var(--bg3);border-bottom:2px solid var(--bdr);font-family:var(--mono);font-size:.72rem;color:var(--teal);text-transform:uppercase;letter-spacing:.5px}
+td{padding:8px 10px;border-bottom:1px solid var(--bdr);color:var(--txt2)}
+tr:hover td{background:var(--td)}
+blockquote{border-left:3px solid var(--teal);padding:8px 14px;margin:10px 0;background:var(--td);border-radius:0 8px 8px 0;color:var(--txt2);font-size:.9rem}
+hr{border:none;border-top:1px solid var(--bdr);margin:20px 0}
+.card{background:var(--bg2);border:1px solid var(--bdr);border-radius:10px;padding:16px;margin:10px 0}
+.badge{font-family:var(--mono);font-size:.65rem;padding:2px 8px;border-radius:4px;display:inline-block}
+.topc{position:fixed;top:8px;right:10px;z-index:100}
+.cb{width:32px;height:32px;border-radius:7px;border:1px solid var(--bdr);background:var(--bg2);color:var(--txt3);font-size:.95rem;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.cb:hover{border-color:var(--teal);color:var(--teal)}
+.ftr{text-align:center;padding:20px;font-size:.72rem;color:var(--txt3);margin-top:20px;border-top:1px solid var(--bdr)}.ftr a{color:var(--teal)}
+.checklist{list-style:none;padding:0;margin:8px 0}
+.checklist li{padding:4px 0 4px 24px;position:relative;color:var(--txt2);font-size:.88rem}
+.checklist li::before{content:'☐';position:absolute;left:0;color:var(--teal)}
+.checklist li.done::before{content:'☑'}
+</style>
+</head>
+<body>
+<div class="topc"><button class="cb" onclick="document.documentElement.setAttribute('data-theme',document.documentElement.getAttribute('data-theme')==='dark'?'':'dark');this.textContent=document.documentElement.getAttribute('data-theme')==='dark'?'☀️':'🌙'">🌙</button></div>
+<div class="page">
+<div class="bism">بسم الله الرحمن الرحيم</div>
+<br>
+<br>
+<h1>AI Hacker Lab — How To Guide</h1>
+<br>
+<br>
+<h2>Quick Start (30 seconds)</h2>
+<br>
+<li>Download the zip file</li>
+<li>Unzip to any folder</li>
+<li>Open <code>ai-hacker-lab-single.html</code> in Chrome or Edge</li>
+<li>Click any workshop card to begin</li>
+<br>
+<p>That's it. No installation, no accounts, no servers.</p>
+<br>
+<br>
+<h2>Running a Workshop Session</h2>
+<br>
+<h3>Before the Session</h3>
+<li>Open the workshop HTML file and test it once yourself</li>
+<li>Read the corresponding facilitator guide (<code>workshop-X-guide.md</code>)</li>
+<li>Ensure devices have Chrome or Edge installed</li>
+<li>For Workshops 2-3: confirm internet access for TensorFlow.js (first load only)</li>
+<br>
+<h3>Session Flow (45 minutes)</h3>
+<br>
+<strong>Introduction (5 min)</strong>
+<li>Open the workshop on the projector or shared screen</li>
+<li>Enter a fun group name</li>
+<li>Walk through the intro screens together</li>
+<br>
+<strong>Activity (30 min)</strong>
+<li>Let participants work individually or in pairs</li>
+<li>Walk around, answer questions, encourage experimentation</li>
+<li>For younger kids: help with drag & drop on small screens</li>
+<li>For teens: let them experiment and fail — that's learning</li>
+<br>
+<strong>Discussion (10 min)</strong>
+<li>"What did you sort/build/train?"</li>
+<li>"Did the AI make any mistakes? Why?"</li>
+<li>"What would you build with AI?"</li>
+<li>"What surprised you?"</li>
+<br>
+<h3>After the Session</h3>
+<li>Generate certificates (<code>certificates.html</code>)</li>
+<li>Encourage journal entries (<code>journal.html</code>)</li>
+<li>Seal a time capsule prediction (<code>time-capsule.html</code>)</li>
+<li>Check the dashboard for badge progress</li>
+<br>
+<br>
+<h2>Hosting on a Website</h2>
+<br>
+<p>Upload all HTML files to any static host:</p>
+<br>
+<strong>GitHub Pages:</strong>
+<li>Create a repository</li>
+<li>Upload all <code>.html</code> files</li>
+<li>Enable GitHub Pages in Settings</li>
+<li>Share the URL</li>
+<br>
+<strong>Netlify / Vercel:</strong>
+<li>Drag & drop the folder</li>
+<li>Get a URL instantly</li>
+<br>
+<strong>Any web server:</strong>
+<li>Upload files to your web root</li>
+<li>No backend, no database, no configuration needed</li>
+<br>
+<br>
+<h2>Customizing</h2>
+<br>
+<h3>Change workshop content</h3>
+<p>Each <code>.html</code> file is self-contained. Edit directly with any text editor.</p>
+<br>
+<h3>Add a new workshop</h3>
+<li>Copy an existing workshop as a template</li>
+<li>Modify the content, screens, and logic</li>
+<li>Add a card to the hub launcher</li>
+<li>Create a facilitator guide</li>
+<br>
+<h3>Translate to another language</h3>
+<li>Open any <code>.html</code> file</li>
+<li>Search and replace text content</li>
+<li>Keep the Bismillah in Arabic</li>
+<li>Update the <code><title></code> tag</li>
+<br>
+<h3>Change the branding</h3>
+<li>Replace "workshop-diy.org" in footers</li>
+<li>Modify colors in the <code>:root</code> CSS variables</li>
+<li>Update the hub title and description</li>
+<br>
+<br>
+<h2>Troubleshooting</h2>
+<br>
+<strong>Workshop 2/3 won't train:</strong>
+<li>Ensure internet access (TensorFlow.js loads from CDN)</li>
+<li>Use Chrome or Edge (best TF.js support)</li>
+<li>Try refreshing the page</li>
+<br>
+<strong>Drag & drop not working on mobile:</strong>
+<li>The app uses touch events as fallback</li>
+<li>Ensure you're touching and dragging, not just tapping</li>
+<li>Try a different finger or stylus</li>
+<br>
+<strong>Badges not saving:</strong>
+<li>localStorage must be enabled in browser settings</li>
+<li>Private/incognito mode may not persist data</li>
+<li>Some browsers clear localStorage after a period</li>
+<br>
+<strong>Hardware Lab not connecting:</strong>
+<li>Web Bluetooth requires Chrome or Edge</li>
+<li>micro:bit must be paired via the Bluetooth menu first</li>
+<li>ESP32-C3 Web Serial requires HTTPS or localhost</li>
+<br>
+<br>
+<h2>Development Guidelines</h2>
+<br>
+<li>All files must be self-contained (no build step)</li>
+<li>CSS in <code><style></code> tags, JS in <code><script></code> tags</li>
+<li>Use CSS variables for theming</li>
+<li>Support dark/light themes</li>
+<li>Include touch event fallbacks for mobile</li>
+<li>Every page must have: Bismillah header, footer (workshop-diy.org), theme toggle, mute toggle</li>
+<li>No music, no dance references</li>
+<li>Diverse names in examples</li>
+<li>Age-appropriate content</li>
+<br>
+<br>
+<p>*Powered by [workshop-diy.org](https://workshop-diy.org)*</p>
+<div class="ftr">Powered by <a href="https://workshop-diy.org" target="_blank">workshop-diy.org</a></div>
+</div>
+</body>
+</html>

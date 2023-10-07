@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Hacker Lab — AI Decoded: For Parents &amp; Teachers</title>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#faf8f5;--bg2:#fff;--bg3:#f0ede8;--bg4:#e6e2db;
+  --teal:#0d7377;--td:rgba(13,115,119,.06);--tg:rgba(13,115,119,.15);
+  --gold:#b8860b;--gd:rgba(184,134,11,.06);
+  --red:#c4384a;--green:#0a8a3e;
+  --txt:#2c2c2c;--txt2:#5a5a5a;--txt3:#999;
+  --bdr:#e0dcd5;--mono:'DM Mono',monospace;--body:'DM Sans',sans-serif;--tr:.3s ease}
+[data-theme="dark"]{--bg:#1a1a1a;--bg2:#222;--bg3:#2a2a2a;--bg4:#333;
+  --teal:#39ff85;--td:rgba(57,255,133,.08);--tg:rgba(57,255,133,.15);
+  --gold:#ffb300;--gd:rgba(255,179,0,.08);
+  --red:#ff4757;--green:#39ff85;
+  --txt:#e0e0e0;--txt2:#aaa;--txt3:#666;--bdr:#444}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--body);background:var(--bg);color:var(--txt);min-height:100vh;overflow-x:hidden;transition:all var(--tr)}
+.app{max-width:700px;margin:0 auto;padding:16px;position:relative;z-index:1}
+.scr{display:none;animation:fi .4s ease}.scr.on{display:block}
+@keyframes fi{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+.hdr{text-align:center;padding:20px 0 8px}
+.bism{font-family:'Amiri',serif;font-size:1.8rem;font-weight:700;color:var(--teal)}
+.topc{position:fixed;top:10px;right:12px;display:flex;gap:5px;z-index:100}
+.cb{width:32px;height:32px;border-radius:8px;border:1px solid var(--bdr);background:var(--bg2);color:var(--txt2);
+  font-size:.95rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all var(--tr)}
+.cb:hover{border-color:var(--teal);color:var(--teal)}
+
+h1{font-size:1.8rem;font-weight:700;text-align:center;margin-bottom:4px}
+h2{font-size:1.25rem;font-weight:600;margin:20px 0 8px;color:var(--teal)}
+h3{font-size:1.05rem;font-weight:600;margin:14px 0 6px}
+p{line-height:1.7;color:var(--txt2);margin-bottom:10px;font-size:.93rem}
+.sub{font-size:1rem;color:var(--txt2);text-align:center;margin-bottom:24px}
+
+.btn{padding:12px 30px;border-radius:10px;border:2px solid var(--teal);background:transparent;color:var(--teal);
+  font-family:var(--mono);font-size:.82rem;cursor:pointer;letter-spacing:1px;transition:all var(--tr)}
+.btn:hover{background:var(--teal);color:var(--bg);box-shadow:0 2px 12px var(--td)}
+.btn-s{border-color:var(--bdr);color:var(--txt2)}.btn-s:hover{border-color:var(--gold);background:var(--gold);color:var(--bg)}
+.br{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:16px 0}
+
+/* Chapter nav */
+.chnav{display:flex;gap:4px;flex-wrap:wrap;justify-content:center;margin:12px 0;padding:10px;background:var(--bg3);border-radius:10px}
+.chb{padding:5px 10px;border-radius:6px;border:1px solid var(--bdr);background:var(--bg2);color:var(--txt3);
+  font-family:var(--mono);font-size:.65rem;cursor:pointer;transition:all var(--tr)}
+.chb.on,.chb:hover{border-color:var(--teal);color:var(--teal);background:var(--td)}
+
+/* Card */
+.card{background:var(--bg2);border:1px solid var(--bdr);border-radius:12px;padding:20px;margin:10px 0}
+.card-i{font-size:2.2rem;margin-bottom:6px}
+
+/* Interactive sort */
+.sdemo{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:10px 0}
+.si{padding:8px 14px;border:2px solid var(--bdr);border-radius:8px;cursor:pointer;font-size:1.3rem;
+  transition:all var(--tr);user-select:none}
+.si:hover{border-color:var(--teal);transform:scale(1.05)}
+.si.done{opacity:.3;pointer-events:none;border-color:var(--teal);background:var(--td)}
+.sbins{display:flex;gap:10px;justify-content:center;margin:10px 0}
+.sbin{min-width:90px;min-height:70px;border:2px dashed var(--bdr);border-radius:10px;padding:6px;
+  text-align:center;cursor:pointer;transition:all var(--tr)}
+.sbin:hover,.sbin.act{border-color:var(--teal);background:var(--td)}
+.sbin .bl{font-family:var(--mono);font-size:.65rem;color:var(--teal);margin-bottom:3px}
+.sbin .bi{font-size:1.1rem;min-height:20px}
+
+/* Toggle */
+.tbox{display:flex;border:1px solid var(--bdr);border-radius:8px;overflow:hidden;margin:10px 0}
+.topt{flex:1;padding:10px;text-align:center;cursor:pointer;font-family:var(--mono);font-size:.78rem;
+  color:var(--txt2);transition:all var(--tr);background:var(--bg3)}
+.topt.on{background:var(--teal);color:var(--bg)}
+.tcon{background:var(--bg2);border:1px solid var(--bdr);border-radius:8px;padding:14px;margin:6px 0}
+
+/* Roadmap */
+.rm{display:flex;flex-direction:column;gap:10px;margin:10px 0}
+.ri{display:flex;gap:10px;align-items:flex-start;padding:12px;background:var(--bg2);border:1px solid var(--bdr);
+  border-radius:10px;cursor:pointer;transition:all var(--tr)}
+.ri:hover{border-color:var(--teal);transform:translateX(3px)}
+.ri-i{font-size:1.8rem;flex-shrink:0}
+.ri h4{font-size:.9rem;font-weight:600;margin-bottom:2px}
+.ri p{font-size:.78rem;color:var(--txt3);margin:0}
+.ri .badge{font-family:var(--mono);font-size:.6rem;color:var(--gold);background:var(--gd);padding:2px 7px;border-radius:4px;margin-top:3px;display:inline-block}
+
+/* Values grid */
+.vg{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}
+.vc{background:var(--bg3);padding:12px;border-radius:8px}
+.vc strong{color:var(--teal);display:block;margin-bottom:2px}
+.vc span{font-size:.82rem;color:var(--txt2)}
+
+/* Scenario */
+.scen{background:var(--bg3);border-radius:10px;padding:14px;margin:8px 0}
+.scen .q{font-weight:600;font-size:.92rem;margin-bottom:8px}
+.scen .opts{display:flex;flex-direction:column;gap:5px}
+.scen .opt{padding:9px 12px;border:1px solid var(--bdr);border-radius:7px;cursor:pointer;font-size:.82rem;
+  color:var(--txt2);transition:all var(--tr);background:var(--bg2)}
+.scen .opt:hover{border-color:var(--teal);color:var(--teal)}
+.scen .opt.sel{border-color:var(--teal);background:var(--td);color:var(--teal)}
+.scen .fb{margin-top:6px;padding:10px;background:var(--bg2);border-radius:7px;font-size:.82rem;color:var(--txt2);display:none}
+
+/* AI Mistakes for adults */
+.amc{background:var(--bg2);border:1px solid var(--bdr);border-radius:10px;padding:14px;margin:8px 0}
+.amc .amh{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.amc .ame{font-size:1.5rem}.amc .amt{font-weight:600;font-size:.92rem}
+.amc .amw{font-size:.85rem;color:var(--txt2);line-height:1.5;margin-bottom:5px}
+.amc .amq{font-size:.82rem;color:var(--teal);font-weight:500;font-style:italic}
+
+.ftr{text-align:center;padding:16px;font-size:.72rem;color:var(--txt3)}.ftr a{color:var(--teal);text-decoration:none}
+</style>
+</head>
+<body>
+<div class="topc">
+<button class="cb" id="thB" onclick="tTh()">☀️</button>
+<button class="cb" id="muB" onclick="tMu()">🔊</button>
+</div>
+<div class="app">
+<div class="hdr"><div class="bism">بسم الله الرحمن الرحيم</div></div>
+
+<!-- WELCOME -->
+<div class="scr on" id="s-wel">
+<div style="text-align:center;padding:36px 0">
+<div style="font-size:3.2rem;margin-bottom:10px">🎓</div>
+<h1>AI Decoded</h1>
+<p class="sub">A Guide for Parents &amp; Teachers<br><em>Your children are learning to build the future.<br>Let's make sure you understand it too.</em></p>
+<div style="display:flex;flex-direction:column;align-items:center;gap:5px;margin-bottom:22px;max-width:250px;margin-left:auto;margin-right:auto">
+<label style="font-family:var(--mono);font-size:.6rem;color:var(--teal);letter-spacing:2px">YOUR NAME</label>
+<input type="text" id="pN" placeholder="Fatima" maxlength="20" autocomplete="off"
+style="width:100%;padding:10px;border-radius:8px;border:2px solid var(--bdr);background:var(--bg2);
+color:var(--txt);font-family:var(--body);font-size:1rem;text-align:center;outline:none">
+</div>
+<button class="btn" onclick="startGuide()">Begin</button>
+</div>
+</div>
+
+<!-- MAIN -->
+<div class="scr" id="s-main">
+<div class="chnav" id="cNav"></div>
+<div id="cCont"></div>
+<div class="ftr">Powered by <a href="https://workshop-diy.org" target="_blank">workshop-diy.org</a></div>
+</div>
+
+<!-- CERT -->
+<div class="scr" id="s-cert">
+<div style="text-align:center;padding:36px 0">
+<div style="font-size:4rem;margin-bottom:10px">🏅</div>
+<h2 style="color:var(--gold);margin-top:0">AI Workshop Facilitator</h2>
+<div id="cName" style="font-size:1.3rem;font-weight:700;margin:6px 0 16px"></div>
+<div class="card" style="text-align:left">
+<p>You now understand the fundamentals of AI and machine learning.</p>
+<p>You're ready to guide the next generation of builders.</p>
+<p style="color:var(--teal);font-weight:600">Key takeaways:</p>
+<p>• AI learns from examples, not rules — and definitely not magic<br>
+• More diverse data = fairer, better AI<br>
+• Ethics and values must be designed in from the start<br>
+• The concepts transfer across all tools and frameworks<br>
+• Your role as a facilitator is to spark curiosity, not have all the answers</p>
+</div>
+<div class="br"><button class="btn" onclick="location.reload()">Start Over</button></div>
+</div>
+</div>
+</div>
+
+<script>
+const ST={name:'',ch:0,muted:false,theme:'light'};
+function G(id){document.querySelectorAll('.scr').forEach(s=>s.classList.remove('on'));document.getElementById(id)?.classList.add('on')}
+function tTh(){ST.theme=ST.theme==='light'?'dark':'light';document.documentElement.setAttribute('data-theme',ST.theme==='dark'?'dark':'');document.getElementById('thB').textContent=ST.theme==='light'?'☀️':'🌙'}
+function tMu(){ST.muted=!ST.muted;document.getElementById('muB').textContent=ST.muted?'🔇':'🔊'}
+
+const chapters=[
+{t:'What is AI?',i:'🤖',c:`<div class="card"><div class="card-i">🤖</div><h3>What is AI, Really?</h3>
+<p>Artificial Intelligence is a computer that learns from examples. Not magic, not sentient — pattern recognition at scale.</p>
+<p><strong>Try it yourself!</strong> Click an item, then click the bin it belongs to:</p>
+<div class="sdemo" id="sdemo"></div><div class="sbins" id="sbins"></div>
+<p id="smsg" style="text-align:center;font-family:var(--mono);font-size:.82rem;color:var(--teal)"></p>
+<p style="margin-top:10px">You just did <strong>classification</strong>! This is exactly what AI does — but with millions of items and mathematical patterns.</p></div>`},
+
+{t:'Machine Learning',i:'📊',c:`<div class="card"><div class="card-i">📊</div><h3>Traditional Programming vs Machine Learning</h3>
+<div class="tbox"><div class="topt on" onclick="sTog(0)">Traditional</div><div class="topt" onclick="sTog(1)">Machine Learning</div></div>
+<div class="tcon" id="tCon"><p><strong>Traditional:</strong> Human writes rules → Computer follows</p>
+<p style="font-family:var(--mono);font-size:.85rem;color:var(--teal)">IF email contains "free money" → SPAM</p>
+<p>The programmer must think of every possible rule. This doesn't scale.</p></div>
+<p style="margin-top:10px">ML flips the script: instead of writing rules, you give examples and the computer discovers the rules itself.</p></div>`},
+
+{t:'Neural Networks',i:'🧠',c:`<div class="card"><div class="card-i">🧠</div><h3>Inside a Neural Network</h3>
+<p>Think of it like a team of experts, each checking one thing:</p>
+<div style="display:flex;align-items:center;justify-content:center;gap:14px;margin:14px 0;flex-wrap:wrap">
+<div style="text-align:center;padding:10px;background:var(--bg3);border-radius:8px"><div style="font-size:1.3rem">📷</div><div style="font-family:var(--mono);font-size:.65rem;color:var(--txt3)">Data In</div></div>
+<div style="color:var(--teal)">→</div>
+<div style="text-align:center;padding:10px;background:var(--bg3);border-radius:8px"><div style="font-size:1.3rem">🔍🔍🔍</div><div style="font-family:var(--mono);font-size:.65rem;color:var(--txt3)">Layers</div></div>
+<div style="color:var(--teal)">→</div>
+<div style="text-align:center;padding:10px;background:var(--bg3);border-radius:8px"><div style="font-size:1.3rem">✅</div><div style="font-family:var(--mono);font-size:.65rem;color:var(--txt3)">Answer</div></div></div>
+<p>Early layers find simple patterns (edges, colors). Later layers find complex ones (shapes, objects). The final layer decides.</p>
+<p>No math required — it's just teamwork at massive scale!</p></div>`},
+
+{t:'Learning Path',i:'🗺️',c:`<div class="card"><div class="card-i">🗺️</div><h3>Your Child's Workshop Roadmap</h3>
+<div class="rm">
+<div class="ri"><div class="ri-i">🤖</div><div><h4>Workshop 1: Junior Hacker (Ages 6-9)</h4><p>Drag & drop sorting — classification through play</p><div class="badge">~45 min</div></div></div>
+<div class="ri"><div class="ri-i">🕵️</div><div><h4>Workshop 2: Code Breaker (Ages 10-13)</h4><p>Draw, train, test — the real ML cycle</p><div class="badge">~45 min</div></div></div>
+<div class="ri"><div class="ri-i">⚡</div><div><h4>Workshop 3: AI Engineer (Ages 14+)</h4><p>Build neural networks, write real code</p><div class="badge">~60 min</div></div></div></div>
+<h3>After Each Workshop, Ask:</h3>
+<p>• "What did you sort/build/train today?"<br>• "Did the AI make mistakes? Why do you think?"<br>• "What would you build with AI if you could build anything?"<br>• "Was there anything that surprised you?"</p></div>`},
+
+{t:'Facilitating',i:'📋',c:`<div class="card"><div class="card-i">📋</div><h3>How to Run a Workshop</h3>
+<p><strong>Setup:</strong> Open the HTML file in any browser. No installs, no accounts, no server needed.</p>
+<h3>Timing Guide</h3>
+<div style="display:flex;gap:6px;margin:8px 0;flex-wrap:wrap">
+<div style="flex:1;min-width:100px;background:var(--bg3);border-radius:8px;padding:10px;text-align:center"><div style="font-family:var(--mono);font-size:1.1rem;color:var(--teal)">5 min</div><div style="font-size:.72rem;color:var(--txt3)">Introduction</div></div>
+<div style="flex:1;min-width:100px;background:var(--bg3);border-radius:8px;padding:10px;text-align:center"><div style="font-family:var(--mono);font-size:1.1rem;color:var(--teal)">30 min</div><div style="font-size:.72rem;color:var(--txt3)">Activity</div></div>
+<div style="flex:1;min-width:100px;background:var(--bg3);border-radius:8px;padding:10px;text-align:center"><div style="font-family:var(--mono);font-size:1.1rem;color:var(--teal)">10 min</div><div style="font-size:.72rem;color:var(--txt3)">Discussion</div></div></div>
+<h3>If They Get Stuck</h3>
+<p>• <strong>Workshop 1:</strong> Help with drag & drop on small screens. Encourage trying again.<br>
+• <strong>Workshop 2:</strong> Suggest drawing bigger, more clearly. More data = better accuracy.<br>
+• <strong>Workshop 3:</strong> Pre-filled code works out of the box. Let them experiment and fail — that's learning!</p>
+<h3>Group vs Individual</h3>
+<p>Works both ways. Groups encourage discussion. Individuals allow deeper focus. Pair up younger kids with an older mentor if possible.</p></div>`},
+
+{t:'Ethics & Values',i:'⚖️',c:`<div class="card"><div class="card-i">⚖️</div><h3>AI Ethics &amp; Values</h3>
+<p>Technology must serve people. These universal values guide responsible AI:</p>
+<div class="vg">
+<div class="vc"><strong>Trust</strong><span>AI systems must be reliable and transparent</span></div>
+<div class="vc"><strong>Fairness</strong><span>AI must work equally well for everyone</span></div>
+<div class="vc"><strong>Knowledge</strong><span>Understanding AI is a shared responsibility</span></div>
+<div class="vc"><strong>Benefit</strong><span>Technology should help people, not harm them</span></div></div>
+<h3>Discussion Scenario</h3>
+<div class="scen"><div class="q">An AI rejects someone's loan application. The person doesn't know why. Is this fair?</div>
+<div class="opts">
+<div class="opt" onclick="selOpt(this,'Right — transparency is essential. People deserve to know why automated decisions affect them, and to have a way to appeal.')">No — decisions about people must be explainable</div>
+<div class="opt" onclick="selOpt(this,'Accuracy alone isn\\'t enough. The real question is whether the training data was fair. Historical bias → biased AI, even if technically accurate.')">If it's accurate, it's fine</div>
+<div class="opt" onclick="selOpt(this,'Many experts agree — \\'human in the loop\\' systems where AI assists but humans decide are often the most ethical approach for high-stakes decisions.')">AI shouldn't decide about people at all</div></div>
+<div class="fb" id="efb"></div></div>
+<h3>AI Mistakes in the Real World</h3>
+<div class="amc"><div class="amh"><span class="ame">⚖️</span><span class="amt">Biased Hiring Algorithms</span></div>
+<div class="amw">Major tech companies discovered their AI hiring tools discriminated against women — trained on historical data that reflected past biases.</div>
+<div class="amq">Ask your kids: "If the data is biased, can the AI be fair?"</div></div>
+<div class="amc"><div class="amh"><span class="ame">🏥</span><span class="amt">Medical AI Gaps</span></div>
+<div class="amw">Medical AI systems performed less accurately on patients with darker skin tones because training datasets underrepresented these populations.</div>
+<div class="amq">Ask your kids: "Why does representation in data matter?"</div></div>
+<div class="amc"><div class="amh"><span class="ame">🤖</span><span class="amt">AI-Generated Misinformation</span></div>
+<div class="amw">AI can now generate convincing fake text, images, and videos — raising questions about trust and verification in the digital age.</div>
+<div class="amq">Ask your kids: "How can you tell if something is real or AI-generated?"</div></div>
+<p style="margin-top:10px;font-weight:600;color:var(--teal)">These are the conversations your kids need you to have with them.</p></div>`},
+
+{t:'Beyond',i:'🚀',c:`<div class="card"><div class="card-i">🚀</div><h3>Continue the Journey</h3>
+<h3>Free Platforms</h3>
+<p>• <strong>Teachable Machine</strong> — no-code ML by Google<br>
+• <strong>Machine Learning for Kids</strong> — Scratch + AI<br>
+• <strong>Khan Academy</strong> — computer science fundamentals<br>
+• <strong>Kaggle</strong> — real datasets and competitions for teens</p>
+<h3>Start an AI Study Circle</h3>
+<p>Meet monthly. Each session: one concept + one hands-on activity. Use these workshops as your curriculum. Rotate facilitators. Celebrate progress. Make it fun.</p>
+<h3>Screen Time Balance</h3>
+<p>Each workshop is ~45 minutes. Follow with unplugged discussion. Encourage applying concepts offline — sorting real objects, discussing AI they encounter daily.</p>
+<p style="text-align:center;margin-top:14px;font-weight:600;color:var(--teal);font-size:1rem">The specific tool doesn't matter.<br>Your child is learning to think like an AI engineer.</p></div>
+<div class="br"><button class="btn" onclick="showCert()">Get Certificate</button></div>`}
+];
+
+function startGuide(){ST.name=document.getElementById('pN').value.trim()||'Facilitator';G('s-main');bldCh();showCh(0)}
+document.getElementById('pN').addEventListener('keydown',e=>{if(e.key==='Enter')startGuide()});
+
+function bldCh(){const n=document.getElementById('cNav');n.innerHTML='';
+chapters.forEach((ch,i)=>{const b=document.createElement('button');b.className='chb'+(i===ST.ch?' on':'');
+b.textContent=ch.i+' '+ch.t;b.onclick=()=>showCh(i);n.appendChild(b)})}
+
+function showCh(i){ST.ch=i;bldCh();
+document.getElementById('cCont').innerHTML='<h2>'+chapters[i].i+' '+chapters[i].t+'</h2>'+chapters[i].c+
+'<div class="br">'+(i>0?'<button class="btn btn-s" onclick="showCh('+(i-1)+')">← Previous</button>':'')+
+(i<chapters.length-1?'<button class="btn" onclick="showCh('+(i+1)+')">Next →</button>':'')+'</div>';
+if(i===0)initSort();window.scrollTo({top:0,behavior:'smooth'})}
+
+let sSel=null;
+const sItems=[{e:'🤖',c:'tech'},{e:'🌿',c:'nature'},{e:'📱',c:'tech'},{e:'🌸',c:'nature'},{e:'💻',c:'tech'},{e:'🌳',c:'nature'},{e:'⌚',c:'tech'},{e:'🌺',c:'nature'}];
+function initSort(){const d=document.getElementById('sdemo'),b=document.getElementById('sbins');if(!d||!b)return;d.innerHTML='';b.innerHTML='';
+sItems.forEach((item,i)=>{const el=document.createElement('div');el.className='si';el.textContent=item.e;el.dataset.idx=i;
+el.onclick=()=>{sSel=i;document.querySelectorAll('.si').forEach(s=>s.style.boxShadow='');el.style.boxShadow='0 0 10px var(--td)'};d.appendChild(el)});
+['Tech','Nature'].forEach(label=>{const bn=document.createElement('div');bn.className='sbin';bn.dataset.cat=label.toLowerCase();
+bn.innerHTML='<div class="bl">'+label+'</div><div class="bi"></div>';
+bn.onclick=()=>{if(sSel===null)return;const it=sItems[sSel];
+if(it.c===(label.toLowerCase()==='tech'?'tech':'nature')){
+bn.querySelector('.bi').textContent+=it.e;document.querySelectorAll('.si')[sSel].classList.add('done');
+const cnt=[...document.querySelectorAll('.si.done')].length;
+document.getElementById('smsg').textContent=cnt>=sItems.length?'All sorted! You just did classification — exactly like AI.':cnt+'/'+sItems.length+' sorted';}
+sSel=null;document.querySelectorAll('.si').forEach(s=>s.style.boxShadow='')};b.appendChild(bn)})}
+
+function sTog(n){document.querySelectorAll('.topt').forEach((o,i)=>o.classList.toggle('on',i===n));
+document.getElementById('tCon').innerHTML=n===0?
+'<p><strong>Traditional:</strong> Human writes rules → Computer follows</p><p style="font-family:var(--mono);font-size:.85rem;color:var(--teal)">IF email contains "free money" → SPAM</p><p>Must think of every rule. Doesn\'t scale.</p>':
+'<p><strong>Machine Learning:</strong> Human gives examples → Computer finds rules</p><p style="font-family:var(--mono);font-size:.85rem;color:var(--teal)">Show 10,000 spam + 10,000 good emails → AI learns</p><p>Discovers rules humans might never think of.</p>'}
+
+function selOpt(el,fb){el.parentElement.querySelectorAll('.opt').forEach(o=>o.classList.remove('sel'));
+el.classList.add('sel');const f=document.getElementById('efb');f.style.display='block';f.textContent=fb}
+
+function showCert(){document.getElementById('cName').textContent=ST.name+' — AI Workshop Facilitator';
+try{const b=JSON.parse(localStorage.getItem('ai-hacker-badges')||'[]');if(!b.includes('facilitator')){b.push('facilitator');localStorage.setItem('ai-hacker-badges',JSON.stringify(b))}}catch(e){}
+G('s-cert')}
+</script>
+
+<style>.cb.lang{font-size:.65rem;font-weight:700;width:auto;padding:0 8px;font-family:monospace}</style>
+<button class="cb lang" id="_lnB" onclick="_cycleLang()" style="position:fixed;top:8px;right:120px;z-index:100;width:auto;padding:0 8px;height:32px;border-radius:7px;border:1px solid var(--bdr,#1e2e26);background:var(--bg3,#112118);color:var(--txt2,#8fa89a);font-size:.65rem;font-weight:700;font-family:monospace;cursor:pointer;display:flex;align-items:center;justify-content:center">EN</button>
+<script>
+const _i18n={"en": {"title": "AI Decoded", "welcome": "AI Decoded", "sub": "A Guide for Parents & Teachers", "nameLabel": "Your Name", "startBtn": "Begin"}, "ar": {"title": "فهم الذكاء", "welcome": "فهم الذكاء", "sub": "دليل للآباء والمعلمين", "nameLabel": "اسمك", "startBtn": "ابدأ"}, "fr": {"title": "IA Décodée", "welcome": "IA Décodée", "sub": "Guide pour Parents et Enseignants", "nameLabel": "Votre nom", "startBtn": "Commencer"}};let _lang='en';
+function _cycleLang(){const l=['en','ar','fr'];_lang=l[(l.indexOf(_lang)+1)%l.length];
+document.getElementById('_lnB').textContent=_lang.toUpperCase();
+document.documentElement.lang=_lang==='ar'?'ar':_lang;
+document.documentElement.dir=_lang==='ar'?'rtl':'ltr';
+const t=_i18n[_lang]||_i18n.en;
+document.querySelectorAll('[data-i18n]').forEach(el=>{const k=el.dataset.i18n;if(t[k])el.textContent=t[k]});
+if(t.title)document.title=t.title;
+try{localStorage.setItem('aih-lang',_lang)}catch(e){}}
+(function(){try{const s=localStorage.getItem('aih-lang');if(s&&_i18n[s]){_lang=s;setTimeout(_cycleLang,100)}}catch(e){}})();
+</script>
+
+</body>
+</html>

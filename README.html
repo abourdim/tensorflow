@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Hacker Lab — README</title>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Outfit:wght@300;400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#faf8f5;--bg2:#fff;--bg3:#f0ede8;--teal:#0d7377;--td:rgba(13,115,119,.06);--gold:#b8860b;--txt:#2c2c2c;--txt2:#5a5a5a;--txt3:#999;--bdr:#e0dcd5;--mono:'JetBrains Mono',monospace;--body:'Outfit',sans-serif}
+[data-theme="dark"]{--bg:#0a0f0d;--bg2:#111a16;--bg3:#162019;--teal:#39ff85;--td:rgba(57,255,133,.08);--gold:#ffb300;--txt:#e8f0ec;--txt2:#8fa89a;--txt3:#5a7568;--bdr:#1e2e26}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--body);background:var(--bg);color:var(--txt);line-height:1.7;transition:all .3s}
+.page{max-width:720px;margin:0 auto;padding:20px 16px 40px}
+.bism{font-family:'Amiri',serif;font-size:1.7rem;font-weight:700;color:var(--teal);text-align:center;padding:20px 0 12px}
+h1{font-size:1.8rem;font-weight:700;text-align:center;margin-bottom:4px;color:var(--teal)}
+h2{font-size:1.2rem;font-weight:600;color:var(--teal);margin:24px 0 8px;padding-bottom:4px;border-bottom:1px solid var(--bdr)}
+h3{font-size:1rem;font-weight:600;margin:16px 0 6px}
+p{color:var(--txt2);margin-bottom:10px;font-size:.92rem}
+strong{color:var(--txt)}
+em{color:var(--txt3)}
+a{color:var(--teal);text-decoration:none}a:hover{text-decoration:underline}
+ul,ol{margin:6px 0 12px 20px;color:var(--txt2);font-size:.9rem}
+li{margin:3px 0}
+code{font-family:var(--mono);font-size:.82rem;background:var(--bg3);padding:2px 6px;border-radius:4px;color:var(--teal)}
+pre{background:var(--bg3);border:1px solid var(--bdr);border-radius:8px;padding:14px;overflow-x:auto;font-family:var(--mono);font-size:.78rem;color:var(--txt2);margin:10px 0;line-height:1.5}
+table{width:100%;border-collapse:collapse;margin:10px 0;font-size:.85rem}
+th{text-align:left;padding:8px 10px;background:var(--bg3);border-bottom:2px solid var(--bdr);font-family:var(--mono);font-size:.72rem;color:var(--teal);text-transform:uppercase;letter-spacing:.5px}
+td{padding:8px 10px;border-bottom:1px solid var(--bdr);color:var(--txt2)}
+tr:hover td{background:var(--td)}
+blockquote{border-left:3px solid var(--teal);padding:8px 14px;margin:10px 0;background:var(--td);border-radius:0 8px 8px 0;color:var(--txt2);font-size:.9rem}
+hr{border:none;border-top:1px solid var(--bdr);margin:20px 0}
+.card{background:var(--bg2);border:1px solid var(--bdr);border-radius:10px;padding:16px;margin:10px 0}
+.badge{font-family:var(--mono);font-size:.65rem;padding:2px 8px;border-radius:4px;display:inline-block}
+.topc{position:fixed;top:8px;right:10px;z-index:100}
+.cb{width:32px;height:32px;border-radius:7px;border:1px solid var(--bdr);background:var(--bg2);color:var(--txt3);font-size:.95rem;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.cb:hover{border-color:var(--teal);color:var(--teal)}
+.ftr{text-align:center;padding:20px;font-size:.72rem;color:var(--txt3);margin-top:20px;border-top:1px solid var(--bdr)}.ftr a{color:var(--teal)}
+.checklist{list-style:none;padding:0;margin:8px 0}
+.checklist li{padding:4px 0 4px 24px;position:relative;color:var(--txt2);font-size:.88rem}
+.checklist li::before{content:'☐';position:absolute;left:0;color:var(--teal)}
+.checklist li.done::before{content:'☑'}
+</style>
+</head>
+<body>
+<div class="topc"><button class="cb" onclick="document.documentElement.setAttribute('data-theme',document.documentElement.getAttribute('data-theme')==='dark'?'':'dark');this.textContent=document.documentElement.getAttribute('data-theme')==='dark'?'☀️':'🌙'">🌙</button></div>
+<div class="page">
+<div class="bism">بسم الله الرحمن الرحيم</div>
+<br>
+<br>
+<h1>AI Hacker Lab</h1>
+<br>
+<strong>Interactive workshops teaching AI & Machine Learning to all ages.</strong>
+<p>By Muslims, for everyone.</p>
+<br>
+<br>
+<h2>What is This?</h2>
+<br>
+<p>AI Hacker Lab is a collection of interactive web applications that teach artificial intelligence through hands-on activities. No installation, no accounts, no servers — open in a browser and learn.</p>
+<br>
+<strong>One file to start:</strong> Open <code>ai-hacker-lab-single.html</code> for the complete experience.
+<br>
+<br>
+<h2>Workshops</h2>
+<br>
+<p>| # | Name | Ages | File | What They'll Do |</p>
+<p>|---|------|------|------|-----------------|</p>
+<p>| 1 | Junior Hacker | 6-9 | <code>workshop-1.html</code> | Drag & drop sorting game — classify inventions by type, power, and era |</p>
+<p>| 2 | Code Breaker | 10-13 | <code>workshop-2.html</code> | Draw shapes, train a real neural network (TensorFlow.js), test predictions |</p>
+<p>| 3 | AI Engineer | 14+ | <code>workshop-3.html</code> | Build neural network architecture, adjust hyperparameters, train on digit data |</p>
+<p>| 4 | AI Decoded | Parents | <code>workshop-4.html</code> | Interactive guide — what AI is, how to facilitate workshops, ethics discussion |</p>
+<br>
+<br>
+<h2>Bonus Tools</h2>
+<br>
+<p>| File | Description |</p>
+<p>|------|-------------|</p>
+<p>| <code>tools-of-the-trade.html</code> | TensorFlow & alternatives explained per age group (4 tabs) |</p>
+<p>| <code>hardware-lab.html</code> | 4 micro:bit & ESP32-C3 projects with AI (gesture classifier, sensors, plant monitor, edge AI) |</p>
+<p>| <code>certificates.html</code> | Generate & print completion certificates with Islamic geometric borders |</p>
+<p>| <code>dashboard.html</code> | Parent dashboard — track badges, skills, and progress across workshops |</p>
+<p>| <code>journal.html</code> | AI learning journal — prompt-based reflections saved locally |</p>
+<p>| <code>time-capsule.html</code> | Predict AI's future, seal predictions, open years later |</p>
+<p>| <code>qr-posters.html</code> | Printable QR code posters for classrooms and community centers |</p>
+<br>
+<br>
+<h2>Quick Start</h2>
+<br>
+<li>Download and unzip the package</li>
+<li>Open <code>ai-hacker-lab-single.html</code> in Chrome or Edge</li>
+<li>That's it — everything runs in your browser</li>
+<br>
+<strong>Or</strong> open any individual <code>.html</code> file directly. Each is fully standalone.
+<br>
+<br>
+<h2>Requirements</h2>
+<br>
+<li>Any modern browser (Chrome or Edge recommended for Workshops 2-3)</li>
+<li>No internet needed for Workshop 1 and 4</li>
+<li>Workshops 2-3 load TensorFlow.js from CDN (first load needs internet)</li>
+<li>No accounts, no servers, no databases</li>
+<br>
+<strong>Optional hardware (for Hardware Lab):</strong>
+<li>micro:bit v2 (~$15-20)</li>
+<li>ESP32-C3 dev board (~$5-10)</li>
+<li>Various sensors (details in hardware-lab.html)</li>
+<br>
+<br>
+<h2>File Structure</h2>
+<br>
+<code></code>`
+<p>ai-hacker-lab/</p>
+<p>├── ai-hacker-lab-single.html  ← ALL-IN-ONE (start here)</p>
+<p>├── ai-hacker-lab.html         ← Hub launcher (loads individual files)</p>
+<p>├── workshop-1.html            ← Ages 6-9: Sort Mission</p>
+<p>├── workshop-2.html            ← Ages 10-13: Train the AI (TF.js)</p>
+<p>├── workshop-3.html            ← Ages 14+: Build & Deploy (TF.js)</p>
+<p>├── workshop-4.html            ← Parents/Teachers guide</p>
+<p>├── tools-of-the-trade.html    ← TensorFlow & alternatives</p>
+<p>├── hardware-lab.html          ← micro:bit & ESP32 projects</p>
+<p>├── certificates.html          ← Print certificates</p>
+<p>├── dashboard.html             ← Progress tracker</p>
+<p>├── journal.html               ← Learning reflections</p>
+<p>├── time-capsule.html          ← AI predictions</p>
+<p>├── qr-posters.html            ← Printable posters</p>
+<p>├── workshop-1-guide.md        ← Facilitator guide</p>
+<p>├── workshop-2-guide.md        ← Facilitator guide</p>
+<p>├── workshop-3-guide.md        ← Facilitator guide</p>
+<p>├── workshop-4-guide.md        ← Facilitator guide</p>
+<p>├── README.md                  ← This file</p>
+<p>├── FAQ.md                     ← Frequently asked questions</p>
+<p>├── HOWTO.md                   ← Setup & usage guide</p>
+<p>├── CHANGELOG.md               ← Version history</p>
+<p>└── plan_v1.4.md               ← Full project plan</p>
+<code></code>`
+<br>
+<br>
+<h2>Design Principles</h2>
+<br>
+<li><strong>Bismillah</strong> at the top of every page — the identity of the project</li>
+<li><strong>No music, no dance</strong> — sound effects only with mute toggle</li>
+<li><strong>Inclusive</strong> — diverse names, universal values, welcoming to all backgrounds</li>
+<li><strong>Offline-first</strong> — most features work without internet</li>
+<li><strong>Mobile-friendly</strong> — touch support, responsive design</li>
+<li><strong>Dark/Light theme</strong> — toggle on every page</li>
+<li><strong>Privacy</strong> — all data stays in localStorage on the user's device. Nothing is sent anywhere.</li>
+<li><strong>Zero dependencies</strong> — except TensorFlow.js CDN for Workshops 2-3</li>
+<br>
+<br>
+<h2>For Developers & Engineers</h2>
+<br>
+<p>Each workshop guide (<code>.md</code>) includes a "For Developers & Engineers" section with technical details, tools used, and inspiring real-world project examples.</p>
+<br>
+<strong>Tech stack:</strong>
+<li>Pure HTML5 + CSS3 + JavaScript (ES6+)</li>
+<li>TensorFlow.js 4.17 (Workshops 2-3 only, loaded from CDN)</li>
+<li>Web Bluetooth API (Hardware Lab, micro:bit)</li>
+<li>Web Serial API (Hardware Lab, ESP32-C3)</li>
+<li>HTML5 Drag & Drop API + touch fallback</li>
+<li>Canvas API for drawing</li>
+<li>CSS animations (no JS animation libraries)</li>
+<li>localStorage for persistence (badges, journal, capsules)</li>
+<br>
+<br>
+<h2>Contributing</h2>
+<br>
+<p>Want to add a workshop, fix a bug, or translate to another language?</p>
+<br>
+<li>Fork the project</li>
+<li>Create your feature branch</li>
+<li>Make your changes</li>
+<li>Submit a pull request</li>
+<br>
+<p>See <code>HOWTO.md</code> for development guidelines.</p>
+<br>
+<br>
+<h2>License</h2>
+<br>
+<p>Open source. Free to use, modify, and distribute for educational purposes.</p>
+<br>
+<br>
+<h2>Credits</h2>
+<br>
+<p>Created with care for the Muslim community and beyond.</p>
+<p>Built with HTML, CSS, JavaScript, and TensorFlow.js.</p>
+<br>
+<br>
+<p>*Powered by [workshop-diy.org](https://workshop-diy.org)*</p>
+<div class="ftr">Powered by <a href="https://workshop-diy.org" target="_blank">workshop-diy.org</a></div>
+</div>
+</body>
+</html>

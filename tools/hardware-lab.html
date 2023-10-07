@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Hacker Lab — Hardware Lab</title>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=Outfit:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0f0d;--bg2:#111a16;--bg3:#162019;--bg4:#1c2820;
+  --neon:#39ff85;--nd:rgba(57,255,133,.1);--ng:rgba(57,255,133,.3);
+  --cyan:#00e5ff;--cd:rgba(0,229,255,.1);
+  --amber:#ffb300;--ad:rgba(255,179,0,.08);
+  --red:#ff4757;
+  --txt:#e8f0ec;--txt2:#8fa89a;--txt3:#5a7568;
+  --bdr:#1e2e26;--mono:'JetBrains Mono',monospace;--body:'Outfit',sans-serif;--tr:.3s ease}
+[data-theme="light"]{--bg:#f0f5f2;--bg2:#fff;--bg3:#e8ede9;--bg4:#dde4df;
+  --neon:#0a8a3e;--nd:rgba(10,138,62,.06);--ng:rgba(10,138,62,.15);
+  --cyan:#0077a8;--amber:#b87900;--red:#d4384a;
+  --txt:#1a2b20;--txt2:#5a7066;--txt3:#8fa89a;--bdr:#c8d8ce}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--body);background:var(--bg);color:var(--txt);min-height:100vh;transition:all var(--tr)}
+.app{max-width:760px;margin:0 auto;padding:16px;position:relative;z-index:1}
+.bism{font-family:'Amiri',serif;font-size:1.7rem;font-weight:700;color:var(--neon);text-align:center;padding:20px 0 4px;text-shadow:0 0 20px var(--nd)}
+h1{text-align:center;font-size:1.5rem;margin-bottom:4px}
+.sub{text-align:center;color:var(--txt2);margin-bottom:20px;font-size:.92rem}
+.topc{position:fixed;top:8px;right:10px;display:flex;gap:5px;z-index:100}
+.cb{width:32px;height:32px;border-radius:7px;border:1px solid var(--bdr);background:var(--bg2);color:var(--txt2);
+  font-size:.95rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all var(--tr)}
+.cb:hover{border-color:var(--neon);color:var(--neon)}
+
+/* Tabs */
+.tabs{display:flex;gap:4px;justify-content:center;flex-wrap:wrap;margin-bottom:20px}
+.tab{padding:8px 14px;border-radius:8px;border:1px solid var(--bdr);background:var(--bg2);color:var(--txt2);
+  cursor:pointer;font-size:.82rem;transition:all var(--tr);display:flex;align-items:center;gap:6px}
+.tab.on{border-color:var(--neon);color:var(--neon);background:var(--nd)}
+.tab .t-badge{font-family:var(--mono);font-size:.6rem;padding:2px 6px;border-radius:4px;border:1px solid}
+
+.panel{display:none;animation:fi .3s ease}.panel.on{display:block}
+@keyframes fi{from{opacity:0}to{opacity:1}}
+
+/* Project card */
+.proj{background:var(--bg2);border:1px solid var(--bdr);border-radius:14px;padding:24px;margin:14px 0;transition:all var(--tr)}
+.proj:hover{border-color:var(--neon)}
+.proj-h{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.proj-t{font-size:1.2rem;font-weight:700}
+.badges{display:flex;gap:5px;flex-wrap:wrap}
+.badge{font-family:var(--mono);font-size:.62rem;padding:3px 8px;border-radius:4px;border:1px solid}
+.badge.hw{color:var(--neon);border-color:var(--neon);background:var(--nd)}
+.badge.diff{color:var(--amber);border-color:var(--amber);background:var(--ad)}
+.badge.time{color:var(--cyan);border-color:var(--cyan);background:var(--cd)}
+.proj-desc{color:var(--txt2);line-height:1.7;margin-bottom:14px;font-size:.92rem}
+
+/* Sections */
+.sec{margin:12px 0}
+.sec h3{font-size:.88rem;color:var(--neon);font-family:var(--mono);margin-bottom:6px;cursor:pointer;user-select:none}
+.sec h3::after{content:' ▾';font-size:.7em;color:var(--txt3)}
+.sec h3.closed::after{content:' ▸'}
+.sec-body{transition:all .3s}.sec-body.hid{display:none}
+
+/* Steps */
+.steps{counter-reset:step}
+.step{display:flex;gap:12px;margin:8px 0;position:relative;padding-left:4px}
+.step::before{counter-increment:step;content:counter(step);font-family:var(--mono);font-size:.7rem;
+  color:var(--neon);background:var(--nd);width:24px;height:24px;border-radius:6px;display:flex;
+  align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+.step-text{color:var(--txt2);font-size:.88rem;line-height:1.6}
+
+/* Parts */
+.parts{display:flex;flex-wrap:wrap;gap:5px;margin:8px 0}
+.part{background:var(--bg3);border:1px solid var(--bdr);border-radius:6px;padding:4px 10px;font-size:.78rem;color:var(--txt2);
+  display:flex;align-items:center;gap:4px}
+.part::before{content:'☐';color:var(--neon);font-size:.7rem}
+
+/* Code blocks */
+pre{background:var(--bg);border:1px solid var(--bdr);border-radius:8px;padding:12px;overflow-x:auto;
+  font-family:var(--mono);font-size:.72rem;color:var(--txt2);margin:8px 0;line-height:1.6}
+pre .cm{color:var(--txt3)}
+pre .kw{color:var(--cyan)}
+pre .fn{color:var(--amber)}
+pre .str{color:var(--neon)}
+
+/* Wiring diagram (SVG) */
+.wiring{background:var(--bg3);border:1px solid var(--bdr);border-radius:10px;padding:16px;margin:10px 0;text-align:center}
+.wiring svg{max-width:100%;height:auto}
+.wiring .cap{font-family:var(--mono);font-size:.7rem;color:var(--txt3);margin-top:6px}
+
+/* Learn box */
+.learn{background:var(--nd);border:1px solid rgba(57,255,133,.2);border-radius:10px;padding:14px;margin:10px 0}
+.learn p{color:var(--neon);font-weight:600;font-size:.9rem;margin:0;line-height:1.5}
+
+.ftr{text-align:center;padding:20px;font-size:.72rem;color:var(--txt3)}.ftr a{color:var(--neon);text-decoration:none}
+.cb.lang{font-size:.65rem;font-weight:700;width:auto;padding:0 8px;font-family:monospace}
+</style>
+</head>
+<body>
+<div class="topc">
+<button class="cb" id="thB" onclick="tTh()">🌙</button>
+<button class="cb" onclick="tMu()" id="muB">🔊</button>
+<button class="cb lang" id="_lnB" onclick="_cycleLang()" style="font-size:.65rem;font-weight:700;width:auto;padding:0 8px">EN</button></div>
+<div class="app">
+<div class="bism">بسم الله الرحمن الرحيم</div>
+<h1>🔧 Hardware Lab</h1>
+<p class="sub">micro:bit &amp; ESP32-C3 projects with AI integration</p>
+
+<div class="tabs">
+<div class="tab on" onclick="showP(0)">🎮 Gesture <span class="t-badge" style="color:var(--neon);border-color:var(--neon)">micro:bit</span></div>
+<div class="tab" onclick="showP(1)">🌡️ Sensors <span class="t-badge" style="color:var(--neon);border-color:var(--neon)">micro:bit</span></div>
+<div class="tab" onclick="showP(2)">🌱 Plant <span class="t-badge" style="color:var(--amber);border-color:var(--amber)">ESP32</span></div>
+<div class="tab" onclick="showP(3)">⚡ Edge AI <span class="t-badge" style="color:var(--red);border-color:var(--red)">ESP32</span></div>
+</div>
+
+<!-- PROJECT 1 -->
+<div class="panel on" id="p0">
+<div class="proj">
+<div class="proj-h"><div class="proj-t">🎮 Gesture Classifier</div>
+<div class="badges"><span class="badge hw">micro:bit v2</span><span class="badge diff">Beginner</span><span class="badge time">30 min</span></div></div>
+<p class="proj-desc">Train AI to recognize physical gestures — shake, tilt, spin, wave. Your body movements become training data that a neural network learns from!</p>
+
+<div class="sec"><h3 onclick="tog(this)">How It Works</h3><div class="sec-body">
+<div class="steps">
+<div class="step"><div class="step-text">Connect micro:bit to your computer via Web Bluetooth (Chrome/Edge required)</div></div>
+<div class="step"><div class="step-text">Choose 3-4 gestures to train (e.g., shake, tilt left, tilt right, spin)</div></div>
+<div class="step"><div class="step-text">Record 10 samples of each gesture — the accelerometer captures x, y, z movement data</div></div>
+<div class="step"><div class="step-text">TensorFlow.js trains a small neural network on your gesture data right in the browser</div></div>
+<div class="step"><div class="step-text">Test: perform a gesture → the AI predicts which one you did</div></div>
+<div class="step"><div class="step-text">Experiment: What happens with fewer samples? Similar gestures? Faster movements?</div></div>
+</div></div></div>
+
+<div class="sec"><h3 onclick="tog(this)">Parts Needed</h3><div class="sec-body">
+<div class="parts">
+<div class="part">micro:bit v2</div>
+<div class="part">USB cable</div>
+<div class="part">Chrome or Edge browser</div>
+</div>
+<p style="font-size:.8rem;color:var(--txt3);margin-top:4px">No wiring needed — uses built-in accelerometer</p>
+</div></div>
+
+<div class="sec"><h3 class="closed" onclick="tog(this)">Code Example</h3><div class="sec-body hid">
+<pre><span class="cm">// Connect to micro:bit via Web Bluetooth</span>
+<span class="kw">async function</span> <span class="fn">connectMicrobit</span>() {
+  <span class="kw">const</span> device = <span class="kw">await</span> navigator.bluetooth
+    .<span class="fn">requestDevice</span>({
+      filters: [{ namePrefix: <span class="str">'BBC micro:bit'</span> }],
+      optionalServices: [<span class="str">'e95d0753-251d-470a-a062-fa1922dfa9a8'</span>]
+    });
+  <span class="kw">const</span> server = <span class="kw">await</span> device.gatt.<span class="fn">connect</span>();
+  <span class="cm">// Read accelerometer data</span>
+  <span class="kw">const</span> service = <span class="kw">await</span> server
+    .<span class="fn">getPrimaryService</span>(<span class="str">'e95d0753...'</span>);
+  <span class="cm">// Stream x, y, z values to TensorFlow.js</span>
+}</pre>
+</div></div>
+
+<div class="learn"><p>"Your physical movements became numbers, the numbers became patterns, and the AI learned those patterns. This is how fitness trackers and game controllers work!"</p></div>
+</div>
+</div>
+
+<!-- PROJECT 2 -->
+<div class="panel" id="p1">
+<div class="proj">
+<div class="proj-h"><div class="proj-t">🌡️ Sensor Data Sorting</div>
+<div class="badges"><span class="badge hw">micro:bit v2</span><span class="badge diff">Beginner</span><span class="badge time">25 min</span></div></div>
+<p class="proj-desc">Collect real environmental data from different locations and classify readings. Experience how messy real-world data is compared to clean training sets.</p>
+
+<div class="sec"><h3 onclick="tog(this)">How It Works</h3><div class="sec-body">
+<div class="steps">
+<div class="step"><div class="step-text">Connect micro:bit and stream temperature + light sensor data to the browser</div></div>
+<div class="step"><div class="step-text">Walk around and take readings: near a window, under a desk, near a heater, outside</div></div>
+<div class="step"><div class="step-text">Label each reading: bright/dark, hot/cold, indoor/outdoor</div></div>
+<div class="step"><div class="step-text">See how a simple classifier would sort new, unlabeled readings</div></div>
+<div class="step"><div class="step-text">Discussion: "What features did YOU use to classify? Temperature? Light? Both?"</div></div>
+</div></div></div>
+
+<div class="sec"><h3 onclick="tog(this)">Parts Needed</h3><div class="sec-body">
+<div class="parts">
+<div class="part">micro:bit v2</div>
+<div class="part">USB cable</div>
+<div class="part">Chrome or Edge browser</div>
+</div>
+<p style="font-size:.8rem;color:var(--txt3);margin-top:4px">No wiring — uses built-in temperature and light sensors</p>
+</div></div>
+
+<div class="learn"><p>"Real-world data is messy, noisy, and sometimes contradictory. That's what makes AI engineering challenging — and exciting. Clean data is a luxury!"</p></div>
+</div>
+</div>
+
+<!-- PROJECT 3 -->
+<div class="panel" id="p2">
+<div class="proj">
+<div class="proj-h"><div class="proj-t">🌱 Smart Plant Monitor</div>
+<div class="badges"><span class="badge hw">ESP32-C3</span><span class="badge diff">Intermediate</span><span class="badge time">45 min</span></div></div>
+<p class="proj-desc">Build a real IoT device that monitors plant health. Soil moisture, light, and temperature sensors feed data to an AI that classifies: healthy, needs water, needs light, or too hot.</p>
+
+<div class="sec"><h3 onclick="tog(this)">How It Works</h3><div class="sec-body">
+<div class="steps">
+<div class="step"><div class="step-text">Wire soil moisture, light (LDR), and temperature sensors to ESP32-C3</div></div>
+<div class="step"><div class="step-text">ESP32-C3 hosts a web server with a live sensor dashboard</div></div>
+<div class="step"><div class="step-text">Collect data from healthy plants and stressed plants (or simulate conditions)</div></div>
+<div class="step"><div class="step-text">Train a classifier in the browser: healthy / needs water / needs light / too hot</div></div>
+<div class="step"><div class="step-text">Deploy: ESP32-C3 continuously monitors and shows plant status on its web page</div></div>
+</div></div></div>
+
+<div class="sec"><h3 onclick="tog(this)">Parts Needed</h3><div class="sec-body">
+<div class="parts">
+<div class="part">ESP32-C3 dev board</div>
+<div class="part">Soil moisture sensor</div>
+<div class="part">LDR light sensor</div>
+<div class="part">Temperature sensor (DHT11/22)</div>
+<div class="part">Breadboard</div>
+<div class="part">Jumper wires</div>
+<div class="part">10kΩ resistor (for LDR)</div>
+</div></div></div>
+
+<div class="sec"><h3 class="closed" onclick="tog(this)">Wiring Diagram</h3><div class="sec-body hid">
+<div class="wiring">
+<svg viewBox="0 0 400 200" width="400" height="200">
+<rect x="150" y="60" width="100" height="80" rx="8" fill="var(--bg3)" stroke="var(--neon)" stroke-width="2"/>
+<text x="200" y="105" text-anchor="middle" fill="var(--neon)" font-family="JetBrains Mono" font-size="10">ESP32-C3</text>
+<!-- Soil moisture -->
+<rect x="10" y="20" width="80" height="40" rx="6" fill="var(--bg3)" stroke="var(--cyan)" stroke-width="1.5"/>
+<text x="50" y="44" text-anchor="middle" fill="var(--cyan)" font-family="JetBrains Mono" font-size="8">Soil Moist</text>
+<line x1="90" y1="40" x2="150" y2="80" stroke="var(--cyan)" stroke-width="1.5" stroke-dasharray="4"/>
+<text x="115" y="55" fill="var(--txt3)" font-family="JetBrains Mono" font-size="7">GPIO2</text>
+<!-- LDR -->
+<rect x="10" y="80" width="80" height="40" rx="6" fill="var(--bg3)" stroke="var(--amber)" stroke-width="1.5"/>
+<text x="50" y="104" text-anchor="middle" fill="var(--amber)" font-family="JetBrains Mono" font-size="8">LDR Light</text>
+<line x1="90" y1="100" x2="150" y2="100" stroke="var(--amber)" stroke-width="1.5" stroke-dasharray="4"/>
+<text x="115" y="95" fill="var(--txt3)" font-family="JetBrains Mono" font-size="7">GPIO3</text>
+<!-- Temp -->
+<rect x="10" y="140" width="80" height="40" rx="6" fill="var(--bg3)" stroke="var(--red)" stroke-width="1.5"/>
+<text x="50" y="164" text-anchor="middle" fill="var(--red)" font-family="JetBrains Mono" font-size="8">DHT Temp</text>
+<line x1="90" y1="160" x2="150" y2="120" stroke="var(--red)" stroke-width="1.5" stroke-dasharray="4"/>
+<text x="115" y="145" fill="var(--txt3)" font-family="JetBrains Mono" font-size="7">GPIO4</text>
+<!-- WiFi -->
+<rect x="310" y="70" width="80" height="50" rx="6" fill="var(--bg3)" stroke="var(--neon)" stroke-width="1.5"/>
+<text x="350" y="92" text-anchor="middle" fill="var(--neon)" font-family="JetBrains Mono" font-size="8">WiFi</text>
+<text x="350" y="104" text-anchor="middle" fill="var(--txt3)" font-family="JetBrains Mono" font-size="7">Web Server</text>
+<line x1="250" y1="100" x2="310" y2="95" stroke="var(--neon)" stroke-width="1.5" stroke-dasharray="4"/>
+</svg>
+<div class="cap">ESP32-C3 wiring: 3 sensors → analog/digital pins → WiFi web dashboard</div>
+</div></div></div>
+
+<div class="learn"><p>"You built a real IoT + AI product. Smart agriculture uses exactly this approach — sensors collecting data, AI making decisions, farmers saving crops."</p></div>
+</div>
+</div>
+
+<!-- PROJECT 4 -->
+<div class="panel" id="p3">
+<div class="proj">
+<div class="proj-h"><div class="proj-t">⚡ Edge AI Deployment</div>
+<div class="badges"><span class="badge hw">ESP32-C3</span><span class="badge diff">Advanced</span><span class="badge time">60 min</span></div></div>
+<p class="proj-desc">The ultimate challenge: train a model in the browser, convert it to TensorFlow Lite, and deploy it to run ON the ESP32-C3. No internet needed — the AI lives on the chip.</p>
+
+<div class="sec"><h3 onclick="tog(this)">How It Works</h3><div class="sec-body">
+<div class="steps">
+<div class="step"><div class="step-text">Train a model in Workshop 3 (or build a new one in the browser)</div></div>
+<div class="step"><div class="step-text">Export the model to TensorFlow Lite format (quantized for microcontrollers)</div></div>
+<div class="step"><div class="step-text">Flash the TFLite model to ESP32-C3 using Web Serial API</div></div>
+<div class="step"><div class="step-text">Connect a sensor to the ESP32-C3 (e.g., accelerometer for gesture recognition)</div></div>
+<div class="step"><div class="step-text">The ESP32-C3 runs inference locally — no WiFi, no cloud, no internet needed</div></div>
+<div class="step"><div class="step-text">Measure inference speed: how many predictions per second can this tiny chip do?</div></div>
+</div></div></div>
+
+<div class="sec"><h3 onclick="tog(this)">Parts Needed</h3><div class="sec-body">
+<div class="parts">
+<div class="part">ESP32-C3 dev board</div>
+<div class="part">USB-C cable</div>
+<div class="part">Chrome or Edge browser</div>
+<div class="part">Optional: sensor for live inference</div>
+</div></div></div>
+
+<div class="sec"><h3 class="closed" onclick="tog(this)">Key Concepts</h3><div class="sec-body hid">
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0">
+<div style="background:var(--bg3);padding:10px;border-radius:8px"><strong style="color:var(--neon);font-size:.85rem">Cloud AI</strong><br><span style="font-size:.8rem;color:var(--txt2)">Runs on big servers. Needs internet. Powerful but adds latency.</span></div>
+<div style="background:var(--bg3);padding:10px;border-radius:8px"><strong style="color:var(--amber);font-size:.85rem">Edge AI</strong><br><span style="font-size:.8rem;color:var(--txt2)">Runs on tiny chips. No internet. Fast but limited power.</span></div>
+</div>
+<p style="font-size:.85rem;color:var(--txt2);margin-top:8px"><strong>Why Edge AI matters:</strong> Privacy (data stays on device), speed (no network latency), reliability (works offline), cost (no cloud bills).</p>
+</div></div>
+
+<div class="learn"><p>"Cloud AI needs internet. Edge AI doesn't. Both have tradeoffs — now you understand why. You just did what real IoT engineers do every day."</p></div>
+</div>
+</div>
+
+<div class="ftr">Powered by <a href="https://workshop-diy.org" target="_blank">workshop-diy.org</a></div>
+</div>
+<script>
+function showP(n){document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('on',i===n));
+document.querySelectorAll('.panel').forEach((p,i)=>p.classList.toggle('on',i===n));window.scrollTo({top:0,behavior:'smooth'})}
+function tog(el){el.classList.toggle('closed');const b=el.nextElementSibling;if(b)b.classList.toggle('hid')}
+let th='dark';function tTh(){th=th==='dark'?'light':'dark';document.documentElement.setAttribute('data-theme',th==='light'?'light':'');document.getElementById('thB').textContent=th==='dark'?'🌙':'☀️'}
+function tMu(){const b=document.getElementById('muB');b.textContent=b.textContent==='🔊'?'🔇':'🔊'}
+</script>
+
+<script>
+const _i18n = {"en": {"title": "Hardware Lab", "sub": "micro:bit & ESP32-C3 projects with AI integration"}, "ar": {"title": "مختبر المعدات", "sub": "مشاريع مايكروبت و ESP32 مع الذكاء الاصطناعي"}, "fr": {"title": "Labo Matériel", "sub": "Projets micro:bit & ESP32-C3 avec intégration IA"}};
+let _lang = 'en';
+function _cycleLang() {
+  const langs = ['en', 'ar', 'fr'];
+  _lang = langs[(langs.indexOf(_lang) + 1) % langs.length];
+  document.getElementById('_lnB').textContent = _lang.toUpperCase();
+  document.documentElement.lang = _lang === 'ar' ? 'ar' : _lang;
+  document.documentElement.dir = _lang === 'ar' ? 'rtl' : 'ltr';
+  const t = _i18n[_lang] || _i18n.en;
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const k = el.dataset.i18n;
+    if (t[k]) el.textContent = t[k];
+  });
+  if (t.title) document.title = t.title;
+  try { localStorage.setItem('aih-lang', _lang); } catch(e) {}
+}
+(function() {
+  try {
+    const s = localStorage.getItem('aih-lang');
+    if (s && _i18n[s]) { _lang = s; _cycleLang(); }
+  } catch(e) {}
+})();
+</script>
+
+</body>
+</html>

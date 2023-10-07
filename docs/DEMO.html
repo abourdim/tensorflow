@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Hacker Lab — Demo Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Outfit:wght@300;400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#faf8f5;--bg2:#fff;--bg3:#f0ede8;--teal:#0d7377;--td:rgba(13,115,119,.06);--gold:#b8860b;--txt:#2c2c2c;--txt2:#5a5a5a;--txt3:#999;--bdr:#e0dcd5;--mono:'JetBrains Mono',monospace;--body:'Outfit',sans-serif}
+[data-theme="dark"]{--bg:#0a0f0d;--bg2:#111a16;--bg3:#162019;--teal:#39ff85;--td:rgba(57,255,133,.08);--gold:#ffb300;--txt:#e8f0ec;--txt2:#8fa89a;--txt3:#5a7568;--bdr:#1e2e26}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--body);background:var(--bg);color:var(--txt);line-height:1.7;transition:all .3s}
+.page{max-width:720px;margin:0 auto;padding:20px 16px 40px}
+.bism{font-family:'Amiri',serif;font-size:1.7rem;font-weight:700;color:var(--teal);text-align:center;padding:20px 0 12px}
+h1{font-size:1.8rem;font-weight:700;text-align:center;margin-bottom:4px;color:var(--teal)}
+h2{font-size:1.2rem;font-weight:600;color:var(--teal);margin:24px 0 8px;padding-bottom:4px;border-bottom:1px solid var(--bdr)}
+h3{font-size:1rem;font-weight:600;margin:16px 0 6px}
+p{color:var(--txt2);margin-bottom:10px;font-size:.92rem}
+strong{color:var(--txt)}
+em{color:var(--txt3)}
+a{color:var(--teal);text-decoration:none}a:hover{text-decoration:underline}
+ul,ol{margin:6px 0 12px 20px;color:var(--txt2);font-size:.9rem}
+li{margin:3px 0}
+code{font-family:var(--mono);font-size:.82rem;background:var(--bg3);padding:2px 6px;border-radius:4px;color:var(--teal)}
+pre{background:var(--bg3);border:1px solid var(--bdr);border-radius:8px;padding:14px;overflow-x:auto;font-family:var(--mono);font-size:.78rem;color:var(--txt2);margin:10px 0;line-height:1.5}
+table{width:100%;border-collapse:collapse;margin:10px 0;font-size:.85rem}
+th{text-align:left;padding:8px 10px;background:var(--bg3);border-bottom:2px solid var(--bdr);font-family:var(--mono);font-size:.72rem;color:var(--teal);text-transform:uppercase;letter-spacing:.5px}
+td{padding:8px 10px;border-bottom:1px solid var(--bdr);color:var(--txt2)}
+tr:hover td{background:var(--td)}
+blockquote{border-left:3px solid var(--teal);padding:8px 14px;margin:10px 0;background:var(--td);border-radius:0 8px 8px 0;color:var(--txt2);font-size:.9rem}
+hr{border:none;border-top:1px solid var(--bdr);margin:20px 0}
+.card{background:var(--bg2);border:1px solid var(--bdr);border-radius:10px;padding:16px;margin:10px 0}
+.badge{font-family:var(--mono);font-size:.65rem;padding:2px 8px;border-radius:4px;display:inline-block}
+.topc{position:fixed;top:8px;right:10px;z-index:100}
+.cb{width:32px;height:32px;border-radius:7px;border:1px solid var(--bdr);background:var(--bg2);color:var(--txt3);font-size:.95rem;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.cb:hover{border-color:var(--teal);color:var(--teal)}
+.ftr{text-align:center;padding:20px;font-size:.72rem;color:var(--txt3);margin-top:20px;border-top:1px solid var(--bdr)}.ftr a{color:var(--teal)}
+.checklist{list-style:none;padding:0;margin:8px 0}
+.checklist li{padding:4px 0 4px 24px;position:relative;color:var(--txt2);font-size:.88rem}
+.checklist li::before{content:'☐';position:absolute;left:0;color:var(--teal)}
+.checklist li.done::before{content:'☑'}
+</style>
+</head>
+<body>
+<div class="topc"><button class="cb" onclick="document.documentElement.setAttribute('data-theme',document.documentElement.getAttribute('data-theme')==='dark'?'':'dark');this.textContent=document.documentElement.getAttribute('data-theme')==='dark'?'☀️':'🌙'">🌙</button></div>
+<div class="page">
+<div class="bism">بسم الله الرحمن الرحيم</div>
+<br>
+<br>
+<h1>AI Hacker Lab — Demo Guide</h1>
+<br>
+<br>
+<h2>5-Minute Demo Script</h2>
+<br>
+<p>Use this to demonstrate AI Hacker Lab at events, meetings, or community gatherings.</p>
+<br>
+<br>
+<h3>Opening (30 seconds)</h3>
+<blockquote>"This is AI Hacker Lab — a free, open-source workshop series that teaches AI and Machine Learning to all ages. It runs in a browser. No installation, no accounts. Let me show you."</blockquote>
+<br>
+<p>Open <code>ai-hacker-lab-single.html</code> and show the hub.</p>
+<br>
+<br>
+<h3>Workshop 1 Demo (90 seconds)</h3>
+<blockquote>"For ages 6-9, we have Junior Hacker — a sorting game."</blockquote>
+<br>
+<li>Click Workshop 1, enter a name, click Start Mission</li>
+<li>Show intro screen: "Scientists sort things into groups. AI does the same."</li>
+<li>Start Mission 1: drag 2-3 items to correct zones</li>
+<li>Show the sound effects, encouragement messages, score counter</li>
+<li>"Kids learn classification — the foundation of all AI."</li>
+<br>
+<br>
+<h3>Workshop 2 Demo (90 seconds)</h3>
+<blockquote>"Ages 10-13 get Code Breaker — they draw shapes and train a real neural network."</blockquote>
+<br>
+<li>Open <code>workshop-2.html</code> separately</li>
+<li>Show the briefing screens explaining neural networks</li>
+<li>Draw a quick circle, save it</li>
+<li>"They collect training data, then TensorFlow.js trains a CNN right in the browser."</li>
+<li>"After training, they test it — draw a shape and the AI predicts what it is."</li>
+<br>
+<br>
+<h3>Workshop 4 Demo (60 seconds)</h3>
+<blockquote>"Parents and teachers get AI Decoded — so they understand what their kids are learning."</blockquote>
+<br>
+<li>Show the chapter navigation</li>
+<li>Click "What is AI?" — show the interactive sorting demo</li>
+<li>Click "Ethics" — show the discussion scenario</li>
+<li>"It's not just for kids. Parents need AI literacy too."</li>
+<br>
+<br>
+<h3>Bonus Tools (30 seconds)</h3>
+<blockquote>"Plus: certificates they can print, a progress dashboard, a learning journal, and a time capsule where kids predict AI's future."</blockquote>
+<br>
+<p>Show certificates page, generate a quick certificate.</p>
+<br>
+<br>
+<h3>Closing (30 seconds)</h3>
+<blockquote>"Everything is free, open source, and runs offline. It's designed by Muslims, for everyone. The Bismillah is at the top of every page. No music, culturally respectful, and scientifically rigorous."</blockquote>
+<blockquote>"Download it, host it, share it. Workshop-diy.org."</blockquote>
+<br>
+<br>
+<h2>Live Demo Checklist</h2>
+<br>
+<li>[ ] Chrome or Edge browser installed</li>
+<li>[ ] All HTML files in same folder</li>
+<li>[ ] Internet available (for Workshop 2-3 TF.js)</li>
+<li>[ ] Projector or shared screen ready</li>
+<li>[ ] Sound on (for effect) or off (for quiet venues)</li>
+<li>[ ] Test all workshops before the demo</li>
+<li>[ ] Have a backup plan if internet fails (Workshop 1 works offline)</li>
+<br>
+<br>
+<p>*Powered by [workshop-diy.org](https://workshop-diy.org)*</p>
+<div class="ftr">Powered by <a href="https://workshop-diy.org" target="_blank">workshop-diy.org</a></div>
+</div>
+</body>
+</html>
